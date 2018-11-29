@@ -9,7 +9,7 @@ Author: Gertjan van den Burg
 
 import unittest
 
-from ccsv.type_detect import TypeDetector
+from ccsv.type_detect import TypeDetector, type_score
 
 
 class TypeDetectorTestCase(unittest.TestCase):
@@ -229,6 +229,82 @@ class TypeDetectorTestCase(unittest.TestCase):
 
     def test_number_false_11(self):
         self.assertFalse(self.td.is_number("E14000537"))
+
+    """
+    Type Score tests
+    """
+
+    def test_type_score_1(self):
+        # theta_1 from paper
+        cells = [
+            "7",
+            "5; Mon",
+            " Jan 12;6",
+            "40",
+            "100; Fri",
+            " Mar 21;8",
+            "23",
+            "8",
+            "2; Thu",
+            " Sep 17; 2",
+            "71",
+            "538",
+            "0;;7",
+            "26",
+            '"NA"; Wed',
+            " Oct 4;6",
+            "93",
+        ]
+        out = type_score(cells)
+        exp = 8 / 17
+        self.assertAlmostEqual(exp, out)
+
+    def test_type_score_2(self):
+        # theta_2 from paper
+        cells = [
+            "7,5",
+            " Mon, Jan 12",
+            "6,40",
+            "100",
+            " Fri, Mar 21",
+            "8,23",
+            "8,2",
+            " Thu, Sep 17",
+            "2,71",
+            "538,0",
+            "",
+            "7,26",
+            '"N/A"',
+            " Wed, Oct 4",
+            "6,93",
+        ]
+        out = type_score(cells)
+        exp = 10 / 15
+        self.assertAlmostEqual(exp, out)
+
+    def test_type_score_3(self):
+        # theta_3 from paper
+        cells = [
+            "7,5",
+            " Mon, Jan 12",
+            "6,40",
+            "100",
+            " Fri, Mar 21",
+            "8,23",
+            "8,2",
+            " Thu, Sep 17",
+            "2,71",
+            "538,0",
+            "",
+            "7,26",
+            'N/A',
+            " Wed, Oct 4",
+            "6,93",
+        ]
+        out = type_score(cells)
+        exp = 11 / 15
+        self.assertAlmostEqual(exp, out)
+
 
 
 if __name__ == "__main__":
