@@ -193,7 +193,7 @@ class TypeDetector(object):
         return self._run_regex(cell, "unicode_alphanum")
 
     def is_date(self, cell):
-        if self.is_numberr(cell):
+        if self.is_number(cell):
             return False
 
         for patname in self.patterns:
