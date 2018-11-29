@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Our CSV parser.
+Unit tests for the CSV parser.
 
 Author: Gertjan van den Burg
 
