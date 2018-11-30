@@ -12,7 +12,7 @@ import functools
 
 
 @functools.total_ordering
-class Dialect(object):
+class SimpleDialect(object):
     """
     The simplified dialect object.
     """
