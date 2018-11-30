@@ -13,8 +13,8 @@ from .detect_type import type_score
 from .break_ties import tie_breaker
 
 
-def detect_dialect_consistency(data):
-    dialects = get_dialects(data)
+def detect_dialect_consistency(data, delimiters=None):
+    dialects = get_dialects(data, delimiters=delimiters)
     Qmax = -float("inf")
 
     H = set()
@@ -27,6 +27,7 @@ def detect_dialect_consistency(data):
         Q = P * T
         if Q > Qmax:
             H = set([dialect])
+            Qmax = Q
         elif Q == Qmax:
             H.add(dialect)
 

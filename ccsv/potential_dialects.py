@@ -17,7 +17,7 @@ from .escape import is_potential_escapechar
 from .utils import pairwise
 
 
-def get_dialects(data, encoding):
+def get_dialects(data, encoding="UTF-8", delimiters=None):
     """
     Return the possible dialects for the given data.
 
@@ -34,7 +34,7 @@ def get_dialects(data, encoding):
 
     """
     no_url = filter_urls(data)
-    delims = get_delimiters(no_url, encoding)
+    delims = get_delimiters(no_url, encoding, delimiters=delimiters)
     quotechars = get_quotechars(no_url)
     escapechars = {}
 
@@ -69,14 +69,18 @@ def filter_urls(data):
     return regex.sub(pat, "U", data, count=0)
 
 
-def get_delimiters(data, encoding):
+def get_delimiters(data, encoding, delimiters=None):
     D = set()
     C = ["Lu", "Ll", "Lt", "Lm", "Lo", "Nd", "Nl", "No", "Ps", "Pe", "Cc", "Co"]
     B = [".", "/", '"', "'"]
     for x in set(data):
         c = unicode_category(x, encoding=encoding)
-        if x == "\t" or ((x not in B) and (c not in C)):
-            D.add(x)
+        if delimiters is None:
+            if x == "\t" or ((x not in B) and (c not in C)):
+                D.add(x)
+        else:
+            if x in delimiters:
+                D.add(x)
     D.add("")
     return D
 

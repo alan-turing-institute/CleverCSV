@@ -28,7 +28,7 @@ DELIMS = [",", ";", "|", "\t"]
 QUOTECHARS = ["'", '"']
 
 
-def detect_normal_form(data, encoding):
+def detect_dialect_normal(data, encoding="UTF-8", delimiters=None):
     """ Detect the normal form of a file from a given sample
 
     Parameters
@@ -47,20 +47,22 @@ def detect_normal_form(data, encoding):
         The dialect detected using normal forms, or None if no such dialect can 
         be found.
     """
-    for delim, quotechar in itertools.product(DELIMS, QUOTECHARS):
+    if delimiters is None:
+        delimiters = DELIMS
+    for delim, quotechar in itertools.product(delimiters, QUOTECHARS):
         if maybe_has_escapechar(data, encoding, delim, quotechar):
             return None
 
     form_and_dialect = []
 
-    for delim, quotechar in itertools.product(DELIMS, QUOTECHARS):
+    for delim, quotechar in itertools.product(delimiters, QUOTECHARS):
         dialect = SimpleDialect(
             delimiter=delim, quotechar=quotechar, escapechar=""
         )
         form_and_dialect.append(is_form_1, dialect)
         form_and_dialect.append(is_form_3, dialect)
         form_and_dialect.append(is_form_5, dialect)
-    for delim in DELIMS:
+    for delim in delimiters:
         dialect = SimpleDialect(delimiter=delim, quotechar="", escapechar="")
         form_and_dialect.append(is_form_2, dialect)
     for quotechar in QUOTECHARS:
