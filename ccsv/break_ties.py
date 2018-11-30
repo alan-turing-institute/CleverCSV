@@ -12,6 +12,26 @@ from .utils import pairwise
 
 
 def tie_breaker(data, dialects):
+    """
+    Break ties between dialects.
+
+    This function is used to break ties where possible between two, three, or 
+    four dialects that receive the same value for the data consistency measure.
+
+    Parameters
+    ----------
+    data: str
+        The data as a single string
+    dialects: list
+        Dialects that are tied
+
+    Returns
+    -------
+    dialect: SimpleDialect
+        One of the dialects from the list provided or None.
+
+
+    """
     if len(dialects) == 2:
         return break_ties_two(data, dialects[0], dialects[1])
     elif len(dialects) == 3:
@@ -99,8 +119,15 @@ def break_ties_two(data, A, B):
 
 
 def break_ties_three(data, A, B, C):
-    # NOTE: We have only observed one tie for each case during development, so
-    # this may need to be improved in the future.
+    """
+    Break ties between three dialects.
+
+    Notes
+    -----
+    We have only observed one tie for each case during development, so
+    this may need to be improved in the future.
+
+    """
     equal_delim = A.delimiter == B.delimiter == C.delimiter
     equal_escape = A.escapechar == B.escapechar == C.escapechar
 
@@ -153,9 +180,16 @@ def break_ties_three(data, A, B, C):
 
 
 def break_ties_four(data, dialects):
-    # NOTE: We have only observed one case during development where this
-    # function was needed. It may need to be revisited in the future if other
-    # examples are found.
+    """
+    Break ties between four dialects.
+
+    Notes
+    -----
+    We have only observed one case during development where this
+    function was needed. It may need to be revisited in the future if other
+    examples are found.
+
+    """
 
     equal_delim = len(set([d.delimiter for d in dialects])) == 1
     if not equal_delim:
