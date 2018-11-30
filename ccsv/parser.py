@@ -9,7 +9,7 @@ Author: Gertjan van den Burg
 
 
 def parse_file(
-    S, dialect=None, delimiter=None, quotechar=None, escapechar=None
+    data, dialect=None, delimiter=None, quotechar=None, escapechar=None
 ):
     """
     Parse a CSV file given as a string by ``data`` into a list of lists.
@@ -40,22 +40,21 @@ def parse_file(
 
     in_quotes = False
     in_escape = False
-    rows = []
     i = 0
     row = []
     field = ""
     end_row = False
     end_field = False
     s = None
-    while i < len(S):
-        s = S[i]
+    while i < len(data):
+        s = data[i]
         if s == quotechar:
             if in_escape:
                 in_escape = False
             elif not in_quotes:
                 in_quotes = True
             else:
-                if i + 1 < len(S) and S[i + 1] == quotechar:
+                if i + 1 < len(data) and data[i + 1] == quotechar:
                     i += 1
                 else:
                     in_quotes = False
@@ -96,7 +95,7 @@ def parse_file(
             end_field = False
 
         if end_row:
-            rows.append(row)
+            yield row
             row = []
             end_row = False
 
@@ -110,6 +109,5 @@ def parse_file(
         s = ""
     if not s in ["\r", "\n", None]:
         row.append(field)
-        rows.append(row)
+        yield row
 
-    return rows
