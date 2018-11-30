@@ -13,6 +13,27 @@ DEFAULT_EPS_PAT = 1e-3
 
 
 def pattern_score(data, dialect, eps=DEFAULT_EPS_PAT):
+    """
+    Compute the pattern score for given data and a dialect.
+
+    partof: #SPC-detect-cons.pattern
+
+
+    Parameters
+    ----------
+
+    data : string
+        The data of the file as a raw character string
+
+    dialect: dialect.Dialect
+        The dialect object
+
+    Returns
+    -------
+    score : float
+        the pattern score
+
+    """
     A = make_abstraction(data, dialect)
     row_patterns = collections.Counter(A.split("R"))
     P = 0
