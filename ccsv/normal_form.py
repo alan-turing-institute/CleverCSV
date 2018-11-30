@@ -218,7 +218,6 @@ def form_escape_wrapper(form_func):
 
 def is_form_1(data, dialect=None):
     # All cells quoted, no empty cells, no nested quotes, more than one column
-    is_form_1.ID = 1
 
     rows = split_file(data)
 
@@ -250,10 +249,8 @@ def is_form_1(data, dialect=None):
     return True
 
 
-@form_escape_wrapper
-def is_form_2(data, encoding, delim, quotechar):
+def is_form_2(data, dialect):
     # Nothing quoted, no empty
-    is_form_2.ID = 2
 
     rows = split_file(data)
 
@@ -292,7 +289,6 @@ def is_form_2(data, encoding, delim, quotechar):
 @form_escape_wrapper
 def is_form_3(data, encoding, delim, quotechar):
     # all unquoted, at least one empty delimiter-filled row
-    is_form_3.ID = 3
 
     rows = split_file(data)
 
@@ -336,7 +332,6 @@ def is_form_4(data, encoding, delim, quotechar):
     # all unquoted, except the ones with the delimiter in the cell, no empty
     # cells. Must have at least one quoted with delimiter in cell.
     # No quoted rows
-    is_form_4.ID = 4
 
     rows = split_file(data)
 
@@ -383,7 +378,6 @@ def is_form_4(data, encoding, delim, quotechar):
 @form_escape_wrapper
 def is_form_5(data, encoding, delim, quotechar):
     # Anthony Bowden's files.
-    is_form_5.ID = 5
     if data.startswith(";Originally developed by Anthony Bowden"):
         return (True, None)
     if '"' in data:
@@ -400,7 +394,6 @@ def is_form_5(data, encoding, delim, quotechar):
 @form_escape_wrapper
 def is_form_6(data, encoding, delim, quotechar):
     # No quotes, no delim, single column
-    is_form_6.ID = 6
     rows = split_file(data)
 
     if not more_than_one_row(rows):
@@ -422,7 +415,6 @@ def is_form_6(data, encoding, delim, quotechar):
 def is_form_7(data, encoding, delim, quotechar):
     # all rows quoted, no nested quotes
     # basically form 2 but with quotes around each row
-    is_form_7.ID = 7
 
     rows = split_file(data)
 
@@ -445,7 +437,6 @@ def is_form_7(data, encoding, delim, quotechar):
 @form_escape_wrapper
 def is_form_8(data, encoding, delim, quotechar):
     # some quoted, some not quoted, no empty, no nested quotes
-    is_form_8.ID = 8
 
     # Form 4 and this one shouldn't overlap
     if is_form_4(data, encoding, delim, quotechar)[0]:
@@ -488,7 +479,6 @@ def is_form_8(data, encoding, delim, quotechar):
 def is_form_9(data, encoding, delim, quotechar):
     # Single column, each cell quoted
     # basically form_7 + form_6
-    is_form_9.ID = 9
 
     rows = split_file(data)
 
@@ -509,7 +499,6 @@ def is_form_9(data, encoding, delim, quotechar):
 @form_escape_wrapper
 def is_form_10(data, encoding, delim, quotechar):
     # All cells quoted, quoted empty allowed, no nested quotes
-    is_form_10.ID = 10
 
     rows = split_file(data)
 
@@ -551,7 +540,6 @@ def is_form_10(data, encoding, delim, quotechar):
 @form_escape_wrapper
 def is_form_11(data, encoding, delim, quotechar):
     # All unquoted, at most 1 empty per row, at least 1 empty per file
-    is_form_11.ID = 11
 
     rows = split_file(data)
 
