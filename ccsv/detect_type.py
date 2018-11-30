@@ -9,6 +9,8 @@ Author: Gertjan van den Burg
 
 import regex
 
+from .parser import parse_data
+
 DEFAULT_EPS_TYPE = 1e-10
 
 # Used this site: https://unicode-search.net/unicode-namesearch.pl
@@ -294,17 +296,18 @@ def gen_known_type(cells):
         yield td.is_known_type(cell)
 
 
-def type_score(cells, eps=DEFAULT_EPS_TYPE):
+def type_score(data, dialect, eps=DEFAULT_EPS_TYPE):
     """
     Compute the type score as the ratio of cells with a known type.
-
-    partof: #SPC-detect-cons.types
 
     Parameters
     ----------
 
-    cells: iterable
-        the cells from the file as a single iterable
+    data: str
+        the data as a single string
+
+    dialect: SimpleDialect
+        the dialect to use
 
     eps: float
         the minimum value of the type score
@@ -312,9 +315,11 @@ def type_score(cells, eps=DEFAULT_EPS_TYPE):
     """
     total = 0
     known = 0
-    for is_known in gen_known_type(cells):
-        total += 1
-        known += is_known
+    td = TypeDetector()
+    for row in parse_data(data, dialect):
+        for cell in row:
+            total += 1
+            known += td.is_known_type(cell)
     if total == 0:
         return eps
     return max(eps, known / total)

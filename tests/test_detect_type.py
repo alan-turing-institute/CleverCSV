@@ -9,6 +9,7 @@ Author: Gertjan van den Burg
 
 import unittest
 
+from ccsv.dialect import SimpleDialect
 from ccsv.detect_type import TypeDetector, type_score
 
 
@@ -99,74 +100,47 @@ class TypeDetectorTestCase(unittest.TestCase):
     def test_type_score_1(self):
         # theta_1 from paper
         cells = [
-            "7",
-            "5; Mon",
-            " Jan 12;6",
-            "40",
-            "100; Fri",
-            " Mar 21;8",
-            "23",
-            "8",
-            "2; Thu",
-            " Sep 17; 2",
-            "71",
-            "538",
-            "0;;7",
-            "26",
-            '"NA"; Wed',
-            " Oct 4;6",
-            "93",
+            ["7", "5; Mon", " Jan 12;6", "40"],
+            ["100; Fri", " Mar 21;8", "23"],
+            ["8", "2; Thu", " Sep 17; 2", "71"],
+            ["538", "0;;7", "26"],
+            ['"NA"; Wed', " Oct 4;6", "93"],
         ]
-        out = type_score(cells)
+        data = "\n".join([",".join(x) for x in cells])
+        dialect = SimpleDialect(delimiter=",", quotechar="", escapechar="")
+        out = type_score(data, dialect)
         exp = 8 / 17
         self.assertAlmostEqual(exp, out)
 
     def test_type_score_2(self):
         # theta_2 from paper
         cells = [
-            "7,5",
-            " Mon, Jan 12",
-            "6,40",
-            "100",
-            " Fri, Mar 21",
-            "8,23",
-            "8,2",
-            " Thu, Sep 17",
-            "2,71",
-            "538,0",
-            "",
-            "7,26",
-            '"N/A"',
-            " Wed, Oct 4",
-            "6,93",
+            ["7,5", " Mon, Jan 12", "6,40"],
+            ["100", " Fri, Mar 21", "8,23"],
+            ["8,2", " Thu, Sep 17", "2,71"],
+            ["538,0", "", "7,26"],
+            ['"N/A"', " Wed, Oct 4", "6,93"],
         ]
-        out = type_score(cells)
+        data = "\n".join([";".join(x) for x in cells])
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        out = type_score(data, dialect)
         exp = 10 / 15
         self.assertAlmostEqual(exp, out)
 
     def test_type_score_3(self):
         # theta_3 from paper
         cells = [
-            "7,5",
-            " Mon, Jan 12",
-            "6,40",
-            "100",
-            " Fri, Mar 21",
-            "8,23",
-            "8,2",
-            " Thu, Sep 17",
-            "2,71",
-            "538,0",
-            "",
-            "7,26",
-            'N/A',
-            " Wed, Oct 4",
-            "6,93",
+            ["7,5", " Mon, Jan 12", "6,40"],
+            ["100", " Fri, Mar 21", "8,23"],
+            ["8,2", " Thu, Sep 17", "2,71"],
+            ["538,0", "", "7,26"],
+            ["N/A", " Wed, Oct 4", "6,93"],
         ]
-        out = type_score(cells)
+        data = "\n".join([";".join(x) for x in cells])
+        dialect = SimpleDialect(delimiter=";", quotechar='"', escapechar="")
+        out = type_score(data, dialect)
         exp = 11 / 15
         self.assertAlmostEqual(exp, out)
-
 
 
 if __name__ == "__main__":
