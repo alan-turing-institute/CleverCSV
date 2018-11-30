@@ -297,6 +297,18 @@ def gen_known_type(cells):
 def type_score(cells, eps=DEFAULT_EPS_TYPE):
     """
     Compute the type score as the ratio of cells with a known type.
+
+    partof: #SPC-detect-cons.types
+
+    Parameters
+    ----------
+
+    cells: iterable
+        the cells from the file as a single iterable
+
+    eps: float
+        the minimum value of the type score
+
     """
     total = 0
     known = 0
