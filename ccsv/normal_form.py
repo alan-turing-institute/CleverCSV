@@ -59,19 +59,19 @@ def detect_dialect_normal(data, encoding="UTF-8", delimiters=None):
         dialect = SimpleDialect(
             delimiter=delim, quotechar=quotechar, escapechar=""
         )
-        form_and_dialect.append(is_form_1, dialect)
-        form_and_dialect.append(is_form_3, dialect)
-        form_and_dialect.append(is_form_5, dialect)
+        form_and_dialect.append((is_form_1, dialect))
+        form_and_dialect.append((is_form_3, dialect))
+        form_and_dialect.append((is_form_5, dialect))
     for delim in delimiters:
         dialect = SimpleDialect(delimiter=delim, quotechar="", escapechar="")
-        form_and_dialect.append(is_form_2, dialect)
+        form_and_dialect.append((is_form_2, dialect))
     for quotechar in QUOTECHARS:
         dialect = SimpleDialect(
             delimiter="", quotechar=quotechar, escapechar=""
         )
-        form_and_dialect.append(is_form_4, dialect)
+        form_and_dialect.append((is_form_4, dialect))
     form_and_dialect.append(
-        is_form_4, SimpleDialect(delimiter="", quotechar="", escapechar="")
+        (is_form_4, SimpleDialect(delimiter="", quotechar="", escapechar=""))
     )
 
     for form_func, dialect in form_and_dialect:
