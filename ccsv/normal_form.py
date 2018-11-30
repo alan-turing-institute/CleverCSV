@@ -31,6 +31,15 @@ QUOTECHARS = ["'", '"']
 def detect_normal_form(data, encoding):
     """ Detect the normal form of a file from a given sample
 
+    Parameters
+    ----------
+    data : str
+        The data as a single string
+
+    encoding : str
+        The encoding of the data
+
+
     Returns
     -------
 
@@ -38,37 +47,34 @@ def detect_normal_form(data, encoding):
         The dialect detected using normal forms, or None if no such dialect can 
         be found.
     """
-    forms = []
-
     for delim, quotechar in itertools.product(DELIMS, QUOTECHARS):
         if maybe_has_escapechar(data, encoding, delim, quotechar):
             return None
+
+    form_and_dialect = []
 
     for delim, quotechar in itertools.product(DELIMS, QUOTECHARS):
         dialect = SimpleDialect(
             delimiter=delim, quotechar=quotechar, escapechar=""
         )
-        forms.append(Form(is_form_1, dialect))
-        forms.append(Form(is_form_3, dialect))
-        forms.append(Form(is_form_5, dialect))
+        form_and_dialect.append(is_form_1, dialect)
+        form_and_dialect.append(is_form_3, dialect)
+        form_and_dialect.append(is_form_5, dialect)
     for delim in DELIMS:
         dialect = SimpleDialect(delimiter=delim, quotechar="", escapechar="")
-        forms.append(Form(is_form_2, dialect))
-    for form in forms:
-        if form(data, encoding):
-            return form.dialect
+        form_and_dialect.append(is_form_2, dialect)
+    for quotechar in QUOTECHARS:
+        dialect = SimpleDialect(
+            delimiter="", quotechar=quotechar, escapechar=""
+        )
+        form_and_dialect.append(is_form_4, dialect)
+    form_and_dialect.append(
+        is_form_4, SimpleDialect(delimiter="", quotechar="", escapechar="")
+    )
 
-
-class Form(object):
-    def __init__(self, form_func, dialect):
-        self.form_func = form_func
-        self.dialect = dialect
-
-    def __call__(self, data, encoding):
-        return self.form_func(data, self.dialect)
-
-
-### Old stuff below
+    for form_func, dialect in form_and_dialect:
+        if form_func(data, dialect):
+            return dialect
 
 
 def is_quoted_cell(cell, quotechar):
@@ -143,22 +149,11 @@ def is_elementary(cell):
     )
 
 
-def multiple_cell_per_row(rows, dialect):
-    for row in rows:
-        if len(split_row(row, dialect)) == 1:
-            return False
-    return True
-
-
 def even_rows(rows, dialect):
     cells_per_row = set()
     for row in rows:
         cells_per_row.add(len(split_row(row, dialect)))
     return len(cells_per_row) == 1
-
-
-def more_than_one_row(rows):
-    return len(rows) > 1
 
 
 def split_file(data):
@@ -195,15 +190,6 @@ def split_row(row, dialect):
     return cells
 
 
-def form_escape_wrapper(form_func):
-    def wrapped(data, encoding, delim, quotechar):
-        if maybe_has_escapechar(data, encoding, delim, quotechar):
-            return (False, "maybe_escape")
-        return form_func(data, encoding, delim, quotechar)
-
-    return wrapped
-
-
 def is_form_1(data, dialect=None):
     # All cells quoted, quoted empty allowed, no nested quotes, more than one
     # column
@@ -212,13 +198,13 @@ def is_form_1(data, dialect=None):
 
     if not every_row_has_delim(rows, dialect):
         return False
-    if not multiple_cell_per_row(rows, dialect):
-        return False
     if not even_rows(rows, dialect):
         return False
 
     for row in rows:
         cells = split_row(row, dialect)
+        if len(cells) == 1:
+            return False
         for cell in cells:
             # No empty cells
             if is_empty_unquoted(cell):
@@ -242,13 +228,13 @@ def is_form_2(data, dialect):
 
     if not every_row_has_delim(rows, dialect):
         return False
-    if not multiple_cell_per_row(rows, dialect):
-        return False
     if not even_rows(rows, dialect):
         return False
 
     for row in rows:
         cells = split_row(row, dialect)
+        if len(cells) == 1:
+            return False
         for cell in cells:
             # All cells must be unquoted
             if is_any_quoted_cell(cell):
@@ -269,15 +255,15 @@ def is_form_3(data, dialect):
 
     if not every_row_has_delim(rows, dialect):
         return False
-    if not multiple_cell_per_row(rows, dialect):
-        return False
     if not even_rows(rows, dialect):
         return False
-    if not more_than_one_row(rows):
+    if len(rows) <= 1:
         return False
 
     for row in rows:
         cells = split_row(row, dialect)
+        if len(cells) == 1:
+            return False
         for cell in cells:
             if is_any_empty(cell):
                 return False
@@ -294,7 +280,7 @@ def is_form_4(data, dialect):
     # no delim, single column (either entirely quoted or entirely unquoted)
     rows = split_file(data)
 
-    if not more_than_one_row(rows):
+    if len(rows) <= 1:
         return False
 
     unquoted_search = regex.compile(r"[^A-Za-z0-9.\_&\-]").search
@@ -323,7 +309,7 @@ def is_form_5(data, dialect):
 
     if not every_row_has_delim(rows, dialect):
         return False
-    if not more_than_one_row(rows):
+    if len(rows) <= 1:
         return False
 
     for row in rows:
