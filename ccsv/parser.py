@@ -8,7 +8,7 @@ Author: Gertjan van den Burg
 """
 
 
-def parse_file(
+def parse_data(
     data, dialect=None, delimiter=None, quotechar=None, escapechar=None
 ):
     """
