@@ -67,11 +67,12 @@ class SimpleDialect(object):
         return hash(self.__key())
 
     def __eq__(self, other):
-        if not isinstance(other, Dialect):
+        if not isinstance(other, SimpleDialect):
             return False
         return self.__key() == other.__key()
 
     def __lt__(self, other):
-        if not isinstance(other, Dialect):
+        if not isinstance(other, SimpleDialect):
             return -1
         return self.__key() < other.__key()
+
