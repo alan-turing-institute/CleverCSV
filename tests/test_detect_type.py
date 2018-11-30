@@ -9,7 +9,7 @@ Author: Gertjan van den Burg
 
 import unittest
 
-from ccsv.type_detect import TypeDetector, type_score
+from ccsv.detect_type import TypeDetector, type_score
 
 
 class TypeDetectorTestCase(unittest.TestCase):
