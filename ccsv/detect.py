@@ -22,9 +22,15 @@ class Detector(object):
         pass
 
     def sniff(self, sample, delimiters=None):
+        # Compatibility method for Python
+        return self.detect(sample, delimiters)
+
+    def detect(self, sample, delimiters=None):
         dialect = detect_dialect_normal(sample, delimiters=delimiters)
         if not dialect is None:
+            self.method_ = 'normal'
             return dialect
+        self.method_ = 'consistency'
         return detect_dialect_consistency(sample, delimiters=delimiters)
 
     def has_header(self, sample):
