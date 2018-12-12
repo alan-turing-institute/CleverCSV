@@ -1,0 +1,49 @@
+[[package]]
+category = "dev"
+description = "Cross-platform colored terminal text."
+name = "colorama"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "0.4.1"
+
+[[package]]
+category = "dev"
+description = "coloured output for nosetests"
+name = "rednose"
+optional = false
+python-versions = "*"
+version = "1.3.0"
+
+[package.dependencies]
+colorama = "*"
+setuptools = "*"
+termstyle = ">=0.1.7"
+
+[[package]]
+category = "main"
+description = "Alternative regular expression module, to replace re."
+name = "regex"
+optional = false
+python-versions = "*"
+version = "2018.11.22"
+
+[[package]]
+category = "dev"
+description = "console colouring for python"
+name = "termstyle"
+optional = false
+python-versions = "*"
+version = "0.1.11"
+
+[package.dependencies]
+setuptools = "*"
+
+[metadata]
+content-hash = "2cb1ee5190096eeee4e7b1a878d62770744527df62ab712b174c5a54cf8eb8a5"
+python-versions = "^3.7"
+
+[metadata.hashes]
+colorama = ["05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d", "f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"]
+rednose = ["6da77917788be277b70259edc0bb92fc6f28fe268b765b4ea88206cc3543a3e1"]
+regex = ["15b4a185ae9782133f398f8ab7c29612a6e5f34ea9411e4cd36e91e78c347ebe", "3852b76f0b6d7bd98d328d548716c151b79017f2b81347360f26e5db10fb6503", "79a6a60ed1ee3b12eb0e828c01d75e3b743af6616d69add6c2fde1d425a4ba3f", "a2938c290b3be2c7cadafa21de3051f2ed23bfaf88728a1fe5dc552cbfdb0326", "aff7414712c9e6d260609da9c9af3aacebfbc307a4abe3376c7736e2a6c8563f", "d03782f0b0fa34f8f1dbdc94e27cf193b83c6105307a8c10563938c6d85180d9", "db79ac3d81e655dc12d38a865dd6d1b569a28fab4c53749051cd599a6eb7614f", "e803b3646c3f9c47f1f3dc870173c5d79c0fd2fd8e40bf917b97c7b56701baff", "e9660ccca360b6bd79606aab3672562ebb14bce6af6c501107364668543f4bef"]
+termstyle = ["ef74b83698ea014112040cf32b1a093c1ab3d91c4dd18ecc03ec178fd99c9f9f"]
