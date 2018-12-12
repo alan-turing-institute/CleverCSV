@@ -13,7 +13,7 @@ from .detect_type import type_score
 from .break_ties import tie_breaker
 
 
-def detect_dialect_consistency(data, delimiters=None):
+def detect_dialect_consistency(data, delimiters=None, verbose=False):
     dialects = get_dialects(data, delimiters=delimiters)
     Qmax = -float("inf")
 
@@ -30,6 +30,9 @@ def detect_dialect_consistency(data, delimiters=None):
             Qmax = Q
         elif Q == Qmax:
             H.add(dialect)
+
+        if verbose:
+            print("%15r:\tT = %.6f\tP = %.6f\tQ = %.6f" % (dialect, T, P, Q))
 
     if len(H) == 1:
         return H.pop()
