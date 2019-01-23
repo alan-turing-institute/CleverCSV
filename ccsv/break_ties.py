@@ -135,28 +135,31 @@ def break_ties_three(data, A, B, C):
         # difference is *only* in quotechar
         dialects = [A, B, C]
 
-        # TODO: shouldn't hardcode single/double quotes here.
-        # try with type-only on:
-        # github/test_set/files/6367b9c5338b9a035a221cfffd928e92.csv
-        d_none = next((d for d in dialects if d.quotechar == ""), None)
-        d_single = next((d for d in dialects if d.quotechar == "'"), None)
-        d_double = next((d for d in dialects if d.quotechar == '"'), None)
+        pA = parse_data(data, A)
+        pB = parse_data(data, B)
+        pC = parse_data(data, C)
 
-        # Added to fix above todo note, doesn't affect test results.
-        if any((d is None for d in [d_none, d_single, d_double])):
+        if len(pA) != len(pB) or len(pA) != len(pC) or len(pB) != len(pC):
             return None
 
-        r_none = parse_data(data, d_none)
-        r_single = parse_data(data, d_single)
-        r_double = parse_data(data, d_double)
-
-        if len(r_none) != len(r_single) or len(r_none) != len(r_double):
+        p_none, d_none = next(
+            (
+                (p, d)
+                for p, d in zip([pA, pB, pC], dialects)
+                if d.quotechar == ""
+            ),
+            (None, None),
+        )
+        if p_none is None:
             return None
 
-        if r_none == r_single:
-            return break_ties_two(data, d_none, d_double)
-        elif r_none == r_double:
-            return break_ties_two(data, d_none, d_single)
+        rem = [
+            (p, d) for p, d in zip([pA, pB, pC], dialects) if not p == p_none
+        ]
+        if p_none == rem[0][0]:
+            return break_ties_two(data, d_none, rem[0][1])
+        elif p_none == rem[1][0]:
+            return break_ties_two(data, d_none, rem[1][1])
     elif equal_delim:
         # difference is in quotechar *and* escapechar
 
