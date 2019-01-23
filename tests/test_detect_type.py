@@ -81,17 +81,21 @@ class TypeDetectorTestCase(unittest.TestCase):
         self.assertTrue(self.td.is_number("-.707"))
         self.assertTrue(self.td.is_number("50,000.123"))
         self.assertTrue(self.td.is_number("1.000,123"))
+        self.assertTrue(self.td.is_number("37.e88"))
         self.assertFalse(self.td.is_number("0000.213654"))
         self.assertFalse(self.td.is_number("123.465.798"))
         self.assertFalse(self.td.is_number("0.5e0.5"))
         self.assertFalse(self.td.is_number("1,23.45"))
         self.assertFalse(self.td.is_number("12,34.56"))
         self.assertFalse(self.td.is_number("+00003"))
-        self.assertFalse(self.td.is_number("37.e88"))
         self.assertFalse(self.td.is_number("0,132.6"))
         self.assertFalse(self.td.is_number("1,"))
         self.assertFalse(self.td.is_number(""))
         self.assertFalse(self.td.is_number("E14000537"))
+        self.assertFalse(self.td.is_number("0e"))
+        self.assertFalse(self.td.is_number("."))
+        self.assertFalse(self.td.is_number(","))
+        self.assertFalse(self.td.is_number("+E3"))
 
     """
     Type Score tests
