@@ -28,7 +28,9 @@ DELIMS = [",", ";", "|", "\t"]
 QUOTECHARS = ["'", '"']
 
 
-def detect_dialect_normal(data, encoding="UTF-8", delimiters=None):
+def detect_dialect_normal(
+    data, encoding="UTF-8", delimiters=None, verbose=False
+):
     """ Detect the normal form of a file from a given sample
 
     Parameters
@@ -51,6 +53,8 @@ def detect_dialect_normal(data, encoding="UTF-8", delimiters=None):
         delimiters = DELIMS
     for delim, quotechar in itertools.product(delimiters, QUOTECHARS):
         if maybe_has_escapechar(data, encoding, delim, quotechar):
+            if verbose:
+                print("Not normal, has potential escapechar.")
             return None
 
     form_and_dialect = []
@@ -59,24 +63,28 @@ def detect_dialect_normal(data, encoding="UTF-8", delimiters=None):
         dialect = SimpleDialect(
             delimiter=delim, quotechar=quotechar, escapechar=""
         )
-        form_and_dialect.append((is_form_1, dialect))
-        form_and_dialect.append((is_form_3, dialect))
-        form_and_dialect.append((is_form_5, dialect))
+        form_and_dialect.append((1, is_form_1, dialect))
+        form_and_dialect.append((3, is_form_3, dialect))
+        form_and_dialect.append((5, is_form_5, dialect))
     for delim in delimiters:
         dialect = SimpleDialect(delimiter=delim, quotechar="", escapechar="")
-        form_and_dialect.append((is_form_2, dialect))
+        form_and_dialect.append((2, is_form_2, dialect))
     for quotechar in QUOTECHARS:
         dialect = SimpleDialect(
             delimiter="", quotechar=quotechar, escapechar=""
         )
-        form_and_dialect.append((is_form_4, dialect))
+        form_and_dialect.append((4, is_form_4, dialect))
     form_and_dialect.append(
-        (is_form_4, SimpleDialect(delimiter="", quotechar="", escapechar=""))
+        (4, is_form_4, SimpleDialect(delimiter="", quotechar="", escapechar=""))
     )
 
-    for form_func, dialect in form_and_dialect:
+    for ID, form_func, dialect in form_and_dialect:
         if form_func(data, dialect):
+            if verbose:
+                print("Matched normal form %i." % ID)
             return dialect
+    if verbose:
+        print("Didn't match any normal forms.")
 
 
 def is_quoted_cell(cell, quotechar):
