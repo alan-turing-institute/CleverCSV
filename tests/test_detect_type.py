@@ -110,7 +110,7 @@ class TypeDetectorTestCase(unittest.TestCase):
             ["538", "0;;7", "26"],
             ['"NA"; Wed', " Oct 4;6", "93"],
         ]
-        data = "\n".join([",".join(x) for x in cells])
+        data = [",".join(x) for x in cells]
         dialect = SimpleDialect(delimiter=",", quotechar="", escapechar="")
         out = type_score(data, dialect)
         exp = 8 / 17
@@ -125,7 +125,7 @@ class TypeDetectorTestCase(unittest.TestCase):
             ["538,0", "", "7,26"],
             ['"N/A"', " Wed, Oct 4", "6,93"],
         ]
-        data = "\n".join([";".join(x) for x in cells])
+        data = [";".join(x) for x in cells]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         out = type_score(data, dialect)
         exp = 10 / 15
@@ -140,7 +140,7 @@ class TypeDetectorTestCase(unittest.TestCase):
             ["538,0", "", "7,26"],
             ["N/A", " Wed, Oct 4", "6,93"],
         ]
-        data = "\n".join([";".join(x) for x in cells])
+        data = [";".join(x) for x in cells]
         dialect = SimpleDialect(delimiter=";", quotechar='"', escapechar="")
         out = type_score(data, dialect)
         exp = 11 / 15
