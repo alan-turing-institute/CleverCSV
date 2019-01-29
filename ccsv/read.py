@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -11,35 +10,38 @@ Author: Gertjan van den Burg
 import csv
 
 from .dialect import SimpleDialect
-from .parser import parse_data
+from .parser import Parser
 
 
 class reader(object):
     def __init__(self, csvfile, dialect="excel", **fmtparams):
         self.csvfile = csvfile
         self.original_dialect = dialect
+        self.dialect = self._make_simple_dialect(dialect, **fmtparams)
+        self.line_num = 0
+        self.parser_gen = None
 
+    def _make_simple_dialect(self, dialect, **fmtparams):
         if isinstance(dialect, str):
-            self.dialect = get_simple_dialect_from_string(dialect)
+            sd = SimpleDialect.from_csv_dialect(csv.get_dialect(dialect))
         elif isinstance(dialect, csv.Dialect):
-            self.dialect = convert_to_simple(dialect)
-        else:
-            self.dialect = dialect
-
-        update_dialect_with_fmtparams(self.dialect, fmtparams)
+            sd = SimpleDialect.from_csv_dialect(dialect)
+        elif isinstance(dialect, SimpleDialect):
+            sd = dialect
+        for key, value in fmtparams.items():
+            if key in ["delimiter", "quotechar", "escapechar", "strict"]:
+                setattr(sd, key, value)
+        sd.validate()
+        return sd
 
     def __iter__(self):
-        yield from parse_data(self.csvfile, self.dialect)
+        self.parser = Parser(self.dialect)
+        self.parser_gen = self.parser.parse(self.csvfile)
+        return self
 
-
-def get_simple_dialect_from_string(dialect_string):
-    if dialect_string == "excel":
-        return SimpleDialect(delimiter=",", quotechar='"', escapechar="")
-
-
-def convert_to_simple(dialect):
-    pass
-
-
-def update_dialect_with_fmtparams(dialect, fmtparams):
-    pass
+    def __next__(self):
+        if self.parser_gen is None:
+            self.__iter__()
+        row = next(self.parser_gen)
+        self.line_num += 1
+        return row

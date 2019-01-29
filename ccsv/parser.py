@@ -1,113 +1,349 @@
 # -*- coding: utf-8 -*-
 
 """
-Our CSV parser.
+Translation of the Python FSM for reading CSV files, amended version.
+
+This parser automatically takes double quotes into account, and can sensibly 
+deal with quotes that start *inside* a cell.  Quotes are only stripped from 
+cells if they occur at the start and the end of the cell.
 
 Author: Gertjan van den Burg
+Date: 2019-01-23
 
 """
+
+import enum
+import six
+
+from .dialect import SimpleDialect
+from .exceptions import Error
+
+_FIELD_SIZE_LIMIT = 128 * 1024
+
+
+class State(enum.Enum):
+    START_RECORD = 0
+    START_FIELD = 1
+    ESCAPED_CHAR = 2
+    IN_FIELD = 3
+    IN_QUOTED_FIELD = 4
+    ESCAPE_IN_QUOTED_FIELD = 5
+    QUOTE_IN_QUOTED_FIELD = 6
+    EAT_CRNL = 7
+    AFTER_ESCAPED_CRNL = 8
+
+
+def unicode_check(x):
+    if six.PY2:
+        return isinstance(x, unicode) or isinstance(x, str)
+    return isinstance(x, str)
+
+
+def pairwise_none(iterable):
+    it1 = iter(iterable)
+    it2 = iter(iterable)
+    next(it2, None)
+    for s in it1:
+        t = next(it2, None)
+        yield s, t
+
+
+def field_size_limit(*args, **kwargs):
+    global _FIELD_SIZE_LIMIT
+    old_limit = _FIELD_SIZE_LIMIT
+    args = list(args) + list(kwargs.values())
+    if not 0 <= len(args) <= 1:
+        raise TypeError(
+            "field_size_limit expected at most 1 arguments, got %i" % len(args)
+        )
+    if len(args) == 0:
+        return old_limit
+    limit = args[0]
+    if not isinstance(limit, int):
+        raise TypeError("limit must be an integer")
+    _FIELD_SIZE_LIMIT = int(limit)
+    return old_limit
+
+
+class Parser(object):
+    def __init__(self, dialect):
+        self.dialect = dialect
+        self.records = []
+        self.state = None
+
+    def reset(self):
+        self.fields = []
+        self.field = None
+        self.field_len = 0
+        self.state = State.START_RECORD
+
+    def parse(self, data):
+        self.reset()
+        self.input_iter = iter(data)
+
+        while True:
+            fields = self.parse_iternext()
+            if fields is None:
+                break
+            yield fields
+
+    def parse_iternext(self):
+        self.reset()
+        while True:
+            line = next(self.input_iter, None)
+            if line is None:
+                if self.field_len != 0 or self.state == State.IN_QUOTED_FIELD:
+                    if self.dialect.strict:
+                        raise Error("unexpected end of data")
+                    elif self.parse_save_field(trailing=True) >= 0:
+                        break
+                return None
+            if not unicode_check(line):
+                raise Error(
+                    "iterator should return strings, not %.200s "
+                    "(did you open the file in text mode?)"
+                    % type(line).__name__
+                )
+            for u, v in pairwise_none(line):
+                if u == "\0":
+                    raise Error("line contains NULL byte")
+                if self.parse_process_char(u, v) < 0:
+                    return None
+            if self.parse_process_char("\0", None) < 0:
+                return None
+
+            if self.state == State.START_RECORD:
+                break
+
+        return self.fields
+
+    def parse_process_char(self, u, v):
+        if self.state == State.START_RECORD:
+            fallthru, retcode = self._start_record(u)
+            if fallthru:
+                self._start_field(u)
+        elif self.state == State.START_FIELD:
+            retcode = self._start_field(u)
+        elif self.state == State.ESCAPED_CHAR:
+            retcode = self._escaped_char(u)
+        elif self.state == State.AFTER_ESCAPED_CRNL:
+            fallthru, retcode = self._after_escaped_crnl(u)
+            if fallthru:
+                self._in_field(u)
+        elif self.state == State.IN_FIELD:
+            retcode = self._in_field(u)
+        elif self.state == State.IN_QUOTED_FIELD:
+            retcode = self._in_quoted_field(u, v)
+        elif self.state == State.ESCAPE_IN_QUOTED_FIELD:
+            retcode = self._escape_in_quoted_field(u)
+        elif self.state == State.QUOTE_IN_QUOTED_FIELD:
+            retcode = self._quote_in_quoted_field(u)
+        elif self.state == State.EAT_CRNL:
+            retcode = self._eat_crnl(u)
+
+        return retcode
+
+    def parse_add_char(self, u):
+        if self.field_len >= _FIELD_SIZE_LIMIT:
+            raise Error(
+                "field larger than field limit (%d)" % _FIELD_SIZE_LIMIT
+            )
+        if self.field is None:
+            self.field = ""
+        self.field += u
+        self.field_len += 1
+        return 0
+
+    def quote_condition(self, s):
+        """ Check if a string starts and ends with the quote character """
+        if not self.dialect.quotechar:
+            return False
+        if len(s) <= 1:
+            return False
+        return s.startswith(self.dialect.quotechar) and s.endswith(
+            self.dialect.quotechar
+        )
+
+    def parse_save_field(self, trailing=False):
+        if self.field is None:
+            self.field = ""
+        if self.quote_condition(self.field):
+            self.field = self.field[1:-1]
+        if (
+            trailing
+            and self.dialect.quotechar
+            and self.field.startswith(self.dialect.quotechar)
+        ):
+            self.field = self.field[1:]
+        self.fields.append(self.field)
+        # In CPython, characters are added using field_len as index, so
+        # resetting the field is not necessary. We do have to do it though.
+        self.field = None
+        self.field_len = 0
+        return 0
+
+    def _start_record(self, u):
+        # Returns fallthru and return code
+        if u == "\0":
+            return False, 0
+        elif u == "\r" or u == "\n":
+            self.state = State.EAT_CRNL
+            return False, 0
+        self.state = State.START_FIELD
+        return True, 0
+
+    def _start_field(self, u):
+        if u == "\r" or u == "\n" or u == "\0":
+            if self.parse_save_field() < 0:
+                return -1
+            self.state = State.START_RECORD if u == "\0" else State.EAT_CRNL
+        elif u == self.dialect.quotechar:
+            self.parse_add_char(u)
+            self.state = State.IN_QUOTED_FIELD
+        elif u == self.dialect.escapechar:
+            self.state = State.ESCAPED_CHAR
+        elif u == self.dialect.delimiter:
+            if self.parse_save_field() < 0:
+                return -1
+        else:
+            if self.parse_add_char(u) < 0:
+                return -1
+            self.state = State.IN_FIELD
+        return 0
+
+    def _escaped_char(self, u):
+        if u == "\r" or u == "\n":
+            if self.parse_add_char(u) < 0:
+                return -1
+            self.state = State.AFTER_ESCAPED_CRNL
+            return 0
+        # only escape "escapable" characters.
+        if not u in [
+            self.dialect.escapechar,
+            self.dialect.delimiter,
+            self.dialect.quotechar,
+            "\0",
+        ]:
+            if self.parse_add_char(self.dialect.escapechar) < 0:
+                return -1
+        if u == "\0":
+            u = ""
+        if self.parse_add_char(u) < 0:
+            return -1
+        self.state = State.IN_FIELD
+        return 0
+
+    def _after_escaped_crnl(self, u):
+        # Returns fallthru and return code
+        if u == "\0":
+            return False, 0
+        return True, 0
+
+    def _in_field(self, u):
+        if u == "\r" or u == "\n" or u == "\0":
+            # EOL return [fields]
+            if self.parse_save_field() < 0:
+                return -1
+            self.state = State.START_RECORD if u == "\0" else State.EAT_CRNL
+        elif u == self.dialect.escapechar:
+            self.state = State.ESCAPED_CHAR
+        elif u == self.dialect.quotechar:
+            if self.parse_add_char(u) < 0:
+                return -1
+            self.state = State.IN_QUOTED_FIELD
+        elif u == self.dialect.delimiter:
+            if self.parse_save_field() < 0:
+                return -1
+            self.state = State.START_FIELD
+        else:
+            if self.parse_add_char(u) < 0:
+                return -1
+        return 0
+
+    def _in_quoted_field(self, u, v):
+        if u == "\0":
+            pass
+        elif u == self.dialect.escapechar:
+            self.state = State.ESCAPE_IN_QUOTED_FIELD
+        elif u == self.dialect.quotechar:
+            if v == self.dialect.quotechar:
+                self.state = State.QUOTE_IN_QUOTED_FIELD
+            elif self.dialect.strict:
+                raise Error(
+                    "'%c' expected after '%c'"
+                    % (self.dialect.delimiter, self.dialect.quotechar)
+                )
+            else:
+                self.parse_add_char(u)
+                self.state = State.IN_FIELD
+        else:
+            if self.parse_add_char(u) < 0:
+                return -1
+        return 0
+
+    def _escape_in_quoted_field(self, u):
+        # only escape "escapable" characters.
+        if not u in [
+            self.dialect.escapechar,
+            self.dialect.delimiter,
+            self.dialect.quotechar,
+            "\0",
+        ]:
+            if self.parse_add_char(self.dialect.escapechar) < 0:
+                return -1
+        if u == "\0":
+            u = ""
+        if self.parse_add_char(u) < 0:
+            return -1
+        self.state = State.IN_QUOTED_FIELD
+        return 0
+
+    def _quote_in_quoted_field(self, u):
+        if u == self.dialect.quotechar:
+            if self.parse_add_char(u) < 0:
+                return -1
+            self.state = State.IN_QUOTED_FIELD
+        elif u == self.dialect.delimiter:
+            if self.parse_save_field() < 0:
+                return -1
+            self.state = State.START_FIELD
+        elif u == "\r" or u == "\n" or u == "\0":
+            if self.parse_save_field() < 0:
+                return -1
+            self.state = State.START_RECORD if u == "\0" else State.EAT_CRNL
+        elif not self.dialect.strict:
+            if self.parse_add_char(u) < 0:
+                return -1
+            self.state = State.IN_FIELD
+        else:
+            raise Error(
+                "'%c' expected after '%c'"
+                % (self.dialect.delimiter, self.dialect.quotechar)
+            )
+        return 0
+
+    def _eat_crnl(self, u):
+        if u == "\r" or u == "\n":
+            return 0
+        elif u == "\0":
+            self.state = State.START_RECORD
+        else:
+            raise Error("new-line character seen in unquoted field.")
+        return 0
 
 
 def parse_data(
     data, dialect=None, delimiter=None, quotechar=None, escapechar=None
 ):
-    """
-    Parse a CSV file given as a string by ``data`` into a list of lists.
+    if dialect is None:
+        dialect = SimpleDialect("", "", "")
+    if not delimiter is None:
+        dialect.delimiter = delimiter
+    if not quotechar is None:
+        dialect.quotechar = quotechar
+    if not escapechar is None:
+        dialect.escapechar = escapechar
 
-    This function automatically takes double quotes into account, uses 
-    universal newlines, and can deal with quotes that start *inside* a cell.  
-    Quotes are only stripped from cells if they occur at the start and the end 
-    of the cell.
-
-    Notes
-    -----
-
-    (1) We only interpret the escape character if it precedes the provided 
-    delimiter, quotechar, or itself. Otherwise, the escape character does not 
-    serve any purpose, and should not be dropped automatically.
-
-    (2) For some reason the Python test suite places this escape character 
-    *inside* the preceding quoted block. This seems counterintuitive and 
-    incorrect and thus this behavior has not been duplicated.
-
-    """
-    if not dialect is None:
-        delimiter = dialect.delimiter if delimiter is None else delimiter
-        quotechar = dialect.quotechar if quotechar is None else quotechar
-        escapechar = dialect.escapechar if escapechar is None else escapechar
-
-    quote_cond = lambda c, q: q and c.startswith(q) and c.endswith(q)
-
-    in_quotes = False
-    in_escape = False
-    i = 0
-    row = []
-    field = ""
-    end_row = False
-    end_field = False
-    s = None
-    while i < len(data):
-        s = data[i]
-        if s == quotechar:
-            if in_escape:
-                in_escape = False
-            elif not in_quotes:
-                in_quotes = True
-            else:
-                if i + 1 < len(data) and data[i + 1] == quotechar:
-                    i += 1
-                else:
-                    in_quotes = False
-            field += s
-        elif s in ["\r", "\n"]:
-            if in_quotes:
-                field += s
-            elif field == "" and row == []:
-                pass
-            else:
-                end_row = True
-                end_field = True
-        elif s == delimiter:
-            if in_escape:
-                in_escape = False
-                field += s
-            elif in_quotes:
-                field += s
-            else:
-                end_field = True
-        elif s == escapechar:
-            if in_escape:
-                field += s
-                in_escape = False
-            else:
-                in_escape = True
-        else:
-            if in_escape:
-                field += escapechar
-                in_escape = False
-            field += s
-
-        if end_field:
-            if quote_cond(field, quotechar):
-                field = field[1:-1]
-            row.append(field)
-            field = ""
-            end_field = False
-
-        if end_row:
-            yield row
-            row = []
-            end_row = False
-
-        i += 1
-
-    if quote_cond(field, quotechar):
-        field = field[1:-1]
-    elif in_quotes:
-        if field.startswith(quotechar):
-            field = field[1:]
-        s = ""
-    if not s in ["\r", "\n", None]:
-        row.append(field)
+    parser = Parser(dialect)
+    for row in parser.parse(data):
         yield row
-
