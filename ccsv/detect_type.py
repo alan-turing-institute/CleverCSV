@@ -116,7 +116,12 @@ class TypeDetector(object):
         for year in [year2, year4]:
             for month in [month_leading, month_sparse]:
                 for day in [day_leading, day_sparse]:
-                    fmt = {"year": year, "month": month, "day": day, "sep": sep}
+                    fmt = {
+                        "year": year,
+                        "month": month,
+                        "day": day,
+                        "sep": sep,
+                    }
 
                     pat_1 = "{year}{sep}{month}{sep}{day}".format(**fmt)
                     pat_2 = "{day}{sep}{month}{sep}{year}".format(**fmt)
