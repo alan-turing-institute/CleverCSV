@@ -75,7 +75,11 @@ def detect_dialect_normal(
         )
         form_and_dialect.append((4, is_form_4, dialect))
     form_and_dialect.append(
-        (4, is_form_4, SimpleDialect(delimiter="", quotechar="", escapechar=""))
+        (
+            4,
+            is_form_4,
+            SimpleDialect(delimiter="", quotechar="", escapechar=""),
+        )
     )
 
     for ID, form_func, dialect in form_and_dialect:

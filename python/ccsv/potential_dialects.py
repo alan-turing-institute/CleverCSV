@@ -75,7 +75,20 @@ def filter_urls(data):
 
 def get_delimiters(data, encoding, delimiters=None):
     D = set()
-    C = ["Lu", "Ll", "Lt", "Lm", "Lo", "Nd", "Nl", "No", "Ps", "Pe", "Cc", "Co"]
+    C = [
+        "Lu",
+        "Ll",
+        "Lt",
+        "Lm",
+        "Lo",
+        "Nd",
+        "Nl",
+        "No",
+        "Ps",
+        "Pe",
+        "Cc",
+        "Co",
+    ]
     B = [".", "/", '"', "'"]
     for x in set(data):
         c = unicode_category(x, encoding=encoding)
