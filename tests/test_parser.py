@@ -220,6 +220,11 @@ class ParserTestCase(unittest.TestCase):
             'a,"a""b""c"', [["a", 'a"b"c']], delimiter=",", quotechar='"'
         )
 
+    def test_parse_dq_2(self):
+        self._parse_test(
+            'a,"a""b,c""d",e', [['a', 'a"b,c"d', 'e']], delimiter=',', 
+            quotechar='"')
+
     """
     Mix double and escapechar:
     """
