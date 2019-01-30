@@ -95,8 +95,8 @@ class Parser(object):
                 if self.field_len != 0 or self.state == State.IN_QUOTED_FIELD:
                     if self.dialect.strict:
                         raise Error("unexpected end of data")
-                    elif self.parse_save_field(trailing=True) >= 0:
-                        break
+                    self.parse_save_field(trailing=True)
+                    break
                 return None
             if not unicode_check(line):
                 raise Error(
@@ -107,11 +107,8 @@ class Parser(object):
             for u, v in pairwise_none(line):
                 if u == "\0":
                     raise Error("line contains NULL byte")
-                if self.parse_process_char(u, v) < 0:
-                    return None
-            if self.parse_process_char("\0", None) < 0:
-                return None
-
+                self.parse_process_char(u, v)
+            self.parse_process_char("\0", None)
             if self.state == State.START_RECORD:
                 break
 
@@ -194,8 +191,7 @@ class Parser(object):
 
     def _start_field(self, u):
         if u == "\r" or u == "\n" or u == "\0":
-            if self.parse_save_field() < 0:
-                return -1
+            self.parse_save_field()
             self.state = State.START_RECORD if u == "\0" else State.EAT_CRNL
         elif u == self.dialect.quotechar:
             self.parse_add_char(u)
@@ -203,18 +199,15 @@ class Parser(object):
         elif u == self.dialect.escapechar:
             self.state = State.ESCAPED_CHAR
         elif u == self.dialect.delimiter:
-            if self.parse_save_field() < 0:
-                return -1
+            self.parse_save_field()
         else:
-            if self.parse_add_char(u) < 0:
-                return -1
+            self.parse_add_char(u)
             self.state = State.IN_FIELD
         return 0
 
     def _escaped_char(self, u):
         if u == "\r" or u == "\n":
-            if self.parse_add_char(u) < 0:
-                return -1
+            self.parse_add_char(u)
             self.state = State.AFTER_ESCAPED_CRNL
             return 0
         # only escape "escapable" characters.
@@ -224,12 +217,10 @@ class Parser(object):
             self.dialect.quotechar,
             "\0",
         ]:
-            if self.parse_add_char(self.dialect.escapechar) < 0:
-                return -1
+            self.parse_add_char(self.dialect.escapechar)
         if u == "\0":
             u = ""
-        if self.parse_add_char(u) < 0:
-            return -1
+        self.parse_add_char(u)
         self.state = State.IN_FIELD
         return 0
 
@@ -242,22 +233,18 @@ class Parser(object):
     def _in_field(self, u):
         if u == "\r" or u == "\n" or u == "\0":
             # EOL return [fields]
-            if self.parse_save_field() < 0:
-                return -1
+            self.parse_save_field()
             self.state = State.START_RECORD if u == "\0" else State.EAT_CRNL
         elif u == self.dialect.escapechar:
             self.state = State.ESCAPED_CHAR
         elif u == self.dialect.quotechar:
-            if self.parse_add_char(u) < 0:
-                return -1
+            self.parse_add_char(u)
             self.state = State.IN_QUOTED_FIELD
         elif u == self.dialect.delimiter:
-            if self.parse_save_field() < 0:
-                return -1
+            self.parse_save_field()
             self.state = State.START_FIELD
         else:
-            if self.parse_add_char(u) < 0:
-                return -1
+            self.parse_add_char(u)
         return 0
 
     def _in_quoted_field(self, u, v):
@@ -277,8 +264,7 @@ class Parser(object):
                 self.parse_add_char(u)
                 self.state = State.IN_FIELD
         else:
-            if self.parse_add_char(u) < 0:
-                return -1
+            self.parse_add_char(u)
         return 0
 
     def _escape_in_quoted_field(self, u):
@@ -289,31 +275,25 @@ class Parser(object):
             self.dialect.quotechar,
             "\0",
         ]:
-            if self.parse_add_char(self.dialect.escapechar) < 0:
-                return -1
+            self.parse_add_char(self.dialect.escapechar)
         if u == "\0":
             u = ""
-        if self.parse_add_char(u) < 0:
-            return -1
+        self.parse_add_char(u)
         self.state = State.IN_QUOTED_FIELD
         return 0
 
     def _quote_in_quoted_field(self, u):
         if u == self.dialect.quotechar:
-            if self.parse_add_char(u) < 0:
-                return -1
+            self.parse_add_char(u)
             self.state = State.IN_QUOTED_FIELD
         elif u == self.dialect.delimiter:
-            if self.parse_save_field() < 0:
-                return -1
+            self.parse_save_field()
             self.state = State.START_FIELD
         elif u == "\r" or u == "\n" or u == "\0":
-            if self.parse_save_field() < 0:
-                return -1
+            self.parse_save_field()
             self.state = State.START_RECORD if u == "\0" else State.EAT_CRNL
         elif not self.dialect.strict:
-            if self.parse_add_char(u) < 0:
-                return -1
+            self.parse_add_char(u)
             self.state = State.IN_FIELD
         else:
             raise Error(
