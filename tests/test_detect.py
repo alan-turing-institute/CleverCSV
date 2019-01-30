@@ -57,21 +57,47 @@ Shark City+ Glendale Heights+ IL+ 12/28/02+ Prezence
 Tommy's Place+ Blue Island+ IL+ 12/28/02+ Blue Sunday/White Crow
 Stonecutters Seafood and Chop House+ Lemont+ IL+ 12/19/02+ Week Back
 """
+    # adapted to be not broken
     sample9 = """\
-'Harry''s'+ Arlington Heights'+ 'IL'+ '2/1/03'+ 'Kimi Hayes'
-'Shark City'+ Glendale Heights'+' IL'+ '12/28/02'+ 'Prezence'
-'Tommy''s Place'+ Blue Island'+ 'IL'+ '12/28/02'+ 'Blue Sunday/White Crow'
+'Harry''s'+ 'Arlington Heights'+ 'IL'+ '2/1/03'+ 'Kimi Hayes'
+'Shark City'+ 'Glendale Heights'+' IL'+ '12/28/02'+ 'Prezence'
+'Tommy''s Place'+ 'Blue Island'+ 'IL'+ '12/28/02'+ 'Blue Sunday/White Crow'
 'Stonecutters ''Seafood'' and Chop House'+ 'Lemont'+ 'IL'+ '12/19/02'+ 'Week Back'
 """
 
     def test_detect(self):
+        # Adapted from CPython
         detector = Detector()
-        dialect = detector.sniff(self.sample1)
+        dialect = detector.detect(self.sample1)
         self.assertEqual(dialect.delimiter, ",")
         self.assertEqual(dialect.quotechar, "")
         self.assertEqual(dialect.escapechar, "")
 
-        dialect = detector.sniff(self.sample2)
+        dialect = detector.detect(self.sample2)
         self.assertEqual(dialect.delimiter, ":")
         self.assertEqual(dialect.quotechar, "'")
         self.assertEqual(dialect.escapechar, "")
+
+    def test_delimiters(self):
+        # Adapted from CPython
+        detector = Detector()
+        dialect = detector.detect(self.sample3)
+        self.assertIn(dialect.delimiter, self.sample3)
+        dialect = detector.detect(self.sample3, delimiters="?,")
+        self.assertEqual(dialect.delimiter, "?")
+        dialect = detector.detect(self.sample3, delimiters="/,")
+        self.assertEqual(dialect.delimiter, "/")
+        dialect = detector.detect(self.sample4)
+        self.assertEqual(dialect.delimiter, ";")
+        dialect = detector.detect(self.sample5)
+        self.assertEqual(dialect.delimiter, "\t")
+        dialect = detector.detect(self.sample6)
+        self.assertEqual(dialect.delimiter, "|")
+        dialect = detector.detect(self.sample7)
+        self.assertEqual(dialect.delimiter, "|")
+        self.assertEqual(dialect.quotechar, "'")
+        dialect = detector.detect(self.sample8)
+        self.assertEqual(dialect.delimiter, "+")
+        dialect = detector.detect(self.sample9)
+        self.assertEqual(dialect.delimiter, "+")
+        self.assertEqual(dialect.quotechar, "'")
