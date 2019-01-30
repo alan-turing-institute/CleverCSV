@@ -10,7 +10,6 @@ Author: Gertjan van den Burg
 
 import unittest
 
-from ccsv.dialect import SimpleDialect
 from ccsv.detect import Detector
 
 

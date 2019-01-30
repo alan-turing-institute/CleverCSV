@@ -8,6 +8,7 @@ Author: Gertjan van den Burg
 
 """
 
+import csv
 import functools
 
 
@@ -57,6 +58,15 @@ class SimpleDialect(object):
         quotechar = "" if d.quotechar is None else d.quotechar
         escapechar = "" if d.escapechar is None else d.escapechar
         return cls(delimiter, quotechar, escapechar, strict=d.strict)
+
+    def to_csv_dialect(self):
+        class dialect(csv.Dialect):
+            delimiter = self.delimiter
+            quotechar = self.quotechar
+            escapechar = self.escapechar
+            doublequote = True
+            quoting = csv.QUOTE_MINIMAL
+        return dialect
 
     def to_dict(self):
         self.validate()
