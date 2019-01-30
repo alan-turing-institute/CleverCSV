@@ -7,6 +7,8 @@ Author: Gertjan van den Burg
 
 """
 
+from __future__ import division
+
 import collections
 
 DEFAULT_EPS_PAT = 1e-3

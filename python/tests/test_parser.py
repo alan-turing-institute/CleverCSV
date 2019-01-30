@@ -8,6 +8,7 @@ Author: Gertjan van den Burg
 """
 
 import io
+import six
 import unittest
 
 from ccsv.parser import parse_data
@@ -20,7 +21,10 @@ class ParserTestCase(unittest.TestCase):
     """
 
     def _parse_test(self, string, expect, **kwargs):
-        buf = io.StringIO(string, newline="")
+        if six.PY2:
+            buf = io.StringIO(string.decode("ascii"), newline="")
+        else:
+            buf = io.StringIO(string, newline="")
         result = list(parse_data(buf, **kwargs))
         self.assertEqual(result, expect)
 

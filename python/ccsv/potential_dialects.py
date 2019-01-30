@@ -10,6 +10,7 @@ Author: Gertjan van den Burg
 import codecs
 import itertools
 import regex
+import six
 import unicodedata
 
 from .dialect import SimpleDialect
@@ -60,7 +61,10 @@ def get_dialects(data, encoding="UTF-8", delimiters=None):
 
 
 def unicode_category(x, encoding=None):
-    as_unicode = codecs.decode(bytes(x, encoding), encoding=encoding)
+    if six.PY2:
+        as_unicode = codecs.decode(x.encode(encoding), encoding)
+    else:
+        as_unicode = codecs.decode(bytes(x, encoding), encoding=encoding)
     return unicodedata.category(as_unicode)
 
 

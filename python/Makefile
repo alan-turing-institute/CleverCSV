@@ -33,7 +33,7 @@ test: in ## Run nosetests using the default nosetests command
 
 test2: ## Run nosetests using the nosetests2 command
 	python2 setup.py build_ext -i
-	nosetests2 -v
+	nosetests2 --rednose
 
 cover: test ## Test unit test coverage using default nosetests
 	nosetests --with-coverage --cover-package=$(PACKAGE) \

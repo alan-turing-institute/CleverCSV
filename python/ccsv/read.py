@@ -45,3 +45,7 @@ class reader(object):
         row = next(self.parser_gen)
         self.line_num += 1
         return row
+
+    def next(self):
+        # for python 2
+        return self.__next__()
