@@ -43,6 +43,8 @@ cover: test ## Test unit test coverage using default nosetests
 clean: ## Clean build dist and egg directories left after install
 	rm -rf ./dist ./build ./$(PACKAGE).egg-info
 	rm -f MANIFEST
+	find . -type f -iname '*.pyc' -delete
+	find . -type d -name '__pycache__' -empty -delete
 
 develop: ## Install a development version of the package needed for testing
 	python setup.py develop --user
