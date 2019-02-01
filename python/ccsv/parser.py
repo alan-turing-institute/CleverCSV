@@ -13,6 +13,7 @@ Date: 2019-01-23
 """
 
 import enum
+import io
 import six
 
 from .dialect import SimpleDialect
@@ -329,3 +330,8 @@ def parse_data(
     parser = Parser(dialect)
     for row in parser.parse(data):
         yield row
+
+
+def parse_string(data, *args, **kwargs):
+    """ Utility for when the CSV file is encoded as a single string """
+    return parse_data(io.StringIO(data, newline=""), *args, **kwargs)

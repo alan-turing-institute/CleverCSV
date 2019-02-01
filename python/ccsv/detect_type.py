@@ -10,7 +10,7 @@ Author: Gertjan van den Burg
 import regex
 import six
 
-from .parser import parse_data
+from .parser import parse_string
 
 if six.PY2:
     _chr = unichr
@@ -325,7 +325,7 @@ def type_score(data, dialect, eps=DEFAULT_EPS_TYPE):
     total = 0
     known = 0
     td = TypeDetector()
-    for row in parse_data(data, dialect):
+    for row in parse_string(data, dialect):
         for cell in row:
             total += 1
             known += td.is_known_type(cell)
