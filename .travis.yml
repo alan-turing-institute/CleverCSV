@@ -5,8 +5,8 @@ python:
 install:
   - pip install --upgrade pip
   - pip install poetry
-  - pushd python && poetry install || popd
+  - cd python && poetry install && cd ..
 
 script:
-  - pushd python && python setup.py develop nosetests || popd
+  - cd python && python setup.py develop nosetests && cd ..
 
