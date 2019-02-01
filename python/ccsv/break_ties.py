@@ -7,7 +7,7 @@ Author: Gertjan van den Burg
 
 """
 
-from .parser import parse_data
+from .parser import parse_string
 from .utils import pairwise
 
 
@@ -51,8 +51,8 @@ def break_ties_two(data, A, B):
             d_no = A if A.quotechar == "" else B
             d_yes = B if d_no == A else A
 
-            X = parse_data(data, dialect=d_no)
-            Y = parse_data(data, dialect=d_yes)
+            X = list(parse_string(data, dialect=d_no))
+            Y = list(parse_string(data, dialect=d_yes))
 
             if X == Y:
                 # quotechar has no effect
@@ -76,8 +76,8 @@ def break_ties_two(data, A, B):
     elif A.delimiter == B.delimiter and A.quotechar == B.quotechar:
         Dnone, Descape = (A, B) if A.escapechar == "" else (B, A)
 
-        X = parse_data(data, Dnone)
-        Y = parse_data(data, Descape)
+        X = list(parse_string(data, Dnone))
+        Y = list(parse_string(data, Descape))
 
         # double check shape. Usually if the shape differs the pattern score
         # should have caught it, but if by a freakish occurance it hasn't then
@@ -135,9 +135,9 @@ def break_ties_three(data, A, B, C):
         # difference is *only* in quotechar
         dialects = [A, B, C]
 
-        pA = parse_data(data, A)
-        pB = parse_data(data, B)
-        pC = parse_data(data, C)
+        pA = list(parse_string(data, A))
+        pB = list(parse_string(data, B))
+        pC = list(parse_string(data, C))
 
         if len(pA) != len(pB) or len(pA) != len(pC) or len(pB) != len(pC):
             return None
@@ -201,8 +201,8 @@ def break_ties_four(data, dialects):
     # First, identify dialects that result in the same parsing result.
     equal_dialects = []
     for a, b in pairwise(dialects):
-        X = parse_data(data, a)
-        Y = parse_data(data, b)
+        X = list(parse_string(data, a))
+        Y = list(parse_string(data, b))
         if X == Y:
             equal_dialects.append((a, b))
 
