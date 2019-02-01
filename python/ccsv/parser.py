@@ -146,8 +146,8 @@ class Parser(object):
                 "field larger than field limit (%d)" % _FIELD_SIZE_LIMIT
             )
         if self.field is None:
-            self.field = ""
-        self.field += u
+            self.field = []
+        self.field.append(u)
         self.field_len += 1
         return 0
 
@@ -163,16 +163,18 @@ class Parser(object):
 
     def parse_save_field(self, trailing=False):
         if self.field is None:
-            self.field = ""
-        if self.quote_condition(self.field):
-            self.field = self.field[1:-1]
+            field = ''
+        else:
+            field = ''.join(self.field)
+        if self.quote_condition(field):
+            field = field[1:-1]
         if (
             trailing
             and self.dialect.quotechar
-            and self.field.startswith(self.dialect.quotechar)
+            and field.startswith(self.dialect.quotechar)
         ):
-            self.field = self.field[1:]
-        self.fields.append(self.field)
+            field = field[1:]
+        self.fields.append(field)
         # In CPython, characters are added using field_len as index, so
         # resetting the field is not necessary. We do have to do it though.
         self.field = None
