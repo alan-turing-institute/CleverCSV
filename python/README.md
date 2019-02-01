@@ -1,5 +1,7 @@
 # Clever CSV
 
+[![Build Status](https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master)](https://travis-ci.org/alan-turing-institute/CleverCSV)
+
 A clever CSV parser.
 
 The goal of this package is to provide a drop-in replacement for the Python 
