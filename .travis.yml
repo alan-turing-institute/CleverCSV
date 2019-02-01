@@ -8,5 +8,5 @@ install:
   - cd python && poetry install
 
 script:
-  - cd python && python setup.py develop test
+  - cd python && python setup.py develop nosetests
 
