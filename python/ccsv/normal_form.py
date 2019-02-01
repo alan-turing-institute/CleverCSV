@@ -59,6 +59,10 @@ def detect_dialect_normal(
 
     form_and_dialect = []
 
+    for delim in delimiters:
+        dialect = SimpleDialect(delimiter=delim, quotechar="", escapechar="")
+        form_and_dialect.append((2, is_form_2, dialect))
+
     for delim, quotechar in itertools.product(delimiters, QUOTECHARS):
         dialect = SimpleDialect(
             delimiter=delim, quotechar=quotechar, escapechar=""
@@ -66,9 +70,6 @@ def detect_dialect_normal(
         form_and_dialect.append((1, is_form_1, dialect))
         form_and_dialect.append((3, is_form_3, dialect))
         form_and_dialect.append((5, is_form_5, dialect))
-    for delim in delimiters:
-        dialect = SimpleDialect(delimiter=delim, quotechar="", escapechar="")
-        form_and_dialect.append((2, is_form_2, dialect))
     for quotechar in QUOTECHARS:
         dialect = SimpleDialect(
             delimiter="", quotechar=quotechar, escapechar=""
@@ -282,11 +283,19 @@ def is_form_3(data, dialect):
             if is_any_empty(cell):
                 return False
 
-            if is_quoted_cell(cell, dialect.quotechar):
-                pass
-            elif not is_any_quoted_cell(cell):
-                if not is_elementary(cell):
+            # if it is quoted
+            if is_any_quoted_cell(cell):
+                # but not quoted with the quotechar of the dialect
+                if not is_quoted_cell(cell, dialect.quotechar):
+                    # then this form isn't right
                     return False
+            # if it's not quoted
+            else:
+                # and it's not elementary
+                if not is_elementary(cell):
+                    # then this form isn't right
+                    return False
+
     return True
 
 

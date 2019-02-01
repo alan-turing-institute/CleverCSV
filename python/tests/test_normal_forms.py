@@ -50,13 +50,18 @@ class NormalFormTestCase(unittest.TestCase):
         self.assertFalse(is_form_2('a,"",3\n1,2,3', dialect))
 
     def test_form_3(self):
-        dialect = SimpleDialect(delimiter=",", quotechar='"', escapechar="")
+        A = SimpleDialect(delimiter=',', quotechar="'", escapechar="")
+        Q = SimpleDialect(delimiter=",", quotechar='"', escapechar="")
 
-        self.assertTrue(is_form_3('A,B\nC,"D"', dialect))
-        self.assertTrue(is_form_3('A,B\nC,"d,e"', dialect))
+        self.assertTrue(is_form_3('A,B\nC,"D"', Q))
+        self.assertTrue(is_form_3('A,B\nC,"d,e"', Q))
 
-        self.assertFalse(is_form_3('A,\nC,"d,e"', dialect))
-        self.assertFalse(is_form_3("3;4,B\nC,D", dialect))
+        self.assertFalse(is_form_3('A,\nC,"d,e"', Q))
+        self.assertFalse(is_form_3("3;4,B\nC,D", Q))
+
+        self.assertFalse(is_form_3("A,B\n\"C\",D\n", A))
+        self.assertTrue(is_form_3("A,B\n\"C\",D\n", Q))
+
 
     def test_form_4(self):
         quoted = SimpleDialect(delimiter="", quotechar='"', escapechar="")
