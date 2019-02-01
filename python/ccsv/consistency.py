@@ -16,6 +16,8 @@ from .parser import field_size_limit
 
 def detect_dialect_consistency(data, delimiters=None, verbose=False):
     dialects = get_dialects(data, delimiters=delimiters)
+    if verbose:
+        print("Considering %i dialects." % len(dialects))
     Qmax = -float("inf")
 
     H = set()
@@ -25,6 +27,11 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
     for dialect in sorted(dialects):
         P = pattern_score(data, dialect)
         if P < Qmax:
+            if verbose:
+                print(
+                    "%15r:\tT = %15.6f\tP = %15.6f\tQ = %15.6f"
+                    % (dialect, float("nan"), P, float("nan"))
+                )
             continue
         T = type_score(data, dialect)
         Q = P * T
@@ -35,7 +42,10 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
             H.add(dialect)
 
         if verbose:
-            print("%15r:\tT = %.6f\tP = %.6f\tQ = %.6f" % (dialect, T, P, Q))
+            print(
+                "%15r:\tT = %15.6f\tP = %15.6f\tQ = %15.6f"
+                % (dialect, T, P, Q)
+            )
 
     if len(H) == 1:
         result = H.pop()

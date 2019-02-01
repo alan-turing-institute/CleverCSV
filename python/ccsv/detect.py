@@ -27,7 +27,7 @@ class Detector(object):
 
     def detect(self, sample, delimiters=None, verbose=False):
         if verbose:
-            print("Trying normal form detection ...")
+            print("Running normal form detection ...")
         dialect = detect_dialect_normal(
             sample, delimiters=delimiters, verbose=verbose
         )
@@ -36,7 +36,7 @@ class Detector(object):
             return dialect
         self.method_ = "consistency"
         if verbose:
-            print("Trying data consistency measure ...")
+            print("Running data consistency measure ...")
         return detect_dialect_consistency(
             sample, delimiters=delimiters, verbose=verbose
         )
