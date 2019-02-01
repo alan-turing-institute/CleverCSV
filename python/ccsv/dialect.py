@@ -66,6 +66,7 @@ class SimpleDialect(object):
             escapechar = self.escapechar
             doublequote = True
             quoting = csv.QUOTE_MINIMAL
+
         return dialect
 
     def to_dict(self):
@@ -98,5 +99,13 @@ class SimpleDialect(object):
 
     def __lt__(self, other):
         if not isinstance(other, SimpleDialect):
-            return -1
+            return False
+        if self.delimiter == "," and not other.delimiter == ",":
+            return True
+        elif other.delimiter == "," and not self.delimiter == ",":
+            return False
+        if self.delimiter == ";" and not other.delimiter == ";":
+            return True
+        elif other.delimiter == ";" and not self.delimiter == ";":
+            return False
         return self.__key() < other.__key()
