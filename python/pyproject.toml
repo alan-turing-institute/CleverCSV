@@ -13,6 +13,7 @@ nose = "^1.3"
 
 [tool.poetry.dev-dependencies]
 rednose = "^1.3"
+parameterized = "^0.6.3"
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -4,8 +4,7 @@
 Integration tests for dialect detection.
 
 This module generates the test cases based on the available annotated CSV 
-files. See https://stackoverflow.com/a/20870875/1154005 for the metaclass 
-approach that we use here.
+files. See https://stackoverflow.com/q/32939 for more info.
 
 Author: G.J.J. van den Burg
 
@@ -16,7 +15,8 @@ import os
 import unittest
 import warnings
 import json
-import six
+
+from parameterized import parameterized
 
 THIS_DIR = os.path.dirname(__file__)
 SOURCE_DIR = os.path.join(THIS_DIR, "data")
@@ -46,32 +46,16 @@ def load_test_cases():
     return cases
 
 
-class TestDetectorMeta(type):
-    def __new__(mcs, name, bases, dict_):
-        def generate_test(filename, true_dialect):
-            def test(self):
-                det = ccsv.Detector()
-                with open(filename, "r", newline="") as fid:
-                    dialect = det.detect(fid.read())
-                self.assertIsNotNone(det)
-                self.assertEqual(dialect.delimiter, true_dialect["delimiter"])
-                self.assertEqual(dialect.quotechar, true_dialect["quotechar"])
-                self.assertEqual(
-                    dialect.escapechar, true_dialect["escapechar"]
-                )
-
-            return test
-
-        cases = load_test_cases()
-        fmt = "%%0%id" % (len(str(len(cases))))
-        for num, (name, filename, dialect) in enumerate(cases):
-            test_name = "test_dialect_%s_%s" % (fmt % num, name)
-            dict_[test_name] = generate_test(filename, dialect)
-        return type.__new__(mcs, name, bases, dict_)
-
-
-class TestDetector(six.with_metaclass(TestDetectorMeta, unittest.TestCase)):
-    pass
+class TestDetector(unittest.TestCase):
+    @parameterized.expand(load_test_cases)
+    def test_dialect(self, name, filename, true_dialect):
+        det = ccsv.Detector()
+        with open(filename, "r", newline="") as fid:
+            dialect = det.detect(fid.read())
+        self.assertIsNotNone(dialect)
+        self.assertEqual(dialect.delimiter, true_dialect["delimiter"])
+        self.assertEqual(dialect.quotechar, true_dialect["quotechar"])
+        self.assertEqual(dialect.escapechar, true_dialect["escapechar"])
 
 
 if __name__ == "__main__":
