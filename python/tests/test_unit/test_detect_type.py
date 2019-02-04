@@ -96,6 +96,8 @@ class TypeDetectorTestCase(unittest.TestCase):
         self.assertFalse(self.td.is_number("."))
         self.assertFalse(self.td.is_number(","))
         self.assertFalse(self.td.is_number("+E3"))
+        self.assertTrue(self.td.is_number("1."))
+        self.assertFalse(self.td.is_number("1,"))
 
     """
     Type Score tests
