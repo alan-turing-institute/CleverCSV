@@ -29,11 +29,17 @@ install2: ## Install for the current user using the python2 command
 	python2 setup.py install --user
 
 test: in ## Run nosetests using the default nosetests command
-	nosetests --rednose
+	nosetests --rednose ./tests/test_unit/
 
 test2: ## Run nosetests using the nosetests2 command
 	python2 setup.py build_ext -i
-	nosetests2 --rednose
+	nosetests2 --rednose ./tests/test_unit/
+
+integration: in ## Run integration tests with nose
+	nosetests --rednose ./tests/test_integration/
+
+integration2: in ## Run integration tests with nose (py2)
+	nosetests2 --rednose ./tests/test_integration/
 
 cover: test ## Test unit test coverage using default nosetests
 	nosetests --with-coverage --cover-package=$(PACKAGE) \
