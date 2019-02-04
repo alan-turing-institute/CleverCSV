@@ -100,3 +100,6 @@ Stonecutters Seafood and Chop House+ Lemont+ IL+ 12/19/02+ Week Back
         dialect = detector.detect(self.sample9)
         self.assertEqual(dialect.delimiter, "+")
         self.assertEqual(dialect.quotechar, "'")
+
+if __name__ == '__main__':
+    unittest.main()

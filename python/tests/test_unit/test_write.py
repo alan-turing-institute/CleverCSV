@@ -91,3 +91,6 @@ class WriterTestCase(unittest.TestCase):
             "a,1,|p,q|",
             dialect=SimpleDialect(delimiter=",", quotechar="|", escapechar=""),
         )
+
+if __name__ == '__main__':
+    unittest.main()

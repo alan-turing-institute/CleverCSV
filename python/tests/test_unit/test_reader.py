@@ -164,3 +164,6 @@ class ReaderTestCase(unittest.TestCase):
            delimiter="",
            quotechar='"',
         )
+
+if __name__ == '__main__':
+    unittest.main()

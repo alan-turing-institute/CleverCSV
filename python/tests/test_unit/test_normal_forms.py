@@ -89,3 +89,6 @@ class NormalFormTestCase(unittest.TestCase):
         self.assertFalse(is_form_5("A,B\n1,2\n3,4", dialect))
         self.assertFalse(is_form_5("A,B\n1,\n2,3", dialect))
         self.assertFalse(is_form_5('"A,""B"""\n"1,"\n"2,3"', dialect))
+
+if __name__ == '__main__':
+    unittest.main()
