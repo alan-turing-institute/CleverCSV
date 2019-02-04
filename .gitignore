@@ -1,4 +1,10 @@
 python/*/__pycache__/
 python/*.pyc
+python/build/
 python/cover/*
 python/tests/test_integration/data
+python/tests/test_integration/__pycache__/
+python/tests/test_unit/__pycache__/
+python/.coverage
+python/ccsv.egg-info/
+python/ccsv/.coverage
