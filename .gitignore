@@ -1,6 +1,4 @@
 python/*/__pycache__/
 python/*.pyc
 python/cover/*
-evaluation/github/files/
-evaluation/github/licenses/
-evaluation/github/dialects
+python/tests/test_integration/data
