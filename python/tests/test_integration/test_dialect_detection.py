@@ -50,7 +50,8 @@ class TestDetector(unittest.TestCase):
     @parameterized.expand(load_test_cases)
     def test_dialect(self, name, filename, true_dialect):
         det = ccsv.Detector()
-        with open(filename, "r", newline="") as fid:
+        enc = ccsv.utils.get_encoding(filename)
+        with open(filename, "r", newline="", encoding=enc) as fid:
             dialect = det.detect(fid.read())
         self.assertIsNotNone(dialect)
         self.assertEqual(dialect.delimiter, true_dialect["delimiter"])

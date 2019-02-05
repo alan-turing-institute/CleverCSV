@@ -1,4 +1,12 @@
 [[package]]
+category = "main"
+description = "Universal encoding detector for Python 2 and 3"
+name = "chardet"
+optional = false
+python-versions = "*"
+version = "3.0.4"
+
+[[package]]
 category = "dev"
 description = "Cross-platform colored terminal text."
 name = "colorama"
@@ -63,10 +71,11 @@ version = "0.1.11"
 setuptools = "*"
 
 [metadata]
-content-hash = "72b22e1c6fa5788fe24eff2f2ed5047c3e89399e0dfba1f0c79dcd45d3abed60"
+content-hash = "e5cea77c2ce9cbd3236d8f9c560f9de422938a7002068d2602cf119354b57408"
 python-versions = "^3.6"
 
 [metadata.hashes]
+chardet = ["84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae", "fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"]
 colorama = ["05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d", "f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"]
 nose = ["9ff7c6cc443f8c51994b34a667bbcf45afd6d945be7477b52e97516fd17c53ac", "dadcddc0aefbf99eea214e0f1232b94f2fa9bd98fa8353711dacb112bfcbbb2a", "f1bffef9cbc82628f6e7d7b40d7e255aefaa1adb6a1b1d26c69a8b79e6208a98"]
 parameterized = ["938a66ba54f74671aeebf7ecf48e9da006c0e9b0e9502accef27e39a18f956c2", "e0cfe0cd293d9466aa0dd75cb0ca71f5a613bfa2c572652560c602a1e23ee0da"]
