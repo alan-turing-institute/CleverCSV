@@ -36,7 +36,7 @@ test2: ## Run nosetests using the nosetests2 command
 	nosetests2 --rednose ./tests/test_unit/
 
 integration: in ## Run integration tests with nose
-	nosetests --rednose ./tests/test_integration/
+	nosetests --rednose -v ./tests/test_integration/
 
 integration2: in ## Run integration tests with nose (py2)
 	nosetests2 --rednose ./tests/test_integration/
