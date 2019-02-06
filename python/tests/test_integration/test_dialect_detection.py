@@ -42,15 +42,19 @@ def load_test_cases():
             continue
         if annotation["status"] == "skip":
             continue
-        cases.append((base, filename, annotation["dialect"]))
+        cases.append((base, filename, annotation))
     return cases
 
 
 class TestDetector(unittest.TestCase):
     @parameterized.expand(load_test_cases)
-    def test_dialect(self, name, filename, true_dialect):
+    def test_dialect(self, name, filename, annotation):
         det = ccsv.Detector()
-        enc = ccsv.utils.get_encoding(filename)
+        if "encoding" in annotation:
+            enc = annotation["encoding"]
+        else:
+            enc = ccsv.utils.get_encoding(filename)
+        true_dialect = annotation["dialect"]
         with open(filename, "r", newline="", encoding=enc) as fid:
             dialect = det.detect(fid.read())
         self.assertIsNotNone(dialect)
