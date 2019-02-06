@@ -10,37 +10,36 @@ Author: Gertjan van den Burg
 import argparse
 import ccsv
 import sys
+import tabview
 
 
 def exception(msg):
     print("ERROR: " + msg, file=sys.stderr)
     raise SystemExit(1)
 
-def standardize(reader, output):
+def standardize(filename, dialect, output, encoding=None):
     if output is None:
         oid = sys.stdout
     else:
         oid = open(output, 'w')
-    writer = ccsv.writer(oid, dialect="excel")
-    for row in reader:
-        writer.writerow(row)
+    with open(filename, 'r', newline='', encoding=encoding) as fid:
+        reader = ccsv.reader(fid, dialect=dialect)
+        writer = ccsv.writer(oid, dialect="excel")
+        for row in reader:
+            writer.writerow(row)
     if not output is None:
         oid.close()
 
+def view(filename, dialect, encoding=None):
+    with open(filename, 'r', newline='', encoding=encoding) as fid:
+        reader = ccsv.reader(fid, dialect=dialect)
+        data = list(reader)
+    tabview.view(data)
+
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-s",
-        "--standardize",
-        help="Standardize a given CSV file",
-        action="store_true",
-    )
-    parser.add_argument(
-        "-j",
-        "--json-lines",
-        help="Convert a CSV file to JSON lines format",
-        action="store_true",
-    )
+    parser.add_argument('action', choices=['standardize', 'view', 'detect'], 
+            default='detect')
     parser.add_argument(
         "-i",
         "--interactive",
@@ -64,22 +63,19 @@ def parse_args():
 
 def main():
     args = parse_args()
-    if args.standardize and args.json_lines:
-        exception(
-            "Standardize and JSON-lines options are mutually exclusive. Please pick one."
-        )
-
     enc = ccsv.utils.get_encoding(args.input)
-    with open(args.input, "r", newline="", encoding=enc) as fid:
+
+    with open(args.input, 'r', newline='', encoding=enc) as fid:
         dialect = ccsv.Detector().detect(fid.read(), verbose=args.verbose)
-        fid.seek(0)
-        reader = ccsv.reader(fid, dialect)
 
-        if args.standardize:
-            standardize(reader, args.output)
-        elif args.json_line:
-            raise NotImplementedError
-
+    if args.action == "detect":
+        print("Detected dialect:", dialect)
+    elif args.action == "standardize":
+        standardize(args.input, dialect, args.output, encoding=enc)
+    elif args.action == "view":
+        view(args.input, dialect, encoding=enc)
+    else:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
