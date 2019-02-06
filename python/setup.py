@@ -14,4 +14,5 @@ setuptools.setup(
     url="https://github.com/CleverCSV/ccsv",
     packages=setuptools.find_packages(),
     classifiers=["Programming Language :: Python :: 3"],
+    scripts=['bin/clevercsv']
 )
