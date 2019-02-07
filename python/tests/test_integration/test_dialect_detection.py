@@ -15,13 +15,19 @@ import os
 import unittest
 import warnings
 import json
+import nose
 
 from parameterized import parameterized
+from logresults import LogResults
 
-THIS_DIR = os.path.dirname(__file__)
+THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 SOURCE_DIR = os.path.join(THIS_DIR, "data")
 TEST_FILES = os.path.join(SOURCE_DIR, "files")
 TEST_DIALECTS = os.path.join(SOURCE_DIR, "dialects")
+
+LOG_SUCCESS = os.path.join(THIS_DIR, "success.log")
+LOG_ERROR = os.path.join(THIS_DIR, "error.log")
+LOG_FAILED = os.path.join(THIS_DIR, "failed.log")
 
 
 def load_test_cases():
@@ -64,4 +70,4 @@ class TestDetector(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    nose.main(addplugins=[LogResults(LOG_SUCCESS, LOG_ERROR, LOG_FAILED)])

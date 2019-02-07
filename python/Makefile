@@ -36,10 +36,14 @@ test2: ## Run nosetests using the nosetests2 command
 	nosetests2 --rednose ./tests/test_unit/
 
 integration: in ## Run integration tests with nose
-	nosetests --rednose -v ./tests/test_integration/
+	python ./tests/test_integration/test_dialect_detection.py \
+		--with-logresults --rednose -v \
+		-w ./tests/test_integration/
 
 integration2: in ## Run integration tests with nose (py2)
-	nosetests2 --rednose ./tests/test_integration/
+	python2 ./tests/test_integration/test_dialect_detection.py \
+		--with-logresults --rednose -v \
+		-w ./tests/test_integration/
 
 cover: test ## Test unit test coverage using default nosetests
 	nosetests --with-coverage --cover-package=$(PACKAGE) \
