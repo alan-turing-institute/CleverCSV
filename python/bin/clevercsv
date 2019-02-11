@@ -45,6 +45,12 @@ def parse_args():
         "action", choices=["standardize", "view", "detect"], default="detect"
     )
     parser.add_argument(
+        "-e",
+        "--encoding",
+        help="provide encoding for the file (detected otherwise)",
+        default=None,
+    )
+    parser.add_argument(
         "-i",
         "--interactive",
         help="allow user interaction",
@@ -67,7 +73,10 @@ def parse_args():
 
 def main():
     args = parse_args()
-    enc = ccsv.utils.get_encoding(args.input)
+    if args.encoding is None:
+        enc = ccsv.utils.get_encoding(args.input)
+    else:
+        enc = args.encoding
 
     with open(args.input, "r", newline="", encoding=enc) as fid:
         dialect = ccsv.Detector().detect(fid.read(), verbose=args.verbose)
