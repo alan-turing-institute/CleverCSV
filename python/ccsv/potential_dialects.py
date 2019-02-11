@@ -86,10 +86,9 @@ def get_delimiters(data, encoding, delimiters=None):
         "No",
         "Ps",
         "Pe",
-        "Cc",
         "Co",
     ]
-    B = [".", "/", '"', "'"]
+    B = [".", "/", '"', "'", "\n", "\r"]
     for x in set(data):
         c = unicode_category(x, encoding=encoding)
         if delimiters is None:
