@@ -27,6 +27,7 @@ def read_as_dataframe(filename, dialect=None, verbose=False):
     return pd.DataFrame.from_records(rows)
 
 
+
 def read_as_dicts(filename, dialect=None, verbose=False):
     enc = get_encoding(filename)
     with open(filename, "r", newline="", encoding=enc) as fid:

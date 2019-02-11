@@ -18,9 +18,6 @@ def pattern_score(data, dialect, eps=DEFAULT_EPS_PAT):
     """
     Compute the pattern score for given data and a dialect.
 
-    partof: #SPC-detect-cons.pattern
-
-
     Parameters
     ----------
 
