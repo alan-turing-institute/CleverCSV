@@ -35,12 +35,12 @@ test2: ## Run nosetests using the nosetests2 command
 	python2 setup.py build_ext -i
 	nosetests2 --rednose ./tests/test_unit/
 
-integration: in ## Run integration tests with nose
+integration: install ## Run integration tests with nose
 	python ./tests/test_integration/test_dialect_detection.py \
 		--with-logresults --rednose -v \
 		-w ./tests/test_integration/
 
-integration2: in ## Run integration tests with nose (py2)
+integration2: install2 ## Run integration tests with nose (py2)
 	python2 ./tests/test_integration/test_dialect_detection.py \
 		--with-logresults --rednose -v \
 		-w ./tests/test_integration/
