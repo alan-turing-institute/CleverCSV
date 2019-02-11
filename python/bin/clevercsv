@@ -17,12 +17,13 @@ def exception(msg):
     print("ERROR: " + msg, file=sys.stderr)
     raise SystemExit(1)
 
+
 def standardize(filename, dialect, output, encoding=None):
     if output is None:
         oid = sys.stdout
     else:
-        oid = open(output, 'w')
-    with open(filename, 'r', newline='', encoding=encoding) as fid:
+        oid = open(output, "w")
+    with open(filename, "r", newline="", encoding=encoding) as fid:
         reader = ccsv.reader(fid, dialect=dialect)
         writer = ccsv.writer(oid, dialect="excel")
         for row in reader:
@@ -30,16 +31,19 @@ def standardize(filename, dialect, output, encoding=None):
     if not output is None:
         oid.close()
 
+
 def view(filename, dialect, encoding=None):
-    with open(filename, 'r', newline='', encoding=encoding) as fid:
+    with open(filename, "r", newline="", encoding=encoding) as fid:
         reader = ccsv.reader(fid, dialect=dialect)
         data = list(reader)
     tabview.view(data)
 
+
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', choices=['standardize', 'view', 'detect'], 
-            default='detect')
+    parser.add_argument(
+        "action", choices=["standardize", "view", "detect"], default="detect"
+    )
     parser.add_argument(
         "-i",
         "--interactive",
@@ -50,7 +54,7 @@ def parse_args():
         "-o",
         "--output",
         help="output file, if omitted print to stdout",
-        default=None
+        default=None,
     )
     parser.add_argument(
         "-v", "--verbose", help="be verbose", action="store_true"
@@ -65,7 +69,7 @@ def main():
     args = parse_args()
     enc = ccsv.utils.get_encoding(args.input)
 
-    with open(args.input, 'r', newline='', encoding=enc) as fid:
+    with open(args.input, "r", newline="", encoding=enc) as fid:
         dialect = ccsv.Detector().detect(fid.read(), verbose=args.verbose)
 
     if args.action == "detect":
