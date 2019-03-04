@@ -92,69 +92,15 @@ PATTERNS = {
     "time_hmm": "([0-9]|1[0-9]|2[0-3]):([0-5][0-9])",
     "currency": "\p{Sc}\s?(.*)",
     "unix_path": "[\/~]{1,2}(?:[a-zA-Z0-9\.]+(?:[\/]{1,2}))+(?:[a-zA-Z0-9\.]+)",
+    "date": "((0[1-9]|1[0-2])((0[1-9]|[12]\d|3[01])([12]\d{3}|\d{2})|[-\/. ]0?([1-9]|[12]\d|3[01])[-\/. ]([12]\d{3}|\d{2}))|(0[1-9]|[12]\d|3[01])((0[1-9]|1[0-2])([12]\d{3}|\d{2})|[-\/. ]0?([1-9]|1[0-2])[-\/. ]([12]\d{3}|\d{2}))|([12]\d{3}|\d{2})([-\/. ]0?([1-9]|1[0-2])[-\/. ]0?([1-9]|[12]\d|3[01])|年0?([1-9]|1[0-2])月0?([1-9]|[12]\d|3[01])日|년0?([1-9]|1[0-2])월0?([1-9]|[12]\d|3[01])일|(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01]))|(([1-9]|1[0-2])[-\/. ]0?([1-9]|[12]\d|3[01])|([1-9]|[12]\d|3[01])[-\/. ]0?([1-9]|1[0-2]))[-\/. ]([12]\d{3}|\d{2}))",
 }
 
 
 class TypeDetector(object):
     def __init__(self, strip_whitespace=True):
-        self.patterns = PATTERNS
+        self.patterns = PATTERNS.copy()
         self.strip_whitespace = strip_whitespace
-
-        self._init_date_patterns()
         self._compile_regexes()
-
-    def _init_date_patterns(self):
-        """
-        Generate the date regular expressions.
-        """
-        year2 = "(?:\d{2})"
-        year4 = "(?:[12]\d{3})"
-
-        month_leading = "(?:0[1-9]|1[0-2])"
-        month_sparse = "(?:[1-9]|1[0-2])"
-
-        day_leading = "(?:0[1-9]|[12]\d|3[01])"
-        day_sparse = "(?:[1-9]|[12]\d|3[01])"
-
-        sep = "[-/\.\ ]"
-
-        counter = 0
-        for year in [year2, year4]:
-            for month in [month_leading, month_sparse]:
-                for day in [day_leading, day_sparse]:
-                    fmt = {
-                        "year": year,
-                        "month": month,
-                        "day": day,
-                        "sep": sep,
-                    }
-
-                    pat_1 = "{year}{sep}{month}{sep}{day}".format(**fmt)
-                    pat_2 = "{day}{sep}{month}{sep}{year}".format(**fmt)
-                    pat_3 = "{month}{sep}{day}{sep}{year}".format(**fmt)
-
-                    pat_cn = "{year}年{month}月{day}日".format(**fmt)
-                    pat_ko = "{year}년{month}월{day}일".format(**fmt)
-
-                    for pattern in [pat_1, pat_2, pat_3, pat_cn, pat_ko]:
-                        self.patterns["date_%i" % counter] = pattern
-                        counter += 1
-
-        # These should be allowed as dates, but are also numbers.
-        for year in [year2, year4]:
-            fmt = {
-                "year": year,
-                "month": month_leading,
-                "day": day_leading,
-                "sep": "",
-            }
-            pat_1 = "{year}{sep}{month}{sep}{day}".format(**fmt)
-            pat_2 = "{day}{sep}{month}{sep}{year}".format(**fmt)
-            pat_3 = "{month}{sep}{day}{sep}{year}".format(**fmt)
-
-            for pattern in [pat_1, pat_2, pat_3, pat_cn]:
-                self.patterns["date_%i" % counter] = pattern
-                counter += 1
 
     def _compile_regexes(self):
         for key, value in self.patterns.items():
@@ -207,13 +153,17 @@ class TypeDetector(object):
 
     def is_date(self, cell):
         # This function assumes the cell is not a number.
-        for patname in self.patterns:
-            if patname.startswith("date_"):
-                if self._run_regex(cell, patname):
-                    return True
-        return False
+        if not cell:
+            return False
+        if not cell[0].isdigit():
+            return False
+        return self._run_regex(cell, "date")
 
     def is_time(self, cell):
+        if not cell:
+            return False
+        if not cell[0].isdigit():
+            return False
         return (
             self._run_regex(cell, "time_hmm")
             or self._run_regex(cell, "time_hhmm")
@@ -244,6 +194,10 @@ class TypeDetector(object):
 
     def is_datetime(self, cell):
         # Takes care of cells with '[date] [time]' and '[date]T[time]' (iso)
+        if not cell:
+            return False
+        if not cell[0].isdigit():
+            return False
         if " " in cell:
             parts = cell.split(" ")
             if len(parts) > 2:
