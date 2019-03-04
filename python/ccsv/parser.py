@@ -257,6 +257,7 @@ class Parser(object):
             self.state = State.ESCAPE_IN_QUOTED_FIELD
         elif u == self.dialect.quotechar:
             if v == self.dialect.quotechar:
+                self.dialect.doublequote = True
                 self.state = State.QUOTE_IN_QUOTED_FIELD
             elif self.dialect.strict:
                 raise Error(
