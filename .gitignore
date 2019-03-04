@@ -8,3 +8,4 @@ python/tests/test_unit/__pycache__/
 python/.coverage
 python/ccsv.egg-info/
 python/ccsv/.coverage
+python/ccsv/*.so
