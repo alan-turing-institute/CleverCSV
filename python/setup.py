@@ -1,9 +1,13 @@
-import setuptools
 
-with open("README.md", "r") as fid:
+import os
+from setuptools import setup, find_packages
+from distutils.extension import Extension
+
+thisdir = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(thisdir, "README.md"), "r") as fid:
     long_description = fid.read()
 
-setuptools.setup(
+setup(
     name="ccsv",
     version="0.0.1",
     author="Gertjan van den Burg",
@@ -12,9 +16,9 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/CleverCSV/ccsv",
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     classifiers=["Programming Language :: Python :: 3"],
-    scripts=['bin/clevercsv']
+    scripts=["bin/clevercsv"],
     ext_modules=[
         Extension(
             "ccsv.cparser",
