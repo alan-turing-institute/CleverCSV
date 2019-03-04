@@ -11,6 +11,8 @@ from __future__ import division
 
 import collections
 
+from .cabstraction import base_abstraction
+
 DEFAULT_EPS_PAT = 1e-3
 
 
@@ -48,50 +50,12 @@ def make_abstraction(data, dialect):
     Create an abstract representation of the CSV file based on the dialect.
 
     """
-    A = make_base_abstraction(data, dialect)
+    A = base_abstraction(data, dialect.delimiter, dialect.quotechar, 
+            dialect.escapechar)
     A = merge_with_quotechar(A, dialect)
     A = fill_empties(A)
     A = strip_trailing(A)
     return A
-
-
-def make_base_abstraction(S, dialect):
-    """
-    Create the basic form of the abstraction of the CSV file. This function 
-    creates a stack and understands quotes, quote escaping with double quotes, 
-    and escape chars.
-    """
-    stack = ""
-    escape_next = False
-    for s in S:
-        if s in ["\r", "\n"]:
-            if not stack.endswith("R"):
-                stack += "R"
-        elif s == dialect.delimiter:
-            if escape_next:
-                stack += "C"
-                escape_next = False
-            else:
-                stack += "D"
-        elif s == dialect.quotechar:
-            if escape_next:
-                stack += "C"
-                escape_next = False
-            else:
-                stack += "Q"
-        elif s == dialect.escapechar:
-            if escape_next:
-                if not stack.endswith("C"):
-                    stack += "C"
-                escape_next = False
-            else:
-                escape_next = True
-        else:
-            if escape_next:
-                escape_next = False
-            if not stack.endswith("C"):
-                stack += "C"
-    return stack
 
 
 def merge_with_quotechar(S, dialect):

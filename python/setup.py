@@ -15,4 +15,10 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     classifiers=["Programming Language :: Python :: 3"],
     scripts=['bin/clevercsv']
+    ext_modules=[
+        Extension(
+            "ccsv.cabstraction",
+            sources=["src/abstraction.c"]
+            )
+    ],
 )
