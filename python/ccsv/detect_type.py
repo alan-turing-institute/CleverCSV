@@ -10,7 +10,7 @@ Author: Gertjan van den Burg
 import regex
 import six
 
-from .parser import parse_string
+from .cparser_util import parse_string
 
 if six.PY2:
     _chr = unichr

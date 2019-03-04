@@ -17,6 +17,10 @@ setuptools.setup(
     scripts=['bin/clevercsv']
     ext_modules=[
         Extension(
+            "ccsv.cparser",
+            sources=["src/cparser.c"],
+        ),
+        Extension(
             "ccsv.cabstraction",
             sources=["src/abstraction.c"]
             )
