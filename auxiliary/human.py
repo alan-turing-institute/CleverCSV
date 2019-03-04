@@ -63,14 +63,15 @@ def get_quotechar_options(data):
     if data is None:
         return set(["q", "a", "b", "t", "n"])
     options = set()
-    if '"' in data:
-        options.add("q")
-    if "'" in data:
-        options.add("a")
-    if "`" in data:
-        options.add("b")
-    if "~" in data:
-        options.add("t")
+    for x in data:
+        if x == '"':
+            options.add('q')
+        elif x == "'":
+            options.add('a')
+        elif x == "`":
+            options.add("b")
+        elif x == "~":
+            options.add("t")
     options.add("n")
     return options
 
