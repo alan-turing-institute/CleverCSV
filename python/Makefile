@@ -39,9 +39,15 @@ integration: install ## Run integration tests with nose
 	python ./tests/test_integration/test_dialect_detection.py \
 		--with-logresults --rednose -v \
 		-w ./tests/test_integration/
+	python ./tests/test_integration/test_dialect_detection_partial.py \
+		--with-logresults --rednose -v \
+		-w ./tests/test_integration/
 
 integration2: install2 ## Run integration tests with nose (py2)
 	python2 ./tests/test_integration/test_dialect_detection.py \
+		--with-logresults --rednose -v \
+		-w ./tests/test_integration/
+	python2 ./tests/test_integration/test_dialect_detection_partial.py \
 		--with-logresults --rednose -v \
 		-w ./tests/test_integration/
 
@@ -53,6 +59,8 @@ cover: test ## Test unit test coverage using default nosetests
 clean: ## Clean build dist and egg directories left after install
 	rm -rf ./dist ./build ./$(PACKAGE).egg-info
 	rm -f MANIFEST
+	rm -f ./$(PACKAGE)/*.so
+	rm -f ./*_valgrind.log*
 	find . -type f -iname '*.pyc' -delete
 	find . -type d -name '__pycache__' -empty -delete
 
