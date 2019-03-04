@@ -29,8 +29,8 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
         if P < Qmax:
             if verbose:
                 print(
-                    "%15r:\tT = %15.6f\tP = %15.6f\tQ = %15.6f"
-                    % (dialect, float("nan"), P, float("nan"))
+                    "%15r:\tP = %15.6f\tT = %15.6f\tQ = %15.6f"
+                    % (dialect, P, float("nan"), float("nan"))
                 )
             continue
         T = type_score(data, dialect)
@@ -43,8 +43,7 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
 
         if verbose:
             print(
-                "%15r:\tT = %15.6f\tP = %15.6f\tQ = %15.6f"
-                % (dialect, T, P, Q)
+                "%15r:\tP = %15.6f\tT = %15.6f\tQ = %15.6f" % (dialect, P, T, Q)
             )
 
     if len(H) == 1:
