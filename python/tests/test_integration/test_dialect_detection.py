@@ -11,11 +11,12 @@ Author: G.J.J. van den Burg
 """
 
 import ccsv
+import gzip
+import json
+import nose
 import os
 import unittest
 import warnings
-import json
-import nose
 
 from parameterized import parameterized
 from logresults import LogResults
@@ -33,14 +34,14 @@ LOG_FAILED = os.path.join(THIS_DIR, "failed.log")
 def load_test_cases():
     cases = []
     for f in sorted(os.listdir(TEST_FILES)):
-        base = os.path.splitext(f)[0]
+        base = f[: -len(".csv.gz")]
         dialect_file = os.path.join(TEST_DIALECTS, base + ".json")
         if not os.path.exists(dialect_file):
             continue
         filename = os.path.join(TEST_FILES, f)
         with open(dialect_file, "r") as fid:
             annotation = json.load(fid)
-        if not annotation["filename"] == f:
+        if not annotation["filename"] == f[:-len(".gz")]:
             warnings.warn(
                 "filename doesn't match! Input file: %s\nDialect file: %s"
                 % (filename, dialect_file)
@@ -61,7 +62,7 @@ class TestDetector(unittest.TestCase):
         else:
             enc = ccsv.utils.get_encoding(filename)
         true_dialect = annotation["dialect"]
-        with open(filename, "r", newline="", encoding=enc) as fid:
+        with gzip.open(filename, "rt", newline="", encoding=enc) as fid:
             dialect = det.detect(fid.read())
         self.assertIsNotNone(dialect)
         self.assertEqual(dialect.delimiter, true_dialect["delimiter"])
