@@ -8,5 +8,5 @@ install:
   - cd python && poetry install && cd ..
 
 script:
-  - cd python && python setup.py develop nosetests -w tests/test_unit/ && cd ..
+  - cd python && python setup.py build_ext --inplace develop nosetests -w tests/test_unit/ && cd ..
 
