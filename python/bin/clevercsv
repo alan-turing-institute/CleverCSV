@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
+CleverCSV command line program.
 
 Author: Gertjan van den Burg
 
