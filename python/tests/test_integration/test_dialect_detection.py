@@ -11,8 +11,10 @@ Author: G.J.J. van den Burg
 """
 
 import ccsv
+import chardet
 import gzip
 import json
+import multiprocessing
 import nose
 import os
 import unittest
@@ -30,6 +32,8 @@ LOG_SUCCESS = os.path.join(THIS_DIR, "success.log")
 LOG_ERROR = os.path.join(THIS_DIR, "error.log")
 LOG_FAILED = os.path.join(THIS_DIR, "failed.log")
 
+TIMEOUT = 5 * 60
+
 
 def load_test_cases():
     cases = []
@@ -41,7 +45,7 @@ def load_test_cases():
         filename = os.path.join(TEST_FILES, f)
         with open(dialect_file, "r") as fid:
             annotation = json.load(fid)
-        if not annotation["filename"] == f[:-len(".gz")]:
+        if not annotation["filename"] == f[: -len(".gz")]:
             warnings.warn(
                 "filename doesn't match! Input file: %s\nDialect file: %s"
                 % (filename, dialect_file)
@@ -53,17 +57,39 @@ def load_test_cases():
     return cases
 
 
+def worker(args, return_dict, **kwargs):
+    det = ccsv.Detector()
+    filename, encoding = args
+    with gzip.open(filename, "rt", newline="", encoding=encoding) as fid:
+        return_dict["dialect"] = det.detect(fid.read())
+
+
+def run_with_timeout(args, kwargs, limit):
+    manager = multiprocessing.Manager()
+    return_dict = manager.dict()
+    p = multiprocessing.Process(
+        target=worker, args=(args, return_dict), kwargs=kwargs
+    )
+    p.start()
+    p.join(limit)
+    if p.is_alive():
+        p.terminate()
+        return None
+    return return_dict.get("dialect", None)
+
+
 class TestDetector(unittest.TestCase):
     @parameterized.expand(load_test_cases)
-    def test_dialect(self, name, filename, annotation):
-        det = ccsv.Detector()
+    def test_dialect(self, name, gz_filename, annotation):
         if "encoding" in annotation:
             enc = annotation["encoding"]
         else:
-            enc = ccsv.utils.get_encoding(filename)
+            with gzip.open(gz_filename, "rb") as fid:
+                enc = chardet.detect(fid.read())["encoding"]
+
+        det = ccsv.Detector()
         true_dialect = annotation["dialect"]
-        with gzip.open(filename, "rt", newline="", encoding=enc) as fid:
-            dialect = det.detect(fid.read())
+        dialect = run_with_timeout((gz_filename, enc), {}, TIMEOUT)
         self.assertIsNotNone(dialect)
         self.assertEqual(dialect.delimiter, true_dialect["delimiter"])
         self.assertEqual(dialect.quotechar, true_dialect["quotechar"])
