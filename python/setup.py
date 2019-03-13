@@ -19,6 +19,7 @@ setup(
     packages=find_packages(),
     classifiers=["Programming Language :: Python :: 3"],
     scripts=["bin/clevercsv"],
+    install_requires=['regex'],
     ext_modules=[
         Extension(
             "ccsv.cparser",
