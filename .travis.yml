@@ -9,7 +9,8 @@ install:
   - pip install --upgrade pip
   - pip install poetry
   - cd python && poetry install && cd ..
+  - cd python && python setup.py build_ext --inplace && cd ..
 
 script:
-  - cd python && python setup.py build_ext --inplace nosetests -w tests/test_unit/ && cd ..
+  - cd python && poetry run green -v ./tests/test_unit && cd ..
 
