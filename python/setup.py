@@ -1,4 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
+import re
+
 from setuptools import setup, find_packages
 from distutils.extension import Extension
 
@@ -6,9 +11,13 @@ thisdir = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(thisdir, "README.md"), "r") as fid:
     long_description = fid.read()
 
+version = re.search(
+    '__version__ = "([^\']+)"', open("ccsv/__init__.py").read()
+).group(1)
+
 setup(
     name="clevercsv",
-    version="0.1.1",
+    version=version,
     author="Gertjan van den Burg",
     author_email="gertjanvandenburg@gmail.com",
     description="A clever CSV parser",

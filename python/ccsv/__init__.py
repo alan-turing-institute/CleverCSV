@@ -1,4 +1,6 @@
-name = "clevercsv"
+# -*- coding: utf-8 -*-
+
+__version__ = '0.1.1'
 
 from csv import QUOTE_ALL, QUOTE_MINIMAL, QUOTE_NONNUMERIC, QUOTE_NONE
 
