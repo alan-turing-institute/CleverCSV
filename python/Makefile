@@ -24,16 +24,8 @@ install: ## Install for the current user using the default python command
 	python setup.py build_ext --inplace
 	python setup.py install --user
 
-install2: ## Install for the current user using the python2 command
-	python2 setup.py build_ext --inplace
-	python2 setup.py install --user
-
 test: in ## Run nosetests using the default nosetests command
 	nosetests --rednose ./tests/test_unit/
-
-test2: ## Run nosetests using the nosetests2 command
-	python2 setup.py build_ext -i
-	nosetests2 --rednose ./tests/test_unit/
 
 integration: install ## Run integration tests with nose
 	python ./tests/test_integration/test_dialect_detection.py \
@@ -43,14 +35,6 @@ integration: install ## Run integration tests with nose
 integration_partial:
 	python ./tests/test_integration/test_dialect_detection_partial.py \
 		--with-logresults --rednose -v -s \
-		-w ./tests/test_integration/
-
-integration2: install2 ## Run integration tests with nose (py2)
-	python2 ./tests/test_integration/test_dialect_detection.py \
-		--with-logresults --rednose -v \
-		-w ./tests/test_integration/
-	python2 ./tests/test_integration/test_dialect_detection_partial.py \
-		--with-logresults --rednose -v \
 		-w ./tests/test_integration/
 
 cover: test ## Test unit test coverage using default nosetests
@@ -69,14 +53,8 @@ clean: ## Clean build dist and egg directories left after install
 develop: ## Install a development version of the package needed for testing
 	python setup.py develop --user
 
-develop2: ## Install a development version of the package needed for testing (python2)
-	python2 setup.py develop --user
-
 dist: ## Make Python source distribution
 	python setup.py sdist
-
-dist2: ## Make Python 2 source distribution
-	python2 setup.py sdist
 
 docs: doc
 doc: install ## Build documentation with Sphinx
