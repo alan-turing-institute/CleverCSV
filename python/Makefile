@@ -6,7 +6,7 @@
 PACKAGE=clevercsv
 DOC_DIR='./docs/'
 
-.PHONY: help cover
+.PHONY: help cover dist
 
 .DEFAULT_GOAL := help
 
@@ -42,7 +42,7 @@ cover: test ## Test unit test coverage using default nosetests
 		--cover-html --cover-html-dir=cover
 
 clean: ## Clean build dist and egg directories left after install
-	rm -rf ./dist ./build ./$(PACKAGE).egg-info
+	rm -rf ./dist ./build ./$(PACKAGE).egg-info ./cover
 	rm -f MANIFEST
 	rm -f ./$(PACKAGE)/*.so
 	rm -f ./*_valgrind.log*
