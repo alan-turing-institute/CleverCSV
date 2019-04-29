@@ -1,4 +1,4 @@
-# Clever CSV
+# CleverCSV
 
 [![Build Status](https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master)](https://travis-ci.org/alan-turing-institute/CleverCSV)
 
