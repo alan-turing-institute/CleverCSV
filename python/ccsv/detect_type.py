@@ -80,9 +80,9 @@ PATTERNS = {
     "number_3": "[+-]?(?:[1-9]|[1-9]\d{0,2})(?:\.\d{3})+\,\d*",
     "url": "(?:(?:[A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)(?:(?:\/[\+~%\/.\w\-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?",
     "email": r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
-    "unicode_alphanum": "(\p{N}+\p{L}+[\p{N}\p{L}\ "
+    "unicode_alphanum": "(\p{N}?\p{L}+[\p{N}\p{L}\ "
     + regex.escape("".join(SPECIALS_ALLOWED))
-    + "]*|\p{L}+[\p{N}\p{L}\ "
+    + "]*|\p{L}?[\p{N}\p{L}\ "
     + regex.escape("".join(SPECIALS_ALLOWED))
     + "]+)",
     "time_hhmmss": "(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])",
