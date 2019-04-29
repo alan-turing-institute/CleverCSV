@@ -157,15 +157,22 @@ class TypeDetectorTestCase(unittest.TestCase):
             "2019년11월1일",
             "2019년3월21일",
             "2019년3월1일",
-              "19년03월11일",
-              "19년03월1일",
-              "19년3월31일",
-              "19년3월1일",
+            "19년03월11일",
+            "19년03월1일",
+            "19년3월31일",
+            "19년3월1일",
         ]
         for date in yes_date:
             with self.subTest(date=date):
                 self.assertTrue(self.td.is_date(date))
-        no_date = ["2018|01|02"]
+        no_date = [
+            "2018|01|02",
+            "30/07-88",
+            "12.01-99",
+            "5.024.2896",
+            "2512-012.1",
+            "12 01/2542"
+        ]
         for date in no_date:
             with self.subTest(date=date):
                 self.assertFalse(self.td.is_date(date))
