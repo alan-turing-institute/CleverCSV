@@ -1,0 +1,12 @@
+include setup.py
+include README.md
+include LICENSE
+recursive-include ccsv *.py
+recursive-include src *.c
+recursive-include bin *
+recursive-include tests/test_unit *.py
+prune tests/test_integration
+exclude poetry.lock
+exclude pyproject.toml
+exclude Makefile
+exclude .gitignore
