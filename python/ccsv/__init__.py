@@ -1,4 +1,4 @@
-name = "clever_csv"
+name = "clevercsv"
 
 from csv import QUOTE_ALL, QUOTE_MINIMAL, QUOTE_NONNUMERIC, QUOTE_NONE
 

@@ -3,7 +3,7 @@
 # Uses self-documenting macros from here:
 # http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 
-PACKAGE=ccsv
+PACKAGE=clevercsv
 DOC_DIR='./docs/'
 
 .PHONY: help cover
