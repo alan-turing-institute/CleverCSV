@@ -1,4 +1,3 @@
-#
 # Makefile for easier installation and cleanup.
 #
 # Uses self-documenting macros from here:
@@ -32,7 +31,7 @@ integration: install ## Run integration tests with nose
 		--with-logresults --rednose -v -s \
 		-w ./tests/test_integration/
 
-integration_partial:
+integration_partial: install ## Run partial integration test with nose
 	python ./tests/test_integration/test_dialect_detection_partial.py \
 		--with-logresults --rednose -v -s \
 		-w ./tests/test_integration/
