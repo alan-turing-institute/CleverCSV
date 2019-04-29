@@ -9,14 +9,13 @@ license = "MIT"
 python = "^3.6"
 regex = "^2018.11"
 six = "^1.12"
-nose = "^1.3"
 chardet = "^3.0"
 pandas = "^0.24.1"
 tabview = "^1.4"
 
 [tool.poetry.dev-dependencies]
-rednose = "^1.3"
 parameterized = "^0.6.3"
+green = "^2.14"
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -25,7 +25,7 @@ install: ## Install for the current user using the default python command
 	python setup.py install --user
 
 test: in ## Run nosetests using the default nosetests command
-	nosetests --rednose ./tests/test_unit/
+	poetry run green -v ./tests/test_unit
 
 integration: install ## Run integration tests with nose
 	python ./tests/test_integration/test_dialect_detection.py \
