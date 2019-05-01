@@ -8,9 +8,8 @@ env:
 install:
   - pip install --upgrade pip
   - pip install poetry
-  - cd python && poetry install && cd ..
-  - cd python && python setup.py build_ext --inplace && cd ..
+  - poetry install
+  - python setup.py build_ext --inplace
 
 script:
-  - cd python && poetry run green -v ./tests/test_unit && cd ..
-
+  - poetry run green -v ./tests/test_unit
