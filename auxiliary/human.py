@@ -8,13 +8,14 @@ Author: Gertjan van den Burg
 
 """
 
+import argparse
+import chardet
+import codecs
+import gzip
 import json
 import libtmux
 import os
 import time
-import argparse
-import chardet
-import codecs
 import unicodedata
 
 
@@ -65,9 +66,9 @@ def get_quotechar_options(data):
     options = set()
     for x in data:
         if x == '"':
-            options.add('q')
+            options.add("q")
         elif x == "'":
-            options.add('a')
+            options.add("a")
         elif x == "`":
             options.add("b")
         elif x == "~":
@@ -118,6 +119,14 @@ class Asker(object):
         self.skip = False
         self.encoding = None
         self.data = None
+        self.decompressed_file = None
+
+        if filename.endswith(".gz"):
+            self.decompressed_file = os.path.splitext(filename)[0]
+            with open(filename, "rb") as fid:
+                with open(self.decompressed_file, "wb") as oid:
+                    oid.write(gzip.decompress(fid.read()))
+            self.filename = self.decompressed_file
 
     def load_file(self):
         self.encoding = get_encoding(self.filename)
@@ -264,6 +273,8 @@ class Asker(object):
         elif self.opened_vim:
             self.close_vim()
         self.pane.clear()
+        if not self.decompressed_file is None:
+            os.unlink(self.decompressed_file)
 
     def close_vim(self):
         self.pane.send_keys(":q", suppress_history=False)
@@ -278,14 +289,15 @@ class Asker(object):
     def quit(self):
         self.close()
         self.pane.send_keys("exit")
+        print("Thank you.")
         raise SystemExit
 
 
-def annotate_file(filename, tmux_pane):
+def annotate_file(filename, name, tmux_pane):
     print()
     asker = Asker(filename, tmux_pane)
     res = asker.process()
-    out = {"filename": os.path.basename(filename), "status": "ok"}
+    out = {"filename": name + ".csv", "status": "ok"}
     if not asker.note is None:
         out["note"] = asker.note
 
@@ -319,27 +331,29 @@ def process(input_dir, output_dir):
     output_files = os.listdir(output_dir)
     output_paths = [os.path.join(output_dir, f) for f in output_files]
 
-    io_pairs = []
+    data = []
     for ipath in input_paths:
         base, ext = os.path.splitext(os.path.basename(ipath))
-        if not ext == ".csv":
+        base_ext = os.path.splitext(base)[1]
+        if not (ext == ".csv" or (ext == ".gz" and base_ext == ".csv")):
             print("Warning: non-csv file found in input directory: %s" % ipath)
             continue
         opath = os.path.join(output_dir, base + ".json")
         if opath in output_paths:
             # result file exists
             continue
-        io_pairs.append((ipath, opath))
+        name = base if base_ext == "" else os.path.splitext(base)[0]
+        data.append((ipath, opath, name))
 
-    if not io_pairs:
+    if not data:
         return
 
     less_pane = init_tmux()
     start_time = time.time()
 
     count = 0
-    for ipath, opath in io_pairs:
-        res = annotate_file(ipath, less_pane)
+    for ipath, opath, name in data:
+        res = annotate_file(ipath, name, less_pane)
         dump_result(opath, res)
         count += 1
 
@@ -349,7 +363,7 @@ def process(input_dir, output_dir):
                 "This session: %i (%.2f seconds per file)"
                 % (
                     count,
-                    len(io_pairs),
+                    len(data),
                     count,
                     ((time.time() - start_time) / count),
                 )
