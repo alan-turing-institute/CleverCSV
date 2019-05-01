@@ -63,9 +63,12 @@ class SimpleDialect(object):
         class dialect(csv.Dialect):
             delimiter = self.delimiter
             quotechar = self.quotechar
-            escapechar = self.escapechar
+            escapechar = None if self.escapechar == "" else self.escapechar
             doublequote = True
-            quoting = csv.QUOTE_MINIMAL
+            quoting = (
+                csv.QUOTE_NONE if self.quotechar == "" else csv.QUOTE_MINIMAL
+            )
+            skipinitialspace = False
 
         return dialect
 
