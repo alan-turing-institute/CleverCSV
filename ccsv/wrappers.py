@@ -9,6 +9,9 @@ Author: Gertjan van den Burg
 
 
 import pandas as pd
+import warnings
+
+from pandas.errors import ParserWarning
 
 from .detect import Detector
 from .dict_read_write import DictReader
@@ -27,7 +30,6 @@ def read_as_dataframe(filename, dialect=None, verbose=False):
     return pd.DataFrame.from_records(rows)
 
 
-
 def read_as_dicts(filename, dialect=None, verbose=False):
     enc = get_encoding(filename)
     with open(filename, "r", newline="", encoding=enc) as fid:
@@ -37,6 +39,7 @@ def read_as_dicts(filename, dialect=None, verbose=False):
         r = DictReader(fid, dialect=dialect)
         for row in r:
             yield row
+
 
 def csv2df(filename, *args, **kwargs):
     """ Read a CSV file to a Pandas dataframe
@@ -60,7 +63,15 @@ def csv2df(filename, *args, **kwargs):
 
     """
     enc = get_encoding(filename)
-    with open(filename, 'r', newline='', encoding=enc) as fid:
+    with open(filename, "r", newline="", encoding=enc) as fid:
         dialect = Detector().detect(fid.read())
     csv_dialect = dialect.to_csv_dialect()
-    return pd.read_csv(filename, *args, dialect=csv_dialect, **kwargs)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message="^Conflicting values for .*",
+            category=ParserWarning,
+        )
+        df = pd.read_csv(filename, *args, dialect=csv_dialect, **kwargs)
+    return df
