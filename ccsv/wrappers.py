@@ -37,3 +37,30 @@ def read_as_dicts(filename, dialect=None, verbose=False):
         r = DictReader(fid, dialect=dialect)
         for row in r:
             yield row
+
+def csv2df(filename, *args, **kwargs):
+    """ Read a CSV file to a Pandas dataframe
+
+    This function uses CleverCSV to detect the dialect, and then passes this to 
+    the ``read_csv`` function in pandas. Additional arguments and keyword 
+    arguments are passed to ``read_csv`` as well.
+
+    Parameters
+    ----------
+
+    filename: str
+        The filename of the CSV file. At the moment, only local files are 
+        supported.
+
+    *args:
+        Additional arguments for the ``pandas.read_csv`` function.
+
+    **kwargs:
+        Additional keyword arguments for the ``pandas.read_csv`` function.
+
+    """
+    enc = get_encoding(filename)
+    with open(filename, 'r', newline='', encoding=enc) as fid:
+        dialect = Detector().detect(fid.read())
+    csv_dialect = dialect.to_csv_dialect()
+    return pd.read_csv(filename, *args, dialect=csv_dialect, **kwargs)
