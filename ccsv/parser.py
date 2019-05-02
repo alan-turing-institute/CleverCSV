@@ -19,7 +19,6 @@ import six
 from .dialect import SimpleDialect
 from .exceptions import Error
 
-_FIELD_SIZE_LIMIT = 128 * 1024
 
 
 class State(enum.Enum):
@@ -48,22 +47,6 @@ def pairwise_none(iterable):
         t = next(it2, None)
         yield s, t
 
-
-def field_size_limit(*args, **kwargs):
-    global _FIELD_SIZE_LIMIT
-    old_limit = _FIELD_SIZE_LIMIT
-    args = list(args) + list(kwargs.values())
-    if not 0 <= len(args) <= 1:
-        raise TypeError(
-            "field_size_limit expected at most 1 arguments, got %i" % len(args)
-        )
-    if len(args) == 0:
-        return old_limit
-    limit = args[0]
-    if not isinstance(limit, int):
-        raise TypeError("limit must be an integer")
-    _FIELD_SIZE_LIMIT = int(limit)
-    return old_limit
 
 
 class Parser(object):
