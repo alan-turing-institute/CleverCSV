@@ -10,6 +10,7 @@ Author: Gertjan van den Burg
 
 import pandas as pd
 import warnings
+import os
 
 from pandas.errors import ParserWarning
 
@@ -62,6 +63,8 @@ def csv2df(filename, *args, **kwargs):
         Additional keyword arguments for the ``pandas.read_csv`` function.
 
     """
+    if not (os.path.exists(filename) and os.path.isfile(filename)):
+        raise ValueError("Filename must be a regular file")
     enc = get_encoding(filename)
     with open(filename, "r", newline="", encoding=enc) as fid:
         dialect = Detector().detect(fid.read())
