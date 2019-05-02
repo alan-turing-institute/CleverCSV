@@ -1,15 +1,129 @@
-# CleverCSV
+# CleverCSV: A Clever CSV Parser
 
 [![Build Status](https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master)](https://travis-ci.org/alan-turing-institute/CleverCSV)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb)
 
-A clever CSV parser.
+*This package is currently in beta. If you encounter any problems, please open 
+an issue or submit a pull request!*
 
-The goal of this package is to provide a drop-in replacement for the Python 
-CSV library that uses the dialect detection method developed in the paper 
-[Wrangling Messy CSV Files by Detecting Row and Type 
-Patterns](https://arxiv.org/abs/1811.11242).
+Handy links:
 
-**NOTE** this repository is under heavy development and should be considered 
-pre-alpha software. If you're interested in this package, please "star" the 
-repository on GitHub.
+- [CleverCSV on Github](https://github.com/alan-turing-institute/CleverCSV)
+- [CleverCSV on PyPI](https://pypi.org/project/clevercsv/)
+- [Paper on arXiv](https://arxiv.org/abs/1811.11242)
+- [Reproducible Research Repo](https://github.com/alan-turing-institute/CSV_Wrangling/)
+
+## Introduction
+
+- CSV files are awesome: they are lightweight, easy to share, human-readable, 
+  version-controllable, and supported by many systems and tools!
+- CSV files are terrible: they can have many different formats, multiple 
+  tables, headers or no headers, escape characters, and there's no support for 
+  data dictionaries.
+
+CleverCSV is a Python package that hopes to solve many of the painpoints of 
+CSV files, while maintaining many of the good things. The package 
+automatically detects (with high accuracy) the format (*dialect*) of CSV 
+files, thus making it easier to simply point to a CSV file and load it, 
+without the need for human inspection. In the future, we hope to solve some of 
+the other issues of CSV files too.
+
+**A Demo of CleverCSV is available on 
+[BinderHub](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb).**
+
+CleverCSV is [**based on science**](https://arxiv.org/abs/1811.11242). We 
+investigated thousands of real-world CSV files to find a robust way to 
+automatically detect the dialect of a CSV file. This may seem like an easy 
+problem, but to a computer a CSV file is simply a long string, and every 
+dialect will give you *some* table. In CleverCSV we use a technique based on 
+the patterns of the parsed file and the data type of the parsed cells.
+
+We think this kind of work can be very valuable for working data scientists 
+and programmers and we hope that you find CleverCSV useful (if there's a 
+problem, please open an issue!) Since the academic world counts citations, 
+please **cite CleverCSV if you use the package**. Here's a BibTeX entry you 
+can use:
+
+```bib
+@article{van2018wrangling,
+    title={Wrangling Messy {CSV} Files by Detecting Row and Type Patterns},
+    author={{van den Burg}, G. J. J. and Naz{\'a}bal, A. and Sutton, C.},
+    journal={arXiv preprint arXiv:1811.11242},
+    year={2018}
+}
+```
+
+## Installation
+
+The package is available on PyPI:
+
+```bash
+$ pip install clevercsv
+```
+
+## Usage
+
+We designed CleverCSV to provide a drop-in replacement for the built-in CSV 
+module, with some useful functionality added to it. Therefore, if you simply 
+want to replace the builtin CSV module with CleverCSV, you only have to add 
+one letter:
+
+```python
+import ccsv
+```
+
+CleverCSV provides an improved version of the dialect sniffer in the CSV 
+module, but it also adds some useful wrapper functions. For instance, there's 
+a wrapper for loading a CSV file using [Pandas](/link/to/pandas), that uses 
+CleverCSV to detect the dialect of the file:
+
+```python
+from ccsv import csv2df
+
+df = csv2df("data.csv")
+```
+
+Of course, you can also use the traditional way of loading a CSV file, as in 
+the Python CSV module:
+
+```python
+import ccsv
+
+with open("data.csv", "r", newline="") as fp:
+  # you can use verbose=True to see what CleverCSV does:
+  dialect = ccsv.Sniffer().sniff(fid.read(), verbose=False)
+  fp.seek(0)
+  reader = ccsv.reader(fp, dialect)
+  rows = list(reader)
+```
+
+That's the basics! If you want more details, you can look at the code of the 
+package or the test suite. Documentation will be provided in the future (but a 
+lot of the functionality is similar to the CSV package in Python!)
+
+## Contributors
+
+Code:
+
+* [Gertjan van den Burg](https://gertjan.dev)
+
+Scientific work:
+
+* [Gertjan van den Burg](https://gertjan.dev)
+* [Alfredo Nazabal](/website/of/alfredo)
+* [Charles Sutton](/website/of/charles)
+
+
+## Contributing
+
+If you want to encourage development of CleverCSV, the best thing to do now is 
+to *spread the word!*.
+
+For code contributions, please see [CONTRIBUTING.md](/link/to/contributing).
+
+## Notes
+
+License: MIT (see LICENSE file).
+
+Copyright (c) 2019 [The Alan Turing Institute](www.turing.ac.uk).
+
