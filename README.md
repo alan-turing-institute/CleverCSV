@@ -63,6 +63,11 @@ $ pip install clevercsv
 
 ## Usage
 
+CleverCSV consists of a Python library and a command line tool 
+(``clevercsv``).
+
+### Library
+
 We designed CleverCSV to provide a drop-in replacement for the built-in CSV 
 module, with some useful functionality added to it. Therefore, if you simply 
 want to replace the builtin CSV module with CleverCSV, you only have to add 
@@ -100,6 +105,19 @@ with open("data.csv", "r", newline="") as fp:
 That's the basics! If you want more details, you can look at the code of the 
 package or the test suite. Documentation will be provided in the future (but a 
 lot of the functionality is similar to the CSV package in Python!)
+
+### Command-Line Tool
+
+The ``clevercsv`` command line tool can be useful when dealing with CSV files 
+on the command line. At the moment, ``clevercsv`` supports three commands:
+
+- ``detect``: detect the dialect of a given CSV file
+- ``view``: detect the dialect and view the file as a spreadsheet using 
+  [tabview](/link/to/tabview)
+- ``standardize``: after detecting the dialect of a CSV file, standardize it 
+  to the CSV spec in [RFC-4180](/link/to/4180).
+
+On the terminal, run ``clevercsv -h`` for more information.
 
 ## Contributors
 
