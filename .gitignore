@@ -6,6 +6,6 @@ tests/test_integration/data
 tests/test_integration/__pycache__/
 tests/test_unit/__pycache__/
 .coverage
-ccsv.egg-info/
+clevercsv.egg-info/
 ccsv/.coverage
 ccsv/*.so
