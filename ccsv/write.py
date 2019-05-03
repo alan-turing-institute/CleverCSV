@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
+Drop-in replacement for the Python csv writer class.
 
 Author: Gertjan van den Burg
 

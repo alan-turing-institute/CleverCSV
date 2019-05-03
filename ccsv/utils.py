@@ -9,6 +9,7 @@ Author: Gertjan van den Burg
 
 import chardet
 
+
 def pairwise(iterable):
     "s - > (s0, s1), (s1, s2), (s2, s3), ..."
     a = iter(iterable)
@@ -17,8 +18,22 @@ def pairwise(iterable):
     return zip(a, b)
 
 
-
 def get_encoding(filename):
+    """Get the encoding of the file
+
+    This function uses the chardet package for detecting the encoding of a 
+    file.
+
+    Parameters
+    ----------
+    filename: str
+        Path to a file
+
+    Returns
+    -------
+    encoding: str
+        Encoding of the file.
+    """
     detector = chardet.UniversalDetector()
     final_chunk = False
     blk_size = 65536

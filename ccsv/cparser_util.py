@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Python utility functions that wraps the C parser.
+Python utility functions that wrap the C parser.
 
 """
 

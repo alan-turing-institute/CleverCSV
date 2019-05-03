@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Definitions for the dialect
+Definitions for the dialect object.
 
 Author: Gertjan van den Burg
 
@@ -16,6 +16,25 @@ import functools
 class SimpleDialect(object):
     """
     The simplified dialect object.
+
+    For the delimiter, quotechar, and escapechar the empty string means no 
+    delimiter/quotechar/escapechar in the file. None is used to mark it 
+    undefined.
+
+    Parameters
+    ----------
+    delimiter : str
+        The delimiter of the CSV file.
+
+    quotechar : str
+        The quotechar of the file.
+
+    escapechar : str
+        The escapechar of the file.
+
+    strict : bool
+        Whether strict parsing should be enforced. Same as in the csv module.
+
     """
 
     def __init__(self, delimiter, quotechar, escapechar, strict=False):
@@ -101,6 +120,8 @@ class SimpleDialect(object):
         return self.__key() == other.__key()
 
     def __lt__(self, other):
+        # This provides a partial order on dialect objects with the goal of 
+        # speeding up the consistency measure.
         if not isinstance(other, SimpleDialect):
             return False
         if self.delimiter == "," and not other.delimiter == ",":

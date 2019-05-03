@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Wrappers for easy loading of data from files.
+Wrappers for some loading/saving functionality.
 
 Author: Gertjan van den Burg
 
@@ -17,8 +17,6 @@ from pandas.errors import ParserWarning
 from .detect import Detector
 from .dict_read_write import DictReader
 from .utils import get_encoding
-from .read import reader
-
 
 
 def read_as_dicts(filename, dialect=None, verbose=False):
@@ -60,6 +58,7 @@ def csv2df(filename, *args, **kwargs):
         dialect = Detector().detect(fid.read())
     csv_dialect = dialect.to_csv_dialect()
 
+    # This is used to catch pandas' warnings when a dialect is supplied.
     with warnings.catch_warnings():
         warnings.filterwarnings(
             "ignore",

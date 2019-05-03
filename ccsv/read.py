@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Drop-in replacement for the Python csv reader class.
+Drop-in replacement for the Python csv reader class. This is a wrapper for the 
+Parser class, defined in :mod:`parser`.
 
 Author: Gertjan van den Burg
 

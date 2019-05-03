@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Exceptions for ccsv
+Exceptions for CleverCSV
 
 Author: Gertjan van den Burg
 

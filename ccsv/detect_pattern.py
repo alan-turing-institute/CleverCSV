@@ -46,12 +46,28 @@ def pattern_score(data, dialect, eps=DEFAULT_EPS_PAT):
 
 
 def make_abstraction(data, dialect):
-    """
-    Create an abstract representation of the CSV file based on the dialect.
+    """Create an abstract representation of the CSV file based on the dialect.
+
+    This function constructs the basic abstraction used to compute the row 
+    patterns.
+
+    Parameters
+    ----------
+    data : str
+        The data of the file as a string.
+
+    dialect : SimpleDialect
+        A dialect to parse the file with.
+
+    Returns
+    -------
+    abstraction : str
+        An abstract representation of the CSV file.
 
     """
-    A = base_abstraction(data, dialect.delimiter, dialect.quotechar, 
-            dialect.escapechar)
+    A = base_abstraction(
+        data, dialect.delimiter, dialect.quotechar, dialect.escapechar
+    )
     A = merge_with_quotechar(A, dialect)
     A = fill_empties(A)
     A = strip_trailing(A)
@@ -59,8 +75,25 @@ def make_abstraction(data, dialect):
 
 
 def merge_with_quotechar(S, dialect):
-    """
-    Merge quoted blocks (``QC...CQ``) to a single cell (``C``).
+    """Merge quoted blocks in the abstraction
+
+    This function takes the abstract representation and merges quoted blocks 
+    (``QC...CQ``) to a single cell (``C``). The function takes nested quotes 
+    into account.
+
+    Parameters
+    ----------
+    S : str
+        The data of a file as a string
+
+    dialect : SimpleDialect
+        The dialect used to make the abstraction.
+
+    Returns
+    -------
+    abstraction : str
+        A simplified version of the abstraction with quoted blocks merged.
+
     """
     in_quotes = False
     i = 0
@@ -93,8 +126,24 @@ def merge_with_quotechar(S, dialect):
 
 
 def fill_empties(abstract):
-    """
-    Fill "empty cells" by inserting a cell character (C).
+    """Fill empty cells in the abstraction
+
+    The way the row patterns are constructed assumes that empty cells are 
+    marked by the letter `C` as well. This function fill those in. The function 
+    also removes duplicate occurrances of ``CC`` and replaces these  with 
+    ``C``.
+
+    Parameters
+    ----------
+    abstract : str
+        The abstract representation of the file.
+
+    Returns
+    -------
+    abstraction : str
+        The abstract representation with empties filled.
+
+
     """
     while "DD" in abstract:
         abstract = abstract.replace("DD", "DCD")
@@ -118,8 +167,7 @@ def fill_empties(abstract):
 
 
 def strip_trailing(abstract):
-    """
-    Strip trailing row separator from abstraction
+    """Strip trailing row separator from abstraction.
     """
     while abstract.endswith("R"):
         abstract = abstract[:-1]

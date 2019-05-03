@@ -4,14 +4,9 @@
 Detect the dialect with very strict functional tests.
 
 This module uses so-called "normal forms" to detect the dialect of CSV files.
-Normal forms are detected with strict functional tests.
-
-
-Implementation Notes:
-
-    - file tests: hold for the entire file
-    - row tests: hold for *every* row
-    - cell tests: hold for *every* cell
+Normal forms are detected with strict functional tests. The normal forms are 
+used as a pre-test to check if files are simple enough that computing the data 
+consistency measure is not necessary.
 
 Author: Gertjan van den Burg
 

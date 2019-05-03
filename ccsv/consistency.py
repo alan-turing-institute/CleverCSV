@@ -15,6 +15,31 @@ from .parser import field_size_limit
 
 
 def detect_dialect_consistency(data, delimiters=None, verbose=False):
+    """Detect the dialect with the data consistency measure
+
+    This uses the data consistency measure to detect the dialect. See the paper 
+    for details.
+
+    Parameters
+    ----------
+    data : str
+        The data of the file as a string
+
+    delimiters : iterable
+        List of delimiters to consider. If None, the :func:`get_delimiters` 
+        function is used to automatically detect this (as described in the 
+        paper).
+
+    verbose : bool
+        Print out the dialects considered and their scores.
+
+    Returns
+    -------
+    dialect : SimpleDialect
+        The detected dialect. If no dialect could be detected, returns None.
+
+    """
+
     dialects = get_dialects(data, delimiters=delimiters)
     if verbose:
         print("Considering %i dialects." % len(dialects))

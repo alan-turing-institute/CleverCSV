@@ -15,7 +15,14 @@ class Detector(object):
     """
     Detect the Dialect of CSV files with normal forms or the data consistency 
     measure. This class provides a drop-in replacement for the Python dialect 
-    Sniffer from the stdlib.
+    Sniffer from the standard library.
+
+    Note
+    ----
+    We call the object ``Detector`` just to mark the difference in the 
+    implementation and avoid naming issues. You can import it as ``from ccsv 
+    import Sniffer`` nonetheless.
+
     """
 
     def __init__(self):
