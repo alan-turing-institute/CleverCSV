@@ -81,8 +81,8 @@ import ccsv
 
 CleverCSV provides an improved version of the dialect sniffer in the CSV 
 module, but it also adds some useful wrapper functions. For instance, there's 
-a wrapper for loading a CSV file using [Pandas](/link/to/pandas), that uses 
-CleverCSV to detect the dialect of the file:
+a wrapper for loading a CSV file using [Pandas](https://pandas.pydata.org/), 
+that uses CleverCSV to detect the dialect of the file:
 
 ```python
 from ccsv import csv2df
@@ -115,9 +115,9 @@ on the command line. At the moment, ``clevercsv`` supports three commands:
 
 - ``detect``: detect the dialect of a given CSV file
 - ``view``: detect the dialect and view the file as a spreadsheet using 
-  [tabview](/link/to/tabview)
+  [tabview](https://github.com/TabViewer/tabview)
 - ``standardize``: after detecting the dialect of a CSV file, standardize it 
-  to the CSV spec in [RFC-4180](/link/to/4180).
+  to the CSV spec in [RFC-4180](https://tools.ietf.org/html/rfc4180).
 
 On the terminal, run ``clevercsv -h`` for more information.
 
@@ -130,8 +130,8 @@ Code:
 Scientific work:
 
 * [Gertjan van den Burg](https://gertjan.dev)
-* [Alfredo Nazabal](/website/of/alfredo)
-* [Charles Sutton](/website/of/charles)
+* [Alfredo Nazabal](https://scholar.google.com/citations?user=IanHvT4AAAAJ)
+* [Charles Sutton](https://homepages.inf.ed.ac.uk/csutton/)
 
 
 ## Contributing
@@ -139,11 +139,12 @@ Scientific work:
 If you want to encourage development of CleverCSV, the best thing to do now is 
 to *spread the word!*.
 
-For code contributions, please see [CONTRIBUTING.md](/link/to/contributing).
+If you encounter an issue in CleverCSV, please open an issue or submit a pull 
+request!
 
 ## Notes
 
 License: MIT (see LICENSE file).
 
-Copyright (c) 2019 [The Alan Turing Institute](www.turing.ac.uk).
+Copyright (c) 2019 [The Alan Turing Institute](https://turing.ac.uk).
 
