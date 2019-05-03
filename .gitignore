@@ -9,3 +9,4 @@ tests/test_unit/__pycache__/
 clevercsv.egg-info/
 ccsv/.coverage
 ccsv/*.so
+dist/*
