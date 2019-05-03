@@ -304,7 +304,9 @@ def break_ties_four(data, dialects):
     dialects = list(new_dialects)
 
     # Defer to other functions if the number of dialects was reduced
-    if len(dialects) == 2:
+    if len(dialects) == 1:
+        return dialects[0]
+    elif len(dialects) == 2:
         return break_ties_two(data, *dialects)
     elif len(dialects) == 3:
         return break_ties_three(data, *dialects)
