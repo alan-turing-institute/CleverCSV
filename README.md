@@ -21,7 +21,7 @@ Handy links:
   tables, headers or no headers, escape characters, and there's no support for 
   data dictionaries.
 
-CleverCSV is a Python package that hopes to solve many of the painpoints of 
+CleverCSV is a Python package that hopes to solve many of the pain points of 
 CSV files, while maintaining many of the good things. The package 
 automatically detects (with high accuracy) the format (*dialect*) of CSV 
 files, thus making it easier to simply point to a CSV file and load it, 
