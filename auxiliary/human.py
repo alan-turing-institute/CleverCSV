@@ -12,6 +12,7 @@ import argparse
 import chardet
 import codecs
 import gzip
+import io
 import json
 import libtmux
 import os
@@ -115,6 +116,7 @@ class Asker(object):
             "quotechar": None,
             "escapechar": None,
             "skipinitialspace": None,
+            "header_idx": None,
         }
         self.skip = False
         self.encoding = None
@@ -132,7 +134,9 @@ class Asker(object):
         self.encoding = get_encoding(self.filename)
         self.data = load_file(self.filename, encoding=self.encoding)
 
-    def ask_question(self, prompt, key, options=None, highlight_char=None):
+    def ask_question(
+        self, prompt, key, options=None, highlight_char=None, max_length=1
+    ):
         if not self.opened_vim and not self.opened_less:
             self.open_less()
         self.highlight_char(highlight_char)
@@ -152,8 +156,6 @@ class Asker(object):
             elif ans in ["hls", "hlspace"]:
                 self.pane.send_keys("/\\ ")
             elif ans == "skip":
-                self.close()
-                self.pane.clear()
                 self.skip = True
                 break
             elif ans == "note":
@@ -164,8 +166,8 @@ class Asker(object):
             elif ans == "\\t":
                 self.dialect[key] = "\t"
                 break
-            elif len(ans.strip()) > 1:
-                print("Only length 0 or 1 answers are allowed.")
+            elif len(ans.strip()) > max_length:
+                print("Only length %i answers are allowed." % max_length)
             elif (not options is None) and (not ans.rstrip("\n") in options):
                 print("Only these options are allowed: %r" % options)
             else:
@@ -243,6 +245,16 @@ class Asker(object):
         if self.skip:
             return None
 
+        n_lines = sum((1 for l in io.StringIO(self.data)))
+        self.pane.send_keys("gg", enter=False, suppress_history=False)
+        self.ask_question(
+            "Where is the header?", "header_idx", max_length=n_lines
+        )
+        if not self.dialect["header_idx"] is None:
+            self.dialect["header_idx"] = int(self.dialect["header_idx"])
+        if self.skip:
+            return None
+
         if self.dialect["delimiter"] is None:
             self.dialect["delimiter"] = ""
         if self.dialect["quotechar"] is None:
@@ -264,7 +276,7 @@ class Asker(object):
         self.opened_vim = True
 
     def open_less(self):
-        self.pane.send_keys("less -f %s" % self.filename)
+        self.pane.send_keys("less -N -f %s" % self.filename)
         self.opened_less = True
 
     def close(self):
