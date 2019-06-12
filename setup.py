@@ -14,7 +14,6 @@ from distutils.extension import Extension
 
 # Package meta-data.
 NAME = "clevercsv"
-SHORTNAME = "ccsv"
 DESCRIPTION = "A clever CSV parser"
 URL = "https://github.com/alan-turing-institute/CleverCSV"
 EMAIL = "gertjanvandenburg@gmail.com"
@@ -46,7 +45,7 @@ except FileNotFoundError:
 # Load the package's __version__.py module as a dictionary.
 about = {}
 if not VERSION:
-    project_slug = SHORTNAME.lower().replace("-", "_").replace(" ", "_")
+    project_slug = NAME.lower().replace("-", "_").replace(" ", "_")
     with open(os.path.join(here, project_slug, "__version__.py")) as f:
         exec(f.read(), about)
 else:
@@ -112,8 +111,8 @@ setup(
     license="MIT",
     scripts=["bin/clevercsv"],
     ext_modules=[
-        Extension("ccsv.cparser", sources=["src/cparser.c"]),
-        Extension("ccsv.cabstraction", sources=["src/abstraction.c"]),
+        Extension("clevercsv.cparser", sources=["src/cparser.c"]),
+        Extension("clevercsv.cabstraction", sources=["src/abstraction.c"]),
     ],
     classifiers=[
         # Trove classifiers

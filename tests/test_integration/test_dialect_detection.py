@@ -10,7 +10,7 @@ Author: G.J.J. van den Burg
 
 """
 
-import ccsv
+import clevercsv
 import chardet
 import gzip
 import json
@@ -58,7 +58,7 @@ def load_test_cases():
 
 
 def worker(args, return_dict, **kwargs):
-    det = ccsv.Detector()
+    det = clevercsv.Detector()
     filename, encoding = args
     with gzip.open(filename, "rt", newline="", encoding=encoding) as fid:
         return_dict["dialect"] = det.detect(fid.read())
@@ -87,7 +87,6 @@ class TestDetector(unittest.TestCase):
             with gzip.open(gz_filename, "rb") as fid:
                 enc = chardet.detect(fid.read())["encoding"]
 
-        det = ccsv.Detector()
         true_dialect = annotation["dialect"]
         dialect = run_with_timeout((gz_filename, enc), {}, TIMEOUT)
         self.assertIsNotNone(dialect)

@@ -76,7 +76,7 @@ want to replace the builtin CSV module with CleverCSV, you only have to add
 one letter:
 
 ```python
-import ccsv
+import clevercsv
 ```
 
 CleverCSV provides an improved version of the dialect sniffer in the CSV 
@@ -85,7 +85,7 @@ a wrapper for loading a CSV file using [Pandas](https://pandas.pydata.org/),
 that uses CleverCSV to detect the dialect of the file:
 
 ```python
-from ccsv import csv2df
+from clevercsv import csv2df
 
 df = csv2df("data.csv")
 ```
@@ -94,13 +94,14 @@ Of course, you can also use the traditional way of loading a CSV file, as in
 the Python CSV module:
 
 ```python
-import ccsv
+# importing this way makes it easy to port existing code to CleverCsv
+import clevercsv as csv
 
 with open("data.csv", "r", newline="") as fp:
   # you can use verbose=True to see what CleverCSV does:
-  dialect = ccsv.Sniffer().sniff(fid.read(), verbose=False)
+  dialect = csv.Sniffer().sniff(fid.read(), verbose=False)
   fp.seek(0)
-  reader = ccsv.reader(fp, dialect)
+  reader = csv.reader(fp, dialect)
   rows = list(reader)
 ```
 
