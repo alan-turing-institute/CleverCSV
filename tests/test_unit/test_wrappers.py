@@ -12,8 +12,8 @@ import tempfile
 import pandas as pd
 import os
 
-from ccsv import wrappers, writer
-from ccsv.dialect import SimpleDialect
+from clevercsv import wrappers, writer
+from clevercsv.dialect import SimpleDialect
 
 
 class WrappersTestCase(unittest.TestCase):

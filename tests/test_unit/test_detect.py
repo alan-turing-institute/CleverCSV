@@ -10,7 +10,7 @@ Author: Gertjan van den Burg
 
 import unittest
 
-from ccsv.detect import Detector
+from clevercsv.detect import Detector
 
 
 class DetectorTestCase(unittest.TestCase):

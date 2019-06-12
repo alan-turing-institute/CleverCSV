@@ -8,10 +8,10 @@ Author: Gertjan van den Burg
 """
 
 
-import ccsv
+import clevercsv
 import unittest
 
-from ccsv.dialect import SimpleDialect
+from clevercsv.dialect import SimpleDialect
 
 from tempfile import TemporaryFile
 
@@ -19,14 +19,14 @@ from tempfile import TemporaryFile
 class WriterTestCase(unittest.TestCase):
     def writerAssertEqual(self, input, expected_result):
         with TemporaryFile("w+", newline="") as fileobj:
-            writer = ccsv.writer(fileobj, dialect=self.dialect)
+            writer = clevercsv.writer(fileobj, dialect=self.dialect)
             writer.writerows(input)
             fileobj.seek(0)
             self.assertEqual(fileobj.read(), expected_result)
 
     def _write_test(self, fields, expect, **kwargs):
         with TemporaryFile("w+", newline="") as fileobj:
-            writer = ccsv.writer(fileobj, **kwargs)
+            writer = clevercsv.writer(fileobj, **kwargs)
             writer.writerow(fields)
             fileobj.seek(0)
             self.assertEqual(
@@ -35,17 +35,17 @@ class WriterTestCase(unittest.TestCase):
 
     def _write_error_test(self, exc, fields, **kwargs):
         with TemporaryFile("w+", newline="") as fileobj:
-            writer = ccsv.writer(fileobj, **kwargs)
+            writer = clevercsv.writer(fileobj, **kwargs)
             with self.assertRaises(exc):
                 writer.writerow(fields)
             fileobj.seek(0)
             self.assertEqual(fileobj.read(), "")
 
     def test_write_arg_valid(self):
-        self._write_error_test(ccsv.Error, None)
+        self._write_error_test(clevercsv.Error, None)
         self._write_test((), "")
         self._write_test([None], '""')
-        self._write_error_test(ccsv.Error, [None], quoting=ccsv.QUOTE_NONE)
+        self._write_error_test(clevercsv.Error, [None], quoting=clevercsv.QUOTE_NONE)
         # Check that exceptions are passed up the chain
         class BadList:
             def __len__(self):
@@ -72,18 +72,18 @@ class WriterTestCase(unittest.TestCase):
     def test_write_quoting(self):
         self._write_test(["a", 1, "p,q"], 'a,1,"p,q"')
         self._write_error_test(
-            ccsv.Error, ["a", 1, "p,q"], quoting=ccsv.QUOTE_NONE
+            clevercsv.Error, ["a", 1, "p,q"], quoting=clevercsv.QUOTE_NONE
         )
         self._write_test(
-            ["a", 1, "p,q"], 'a,1,"p,q"', quoting=ccsv.QUOTE_MINIMAL
+            ["a", 1, "p,q"], 'a,1,"p,q"', quoting=clevercsv.QUOTE_MINIMAL
         )
         self._write_test(
-            ["a", 1, "p,q"], '"a",1,"p,q"', quoting=ccsv.QUOTE_NONNUMERIC
+            ["a", 1, "p,q"], '"a",1,"p,q"', quoting=clevercsv.QUOTE_NONNUMERIC
         )
         self._write_test(
-            ["a", 1, "p,q"], '"a","1","p,q"', quoting=ccsv.QUOTE_ALL
+            ["a", 1, "p,q"], '"a","1","p,q"', quoting=clevercsv.QUOTE_ALL
         )
-        self._write_test(["a\nb", 1], '"a\nb","1"', quoting=ccsv.QUOTE_ALL)
+        self._write_test(["a\nb", 1], '"a\nb","1"', quoting=clevercsv.QUOTE_ALL)
 
     def test_write_simpledialect(self):
         self._write_test(

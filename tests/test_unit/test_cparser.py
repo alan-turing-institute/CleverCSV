@@ -11,7 +11,7 @@ import io
 import six
 import unittest
 
-from ccsv.cparser_util import parse_data
+from clevercsv.cparser_util import parse_data
 
 
 class ParserTestCase(unittest.TestCase):

@@ -9,8 +9,8 @@ Author: Gertjan van den Burg
 
 import unittest
 
-from ccsv.dialect import SimpleDialect
-from ccsv.normal_form import (
+from clevercsv.dialect import SimpleDialect
+from clevercsv.normal_form import (
     is_form_1,
     is_form_2,
     is_form_3,
