@@ -58,6 +58,13 @@ def parse_args():
         action="store_true",
     )
     parser.add_argument(
+            "-n",
+            "--num-chars",
+            help="number of characters to read for detection. If omitted, read the entire file.",
+            type=int,
+            default=None
+            )
+    parser.add_argument(
         "-o",
         "--output",
         help="output file, if omitted print to stdout",
@@ -80,7 +87,8 @@ def main():
         enc = args.encoding
 
     with open(args.input, "r", newline="", encoding=enc) as fid:
-        dialect = ccsv.Detector().detect(fid.read(), verbose=args.verbose)
+        data = fid.read(args.num_chars) if args.num_chars else fid.read()
+        dialect = ccsv.Detector().detect(data, verbose=args.verbose)
 
     if args.action == "detect":
         print("Detected dialect:", dialect)
