@@ -9,7 +9,7 @@ Author: Gertjan van den Burg
 """
 
 import argparse
-import ccsv
+import clevercsv
 import sys
 import tabview
 
