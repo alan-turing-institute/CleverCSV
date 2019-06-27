@@ -27,14 +27,10 @@ test: in ## Run nosetests using the default nosetests command
 	poetry run green -v ./tests/test_unit
 
 integration: install ## Run integration tests with nose
-	python ./tests/test_integration/test_dialect_detection.py \
-		--with-logresults --rednose -v -s \
-		-w ./tests/test_integration/
+	python ./tests/test_integration/test_dialect_detection.py -v
 
 integration_partial: install ## Run partial integration test with nose
-	python ./tests/test_integration/test_dialect_detection_partial.py \
-		--with-logresults --rednose -v -s \
-		-w ./tests/test_integration/
+	python ./tests/test_integration/test_dialect_detection.py -v --partial
 
 cover: test ## Test unit test coverage using default nosetests
 	nosetests --with-coverage --cover-package=$(PACKAGE) \
