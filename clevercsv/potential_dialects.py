@@ -19,8 +19,7 @@ from .utils import pairwise
 
 
 def get_dialects(data, encoding="UTF-8", delimiters=None):
-    """
-    Return the possible dialects for the given data.
+    """Return the possible dialects for the given data.
 
     We consider as escape characters those characters for which 
     is_potential_escapechar() is True and that occur at least once before a 
