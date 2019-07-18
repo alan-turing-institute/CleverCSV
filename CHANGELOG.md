@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.2.3
+
+* Add ``read_as_lol`` wrapper function.
+
 ## Version 0.2.2
 
 * Add ``code`` command to ``clevercsv`` command line program.
