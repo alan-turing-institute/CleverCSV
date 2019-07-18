@@ -16,6 +16,7 @@ from pandas.errors import ParserWarning
 
 from .detect import Detector
 from .dict_read_write import DictReader
+from .read import reader
 from .utils import get_encoding
 
 
@@ -28,6 +29,41 @@ def read_as_dicts(filename, dialect=None, verbose=False):
         r = DictReader(fid, dialect=dialect)
         for row in r:
             yield row
+
+
+def read_as_lol(filename, dialect=None, verbose=False):
+    """Read a CSV file as a list of lists
+
+    This is a convenience function that reads a CSV file and returns the data 
+    as a list of lists (= rows).
+
+    Parameters
+    ----------
+    filename: str
+        Path of the CSV file
+
+    dialect: str, SimpleDialect, or csv.Dialect object
+        If the dialect is known, it can be provided here. This function uses 
+        the CleverCSV :class:``reader`` object, which supports various dialect 
+        types (string, SimpleDialect, or csv.Dialect). If None, the dialect 
+        will be detected.
+
+    verbose: bool
+        Whether or not to show detection progress.
+
+    Returns
+    -------
+    rows: list
+        Returns rows as a list of lists.
+
+    """
+    enc = get_encoding(filename)
+    with open(filename, "r", newline="", encoding=enc) as fid:
+        if dialect is None:
+            dialect = Detector().detect(fid.read(), verbose=verbose)
+            fid.seek(0)
+        r = reader(fid, dialect)
+        return list(r)
 
 
 def csv2df(filename, *args, **kwargs):
