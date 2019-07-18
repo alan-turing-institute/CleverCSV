@@ -25,8 +25,8 @@ def standardize(filename, dialect, output, encoding=None):
     else:
         oid = open(output, "w")
     with open(filename, "r", newline="", encoding=encoding) as fid:
-        reader = ccsv.reader(fid, dialect=dialect)
-        writer = ccsv.writer(oid, dialect="excel")
+        reader = clevercsv.reader(fid, dialect=dialect)
+        writer = clevercsv.writer(oid, dialect="excel")
         for row in reader:
             writer.writerow(row)
     if not output is None:
@@ -35,7 +35,7 @@ def standardize(filename, dialect, output, encoding=None):
 
 def view(filename, dialect, encoding=None):
     with open(filename, "r", newline="", encoding=encoding) as fid:
-        reader = ccsv.reader(fid, dialect=dialect)
+        reader = clevercsv.reader(fid, dialect=dialect)
         data = list(reader)
     tabview.view(data)
 
@@ -75,12 +75,12 @@ def parse_args():
 def main():
     args = parse_args()
     if args.encoding is None:
-        enc = ccsv.utils.get_encoding(args.input)
+        enc = clevercsv.utils.get_encoding(args.input)
     else:
         enc = args.encoding
 
     with open(args.input, "r", newline="", encoding=enc) as fid:
-        dialect = ccsv.Detector().detect(fid.read(), verbose=args.verbose)
+        dialect = clevercsv.Detector().detect(fid.read(), verbose=args.verbose)
 
     if args.action == "detect":
         print("Detected dialect:", dialect)
