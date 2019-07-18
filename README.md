@@ -21,7 +21,7 @@ Handy links:
   tables, headers or no headers, escape characters, and there's no support for 
   data dictionaries.
 
-CleverCSV is a Python package that hopes to solve many of the pain points of 
+CleverCSV is a Python package that aims to solve many of the pain points of 
 CSV files, while maintaining many of the good things. The package 
 automatically detects (with high accuracy) the format (*dialect*) of CSV 
 files, thus making it easier to simply point to a CSV file and load it, 
@@ -112,13 +112,15 @@ lot of the functionality is similar to the CSV package in Python!)
 ### Command-Line Tool
 
 The ``clevercsv`` command line tool can be useful when dealing with CSV files 
-on the command line. At the moment, ``clevercsv`` supports three commands:
+on the command line. At the moment, ``clevercsv`` supports these commands:
 
 - ``detect``: detect the dialect of a given CSV file
 - ``view``: detect the dialect and view the file as a spreadsheet using 
   [tabview](https://github.com/TabViewer/tabview)
 - ``standardize``: after detecting the dialect of a CSV file, standardize it 
   to the CSV spec in [RFC-4180](https://tools.ietf.org/html/rfc4180).
+- ``code``: Generate Python code for reading a specific CSV file with the 
+  detected dialect
 
 On the terminal, run ``clevercsv -h`` for more information.
 
