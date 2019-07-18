@@ -41,19 +41,19 @@ def view(filename, dialect, encoding=None):
 
 
 def code(filename, dialect, encoding=None):
-    d = f"\"{dialect.delimiter}\""
-    q = "\"%s\"" % (dialect.quotechar.replace('"', '\\\"'))
-    e = f"\"{dialect.escapechar}\""
+    d = f'"{dialect.delimiter}"'
+    q = '"%s"' % (dialect.quotechar.replace('"', '\\"'))
+    e = f'"{dialect.escapechar}"'
     code = [
         "",
         f"# Code generated with CleverCSV version {clevercsv.__version__}" "",
         "import clevercsv",
         "",
-        f"with open(\"{filename}\", \"r\", newline=\"\", encoding=\"{encoding}\") as fp:",
+        f'with open("{filename}", "r", newline="", encoding="{encoding}") as fp:',
         f"    reader = clevercsv.reader(fp, "
         + f"delimiter={d}, quotechar={q}, escapechar={e})",
         "    rows = list(reader)",
-        ""
+        "",
     ]
     print("\n".join(code))
 
