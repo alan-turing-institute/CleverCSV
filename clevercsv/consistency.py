@@ -78,3 +78,23 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
 
     field_size_limit(old_limit)
     return result
+
+
+def consistency_scores(data, dialects, skip=True):
+    scores = {}
+
+    Qmax = -float("inf")
+    for dialect in sorted(dialects):
+        P = pattern_score(data, dialect)
+        if P < Qmax and skip:
+            scores[dialect] = {
+                "pattern": P,
+                "type": float("nan"),
+                "Q": float("nan"),
+            }
+            continue
+        T = type_score(data, dialect)
+        Q = P * T
+        Qmax = max(Q, Qmax)
+        scores[dialect] = {"pattern": P, "type": T, "Q": Q}
+    return scores
