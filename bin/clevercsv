@@ -40,10 +40,29 @@ def view(filename, dialect, encoding=None):
     tabview.view(data)
 
 
+def codegen(filename, dialect, encoding=None):
+    d = f"\"{dialect.delimiter}\""
+    q = "\"%s\"" % (dialect.quotechar.replace('"', '\\\"'))
+    e = f"\"{dialect.escapechar}\""
+    code = [
+        "",
+        f"# Code generated with CleverCSV version {clevercsv.__version__}" "",
+        "import clevercsv",
+        "",
+        f"with open(\"{filename}\", \"r\", newline=\"\", encoding=\"{encoding}\") as fp:",
+        f"    reader = clevercsv.reader(fp, "
+        + f"delimiter={d}, quotechar={q}, escapechar={e})",
+        "    rows = list(reader)",
+    ]
+    print("\n".join(code))
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "action", choices=["standardize", "view", "detect"], default="detect"
+        "action",
+        choices=["standardize", "view", "detect", "codegen"],
+        default="detect",
     )
     parser.add_argument(
         "-e",
@@ -88,6 +107,8 @@ def main():
         standardize(args.input, dialect, args.output, encoding=enc)
     elif args.action == "view":
         view(args.input, dialect, encoding=enc)
+    elif args.action == "codegen":
+        codegen(args.input, dialect, encoding=enc)
     else:
         raise SystemExit(1)
 
