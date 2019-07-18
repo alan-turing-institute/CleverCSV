@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from .__version__ import __version__
+
 from csv import QUOTE_ALL, QUOTE_MINIMAL, QUOTE_NONNUMERIC, QUOTE_NONE
 
 from .detect import Detector
