@@ -31,7 +31,7 @@ def read_as_dicts(filename, dialect=None, verbose=False):
             yield row
 
 
-def read_as_lol(filename, dialect=None, verbose=False):
+def read_csv(filename, dialect=None, verbose=False):
     """Read a CSV file as a list of lists
 
     This is a convenience function that reads a CSV file and returns the data 
