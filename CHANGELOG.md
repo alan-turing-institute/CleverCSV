@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.2.5
+
+* Rename ``read_as_lol`` to ``read_csv``.
+
 ## Version 0.2.4
 
 * Allow setting the number of characters to read
