@@ -1,5 +1,11 @@
 # Change Log
 
+## Version 0.3.1
+
+* Add help description to each CLI command
+* Update README
+* Add transpose flag for ``standardize`` and ``view`` commands
+
 ## Version 0.3.0
 
 * Rewrite console application using Cleo
