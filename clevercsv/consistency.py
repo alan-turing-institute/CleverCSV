@@ -57,8 +57,8 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
         P = pattern_score(data, dialect)
         if P < Qmax:
             log(
-                "%15r:\tP = %15.6f\tT = %15.6f\tQ = %15.6f"
-                % (dialect, P, float("nan"), float("nan"))
+                "%15r:\tP = %15.6f\tskip."
+                % (dialect, P)
             )
             continue
         T = type_score(data, dialect)

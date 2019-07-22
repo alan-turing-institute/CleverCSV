@@ -109,11 +109,11 @@ setup(
     extras_require=EXTRAS,
     include_package_data=True,
     license="MIT",
-    scripts=["bin/clevercsv"],
     ext_modules=[
         Extension("clevercsv.cparser", sources=["src/cparser.c"]),
         Extension("clevercsv.cabstraction", sources=["src/abstraction.c"]),
     ],
+    entry_points={"console_scripts": ["clevercsv = clevercsv.__main__:main"]},
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers

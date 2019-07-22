@@ -10,3 +10,6 @@ exclude poetry.lock
 exclude pyproject.toml
 exclude Makefile
 exclude .gitignore
+exclude .travis.yml
+prune notes
+prune auxiliary
