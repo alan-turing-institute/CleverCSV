@@ -212,3 +212,24 @@ df = clevercsv.csv2df("{tmpfname}", delimiter=";", quotechar="", escapechar="")
         finally:
             os.unlink(tmpfname)
             os.unlink(tmpoutname)
+
+    def test_standardize_3(self):
+        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        tmpfname = self._build_file(table, dialect)
+
+        tmpfd, tmpoutname = tempfile.mkstemp(suffix=".csv")
+        os.close(tmpfd)
+
+        application = build_application()
+        command = application.find("standardize")
+        tester = CommandTester(command)
+        tester.execute(f"-t {tmpfname}")
+
+        exp = "A,1,4\nB,2,5\nC,3,6"
+
+        try:
+            output = tester.io.fetch_output().strip()
+            self.assertEqual(exp, output)
+        finally:
+            os.unlink(tmpfname)

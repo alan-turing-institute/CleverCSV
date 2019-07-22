@@ -22,6 +22,7 @@ class StandardizeCommand(Command):
         { --n|num-chars= : Limit the number of characters to read for
         detection. This will speed up detection but may reduce accuracy. }
         { --o|output= : Output file to write to. If omitted, print to stdout.}
+        { --t|transpose : Transpose the columns of the file before writing. }
     """
 
     help = """\
@@ -46,11 +47,20 @@ file to the standard RFC-4180 format [1].
             if output is None
             else open(output, "w", encoding=encoding)
         )
-        with open(path, "r", newline="", encoding=encoding) as fp:
-            read = reader(fp, dialect=dialect)
+        if self.option("transpose"):
+            with open(path, "r", newline="", encoding=encoding) as fp:
+                read = reader(fp, dialect=dialect)
+                rows = list(read)
+            rows = list(map(list, zip(*rows)))
             write = writer(out, dialect="excel")
-            for row in read:
+            for row in rows:
                 write.writerow(row)
+        else:
+            with open(path, "r", newline="", encoding=encoding) as fp:
+                read = reader(fp, dialect=dialect)
+                write = writer(out, dialect="excel")
+                for row in read:
+                    write.writerow(row)
         if output is None:
-            self.line(out.getvalue())
+            self.overwrite(out.getvalue())
         out.close()

@@ -18,6 +18,7 @@ class ViewCommand(Command):
         { --e|encoding= : Set the encoding of the CSV file }
         { --n|num-chars= : Limit the number of characters to read for 
         detection. This will speed up detection but may reduce accuracy. }
+        { --t|transpose : Transpose the columns of the file before viewing. }
     """
 
     help = """\
@@ -33,4 +34,6 @@ Use the <info>view</info> command to view a CSV file on the command line.
             num_chars=num_chars,
             verbose=verbose,
         )
+        if self.option('transpose'):
+            rows = list(map(list, zip(*rows)))
         tabview.view(rows)
