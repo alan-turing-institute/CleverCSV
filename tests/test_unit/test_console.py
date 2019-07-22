@@ -100,6 +100,26 @@ class ConsoleTestCase(unittest.TestCase):
         finally:
             os.unlink(tmpfname)
 
+    def test_detect_opts_3(self):
+        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        tmpfname = self._build_file(table, dialect)
+
+        application = build_application()
+        command = application.find("detect")
+        tester = CommandTester(command)
+        tester.execute(f"--plain {tmpfname}")
+
+        exp = """\
+delimiter = ;
+quotechar =
+escapechar ="""
+        try:
+            output = tester.io.fetch_output().strip()
+            self.assertEqual(exp, output)
+        finally:
+            os.unlink(tmpfname)
+
     def test_code_1(self):
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")

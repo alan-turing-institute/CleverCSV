@@ -16,6 +16,7 @@ class DetectCommand(Command):
         { --e|encoding= : Set the encoding of the CSV file }
         { --n|num-chars= : Limit the number of characters to read for
         detection. This will speed up detection but may reduce accuracy. }
+        { --p|plain : Print the components of the dialect on separate lines. }
     """
 
     help = "The <info>detect</info> command detects the dialect of a given CSV file."
@@ -29,4 +30,9 @@ class DetectCommand(Command):
             encoding=self.option("encoding"),
             verbose=verbose,
         )
-        self.line(str(dialect))
+        if self.option("plain"):
+            self.line(f"delimiter = {dialect.delimiter}".strip())
+            self.line(f"quotechar = {dialect.quotechar}".strip())
+            self.line(f"escapechar = {dialect.escapechar}".strip())
+        else:
+            self.line(str(dialect))
