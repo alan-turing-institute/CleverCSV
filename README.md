@@ -55,6 +55,11 @@ can use:
 }
 ```
 
+And of course, if you like the package please *spread the word!* You can do 
+this by Tweeting about it 
+([#CleverCSV](https://twitter.com/hashtag/clevercsv)) or clicking the ⭐️ [on 
+GitHub](https://github.com/alan-turing-institute/CleverCSV)!
+
 ## Installation
 
 The package is available on PyPI:

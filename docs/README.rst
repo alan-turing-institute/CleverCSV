@@ -72,6 +72,11 @@ can use:
        year={2018}
    }
 
+And of course, if you like the package please *spread the word!* You can do 
+this by Tweeting about it 
+(\ `#CleverCSV <https://twitter.com/hashtag/clevercsv>`_\ ) or clicking the ⭐️ `on 
+GitHub <https://github.com/alan-turing-institute/CleverCSV>`_\ !
+
 Installation
 ------------
 
