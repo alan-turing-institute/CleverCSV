@@ -84,4 +84,5 @@ class Config(ApplicationConfig):
         if args.has_token("-v"):
             io.set_verbosity(VERBOSE)
 
+        io.set_interactive(False)
         return io
