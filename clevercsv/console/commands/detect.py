@@ -14,9 +14,11 @@ class DetectCommand(Command):
     detect
         { path : The path to the CSV file }
         { --e|encoding= : Set the encoding of the CSV file }
-        { --n|num-chars= : Limit the number of characters to read for 
+        { --n|num-chars= : Limit the number of characters to read for
         detection. This will speed up detection but may reduce accuracy. }
     """
+
+    help = "The <info>detect</info> command detects the dialect of a given CSV file."
 
     def handle(self):
         verbose = self.io.verbosity > 0

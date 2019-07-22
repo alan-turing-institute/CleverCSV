@@ -13,7 +13,7 @@ from ._utils import parse_int
 
 class StandardizeCommand(Command):
     """
-    Convert a CSV file to one that conforms to RFC-4180.
+    Convert a CSV file to one that conforms to RFC-4180
 
     standardize
         { path : The path to the CSV file }
@@ -22,6 +22,13 @@ class StandardizeCommand(Command):
         { --n|num-chars= : Limit the number of characters to read for
         detection. This will speed up detection but may reduce accuracy. }
         { --o|output= : Output file to write to. If omitted, print to stdout.}
+    """
+
+    help = """\
+The <info>standardize</info> command can be used to convert a non-standard CSV 
+file to the standard RFC-4180 format [1].
+
+[1]: https://tools.ietf.org/html/rfc4180
     """
 
     def handle(self):

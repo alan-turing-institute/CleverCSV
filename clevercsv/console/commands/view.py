@@ -20,6 +20,10 @@ class ViewCommand(Command):
         detection. This will speed up detection but may reduce accuracy. }
     """
 
+    help = """\
+Use the <info>view</info> command to view a CSV file on the command line.
+    """
+
     def handle(self):
         verbose = self.io.verbosity > 0
         num_chars = parse_int(self.option("num-chars"), "num-chars")

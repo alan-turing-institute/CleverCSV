@@ -10,7 +10,7 @@ from ._utils import parse_int
 
 class CodeCommand(Command):
     """
-    Generate Python code for importing the CSV file.
+    Generate Python code for importing the CSV file
 
     code
         { path : The path to the CSV file }
@@ -19,6 +19,16 @@ class CodeCommand(Command):
         detection. This will speed up detection but may reduce accuracy. }
         { --p|pandas : Write code that imports to a Pandas DataFrame }
     """
+
+    help = """\
+The <info>code</info> command generates Python code for importing the specified 
+CSV file. This is especially useful if you don't want to repeatedly detect the 
+dialect of the same file. Simply run:
+
+clevercsv code yourfile.csv
+
+and copy the generated code to a Python script.
+"""
 
     def handle(self):
         filename = self.argument("path")
@@ -44,7 +54,7 @@ class CodeCommand(Command):
             code = base + [
                 "",
                 f'df = clevercsv.csv2df("{filename}", delimiter={d}, quotechar={q}, escapechar={e})',
-                ""
+                "",
             ]
         else:
             code = base + [
