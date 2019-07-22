@@ -7,7 +7,6 @@ Author: Gertjan van den Burg
 
 """
 
-
 import pandas as pd
 import warnings
 import os
@@ -31,7 +30,9 @@ def read_as_dicts(filename, dialect=None, verbose=False):
             yield row
 
 
-def read_csv(filename, dialect=None, verbose=False):
+def read_csv(
+    filename, dialect=None, encoding=None, num_chars=None, verbose=False
+):
     """Read a CSV file as a list of lists
 
     This is a convenience function that reads a CSV file and returns the data 
@@ -48,6 +49,16 @@ def read_csv(filename, dialect=None, verbose=False):
         types (string, SimpleDialect, or csv.Dialect). If None, the dialect 
         will be detected.
 
+    encoding : str
+        The encoding of the file. If None, it is detected.
+
+    num_chars : int
+        Number of characters to use to detect the dialect. If None, use the 
+        entire file.
+
+        Note that using less than the entire file will speed up detection, but 
+        can reduce the accuracy of the detected dialect.
+
     verbose: bool
         Whether or not to show detection progress.
 
@@ -57,10 +68,12 @@ def read_csv(filename, dialect=None, verbose=False):
         Returns rows as a list of lists.
 
     """
-    enc = get_encoding(filename)
-    with open(filename, "r", newline="", encoding=enc) as fid:
+    if encoding is None:
+        encoding = get_encoding(filename)
+    with open(filename, "r", newline="", encoding=encoding) as fid:
         if dialect is None:
-            dialect = Detector().detect(fid.read(), verbose=verbose)
+            data = fid.read(num_chars) if num_chars else fid.read()
+            dialect = Detector().detect(data, verbose=verbose)
             fid.seek(0)
         r = reader(fid, dialect)
         return list(r)
@@ -103,3 +116,39 @@ def csv2df(filename, *args, **kwargs):
         )
         df = pd.read_csv(filename, *args, dialect=csv_dialect, **kwargs)
     return df
+
+
+def detect_dialect(filename, num_chars=None, encoding=None, verbose=False):
+    """Detect the dialect of a CSV file
+
+    This is a utility function that simply returns the detected dialect of a 
+    given CSV file.
+
+    Parameters
+    ----------
+    filename : str
+        The filename of the CSV file.
+
+    num_chars : int
+        Number of characters to read for the detection. If None, the entire 
+        file will be read. Note that limiting the number of characters can 
+        reduce the accuracy of the detected dialect.
+
+    encoding : str
+        The file encoding of the CSV file. If None, it is detected.
+
+    verbose : bool
+        Enable verbose mode during detection.
+
+
+    Returns
+    -------
+    dialect : SimpleDialect
+        The detected dialect as a :class:`SimpleDialect`, or None if detection 
+        failed.
+
+    """
+    with open(filename, "r", newline="", encoding=encoding) as fp:
+        data = fp.read(num_chars) if num_chars else fp.read()
+        dialect = Detector().detect(data, verbose=verbose)
+    return dialect
