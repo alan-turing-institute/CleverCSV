@@ -111,18 +111,38 @@ lot of the functionality is similar to the CSV package in Python!)
 
 ### Command-Line Tool
 
-The ``clevercsv`` command line tool can be useful when dealing with CSV files 
-on the command line. At the moment, ``clevercsv`` supports these commands:
+The ``clevercsv`` command line application has a number of handy features to 
+make working with CSV files easier. For instance, it can be used to view a CSV 
+file on the command line while automatically detecting the dialect. It can 
+also generate Python code for importing data from a file with the correct 
+dialect. The full help text is as follows:
 
-- ``detect``: detect the dialect of a given CSV file
-- ``view``: detect the dialect and view the file as a spreadsheet using 
-  [tabview](https://github.com/TabViewer/tabview)
-- ``standardize``: after detecting the dialect of a CSV file, standardize it 
-  to the CSV spec in [RFC-4180](https://tools.ietf.org/html/rfc4180).
-- ``code``: Generate Python code for reading a specific CSV file with the 
-  detected dialect
+```text
+CleverCSV version 0.3.1
 
-On the terminal, run ``clevercsv -h`` for more information.
+USAGE
+  clevercsv [-h] [-v] [-V] <command> [<arg1>] ... [<argN>]
+
+ARGUMENTS
+  <command>       The command to execute
+  <arg>           The arguments of the command
+
+GLOBAL OPTIONS
+  -h (--help)     Display this help message.
+  -v (--verbose)  Enable verbose mode.
+  -V (--version)  Display the application version.
+
+AVAILABLE COMMANDS
+  code            Generate Python code for importing the CSV file.
+  detect          Detect the dialect of a CSV file
+  help            Display the manual of a command
+  standardize     Convert a CSV file to one that conforms to RFC-4180.
+  view            View the CSV file on the command line using TabView
+```
+
+Each of the commands has further options (for instance, the ``code`` command 
+can generate code for importing a Pandas DataFrame). Use ``clevercsv help 
+<command>`` for more information.
 
 ## Contributors
 
