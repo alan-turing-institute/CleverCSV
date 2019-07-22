@@ -19,7 +19,7 @@
 
 project = "CleverCSV"
 copyright = "2019, The Alan Turing Institute"
-author = "Gertjan van den Burg"
+author = "G.J.J. van den Burg"
 
 
 # -- General configuration ---------------------------------------------------
