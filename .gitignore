@@ -10,3 +10,5 @@ clevercsv.egg-info/
 clevercsv/.coverage
 clevercsv/*.so
 dist/*
+docs/_build
+docs/_static
