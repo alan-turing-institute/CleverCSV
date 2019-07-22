@@ -4,6 +4,7 @@
 
    readme
    changelog
+   source/clevercsv
 
 
 Indices and tables

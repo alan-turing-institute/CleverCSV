@@ -119,8 +119,8 @@ def get_delimiters(
     character of the file, we check if its Unicode character category is in the 
     set ``block_cat`` of prohibited categories.  If it is, we don't allow it to 
     be a delimiter, with the exception of Tab (which is in the Control 
-    category).  We furthermore block characters in ``block_set`` from being 
-    delimiters. 
+    category).  We furthermore block characters in :attr:`block_char` from 
+    being delimiters. 
 
     Parameters
     ----------
@@ -134,8 +134,8 @@ def get_delimiters(
         Allowed delimiters. If provided, it overrides the block_cat/block_char 
         mechanism and only the provided characters will be considered 
         delimiters (if they occur in the file). If None, all characters can be 
-        considered delimiters subject to the block_cat and block_char 
-        parameters.
+        considered delimiters subject to the :attr:`block_cat` and 
+        :attr:`block_char` parameters.
 
     block_cat: list
         List of Unicode categories (2-letter abbreviations) for characters that 
@@ -145,16 +145,14 @@ def get_delimiters(
         ["Lu", "Ll", "Lt", "Lm", "Lo", "Nd", "Nl", "No", "Ps", "Pe", "Co"]
 
     block_char: list
-        Explicit list of characters that should not be considered delimiters.  
+        Explicit list of characters that should not be considered delimiters.
         If None, the following default set is used::
 
-
-        [".", "/", '"', "'", "\n", "\r"]
+        [".", "/", '"', "'", "\\n", "\\r"]
 
 
     Returns
     -------
-
     delims: set
         Set of potential delimiters. The empty string is added by default.
 

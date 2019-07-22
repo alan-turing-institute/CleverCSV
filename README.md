@@ -141,8 +141,8 @@ AVAILABLE COMMANDS
 ```
 
 Each of the commands has further options (for instance, the ``code`` command 
-can generate code for importing a Pandas DataFrame). Use ``clevercsv help 
-<command>`` for more information.
+can generate code for importing a Pandas DataFrame). Use
+``clevercsv help <command>`` for more information.
 
 ## Contributors
 
