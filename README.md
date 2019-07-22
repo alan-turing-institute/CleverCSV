@@ -10,6 +10,8 @@ Handy links:
 
 - [CleverCSV on Github](https://github.com/alan-turing-institute/CleverCSV)
 - [CleverCSV on PyPI](https://pypi.org/project/clevercsv/)
+- [Demo of CleverCSV on Binder 
+  (interactive!)](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb)
 - [Paper on arXiv](https://arxiv.org/abs/1811.11242)
 - [Reproducible Research Repo](https://github.com/alan-turing-institute/CSV_Wrangling/)
 
@@ -28,10 +30,7 @@ files, thus making it easier to simply point to a CSV file and load it,
 without the need for human inspection. In the future, we hope to solve some of 
 the other issues of CSV files too.
 
-**A Demo of CleverCSV is available on 
-[BinderHub](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb).**
-
-CleverCSV is [**based on science**](https://arxiv.org/abs/1811.11242). We 
+CleverCSV is [based on science](https://arxiv.org/abs/1811.11242). We 
 investigated thousands of real-world CSV files to find a robust way to 
 automatically detect the dialect of a file. This may seem like an easy 
 problem, but to a computer a CSV file is simply a long string, and every 
@@ -140,7 +139,7 @@ Scientific work:
 ## Contributing
 
 If you want to encourage development of CleverCSV, the best thing to do now is 
-to *spread the word!*.
+to *spread the word!*
 
 If you encounter an issue in CleverCSV, please open an issue or submit a pull 
 request!
