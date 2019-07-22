@@ -1,5 +1,14 @@
 # Change Log
 
+## Version 0.3.0
+
+* Rewrite console application using Cleo
+* Add unit tests for console application
+* Add ``detect_dialect`` wrapper function
+* Add support for "unix_path" data type in type detection
+* Add ``encoding`` and ``num_chars`` options to ``read_csv`` wrapper
+* Add ``-p/--pandas`` flag to ``code`` command to generate Pandas output.
+
 ## Version 0.2.5
 
 * Rename ``read_as_lol`` to ``read_csv``.
