@@ -8,6 +8,7 @@ env:
 install:
   - pip install --upgrade pip
   - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+  - source $HOME/.poetry/env
   - poetry install
   - python setup.py build_ext --inplace
 
