@@ -53,4 +53,6 @@ dist: ## Make Python source distribution
 
 docs: doc
 doc: install ## Build documentation with Sphinx
+	m2r README.md && mv README.rst $(DOC_DIR)
+	m2r CHANGELOG.md && mv CHANGELOG.rst $(DOC_DIR)
 	$(MAKE) -C $(DOC_DIR) html
