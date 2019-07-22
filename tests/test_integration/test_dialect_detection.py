@@ -53,11 +53,9 @@ def log_result(name, kind, verbose, partial):
 def worker(args, return_dict, **kwargs):
     det = clevercsv.Detector()
     filename, encoding, partial = args
-    with gzip.open(filename, "rt", newline="", encoding=encoding) as fid:
-        if partial:
-            return_dict["dialect"] = det.detect(fid.read(N_BYTES_PARTIAL))
-        else:
-            return_dict["dialect"] = det.detect(fid.read())
+    with gzip.open(filename, "rt", newline="", encoding=encoding) as fp:
+        data = fp.read(N_BYTES_PARTIAL) if partial else fp.read()
+        return_dict["dialect"] = det.detect(data, **kwargs)
 
 
 def run_with_timeout(args, kwargs, limit):
