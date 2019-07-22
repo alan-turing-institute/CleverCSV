@@ -1,12 +1,9 @@
-Welcome to CleverCSV's documentation!
-=====================================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-.. include:: ../README.md
-
+   readme
+   changelog
 
 
 Indices and tables
