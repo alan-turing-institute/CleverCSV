@@ -48,7 +48,7 @@ clean: ## Clean build dist and egg directories left after install
 develop: ## Install a development version of the package needed for testing
 	python setup.py develop --user
 
-dist: ## Make Python source distribution
+dist: requirements.txt ## Make Python source distribution
 	python setup.py sdist
 
 docs: doc
@@ -56,3 +56,6 @@ doc: install ## Build documentation with Sphinx
 	m2r README.md && mv README.rst $(DOC_DIR)
 	m2r CHANGELOG.md && mv CHANGELOG.rst $(DOC_DIR)
 	$(MAKE) -C $(DOC_DIR) html
+
+requirements.txt: pyproject.toml
+	poetry run pip freeze > $@

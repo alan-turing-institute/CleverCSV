@@ -22,7 +22,7 @@ REQUIRES_PYTHON = ">=3.0.0"
 VERSION = None
 
 # What packages are required for this module to be executed?
-REQUIRED = ["regex", "chardet", "pandas", "tabview"]
+REQUIRED = []
 
 # What packages are optional?
 EXTRAS = {}
@@ -41,6 +41,12 @@ try:
         long_description = "\n" + f.read()
 except FileNotFoundError:
     long_description = DESCRIPTION
+
+try:
+    with io.open(os.path.join(here, 'requirements.txt'), encoding='utf-8') as f:
+        REQUIRED = [l.strip() for l in f.readlines()]
+except FileNotFoundError:
+    pass
 
 # Load the package's __version__.py module as a dictionary.
 about = {}

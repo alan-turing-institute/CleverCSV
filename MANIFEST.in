@@ -1,6 +1,7 @@
 include setup.py
 include README.md
 include LICENSE
+include requirements.txt
 recursive-include clevercsv *.py
 recursive-include src *.c
 recursive-include bin *

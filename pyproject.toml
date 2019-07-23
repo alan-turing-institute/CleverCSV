@@ -16,7 +16,6 @@ cleo = "^0.7.5"
 clikit = "^0.3.1"
 
 [tool.poetry.dev-dependencies]
-parameterized = "^0.6.3"
 green = "^2.14"
 
 [build-system]
