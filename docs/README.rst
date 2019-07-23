@@ -13,6 +13,11 @@ CleverCSV: A Clever CSV Parser
    :alt: PyPI version
 
 
+.. image:: https://readthedocs.org/projects/clevercsv/badge/?version=latest
+   :target: https://clevercsv.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
+
 .. image:: https://mybinder.org/badge_logo.svg
    :target: https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb
    :alt: Binder
