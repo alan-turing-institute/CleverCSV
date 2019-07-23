@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.3.2
+
+* Add documentation on [Read the Docs](https://clevercsv.readthedocs.io/)
+* Use requirements.txt file for dependencies when packaging
+
 ## Version 0.3.1
 
 * Add help description to each CLI command
