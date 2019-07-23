@@ -7,7 +7,7 @@
 *This package is currently in beta. If you encounter any problems, please open 
 an issue or submit a pull request!*
 
-Handy links:
+**Handy links:**
 
 - [CleverCSV on Github](https://github.com/alan-turing-institute/CleverCSV)
 - [CleverCSV on PyPI](https://pypi.org/project/clevercsv/)

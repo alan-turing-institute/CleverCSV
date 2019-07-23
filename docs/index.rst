@@ -2,6 +2,11 @@
 .. include:: ./readme.rst
 
 .. toctree::
+   :maxdepth: 2
+
+   readme
+
+.. toctree::
    :caption: Further Documentation
    :maxdepth: 2
 
