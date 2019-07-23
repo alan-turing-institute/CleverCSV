@@ -1,8 +1,10 @@
 
+.. include:: ./readme.rst
+
 .. toctree::
+   :caption: Further Documentation
    :maxdepth: 2
 
-   readme
    changelog
    source/clevercsv
 
