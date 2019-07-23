@@ -151,9 +151,13 @@ class PushToGitHub(Step):
     def action(self):
         self.print_run("git push -u --tags origin master")
 
+
 class WaitForTravis(Step):
     def action(self):
-        self.instruct("Wait for Travis to complete and verify that its successful")
+        self.instruct(
+            "Wait for Travis to complete and verify that its successful"
+        )
+
 
 def main():
     colorama.init()
