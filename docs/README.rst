@@ -150,8 +150,6 @@ dialect. The full help text is as follows:
 
 .. code-block:: text
 
-   CleverCSV version 0.3.1
-
    USAGE
      clevercsv [-h] [-v] [-V] <command> [<arg1>] ... [<argN>]
 
