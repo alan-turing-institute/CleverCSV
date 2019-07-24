@@ -121,14 +121,12 @@ def load_test_cases():
     return cases
 
 
-def clear_output_files():
-    if os.path.exists(LOG_SUCCESS):
-        os.unlink(LOG_SUCCESS)
-    if os.path.exists(LOG_FAILED):
-        os.unlink(LOG_FAILED)
-    if os.path.exists(LOG_ERROR):
-        os.unlink(LOG_ERROR)
-
+def clear_output_files(partial):
+    files = {True: [LOG_SUCCESS_PARTIAL, LOG_FAILED_PARTIAL, 
+        LOG_ERROR_PARTIAL],
+        False: [LOG_SUCCESS, LOG_FAILED, LOG_ERROR]}
+    delete = lambda f : os.unlink(f) if os.path.exists(f) else None
+    map(delete, files[partial])
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -145,7 +143,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    clear_output_files()
+    clear_output_files(args.partial)
     cases = load_test_cases()
     for name, gz_filename, annotation in cases:
         run_test(
