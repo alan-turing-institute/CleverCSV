@@ -334,11 +334,11 @@ def process(input_dir, output_dir):
     data = []
     for ipath in input_paths:
         base, ext = os.path.splitext(os.path.basename(ipath))
-        base_ext = os.path.splitext(base)[1]
+        md5, base_ext = os.path.splitext(base)
         if not (ext == ".csv" or (ext == ".gz" and base_ext == ".csv")):
             print("Warning: non-csv file found in input directory: %s" % ipath)
             continue
-        opath = os.path.join(output_dir, base + ".json")
+        opath = os.path.join(output_dir, md5 + ".json")
         if opath in output_paths:
             # result file exists
             continue
