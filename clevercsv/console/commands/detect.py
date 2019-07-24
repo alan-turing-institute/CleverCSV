@@ -35,4 +35,4 @@ class DetectCommand(Command):
             self.line(f"quotechar = {dialect.quotechar}".strip())
             self.line(f"escapechar = {dialect.escapechar}".strip())
         else:
-            self.line(str(dialect))
+            self.line('Detected: ' + str(dialect))
