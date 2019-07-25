@@ -189,7 +189,7 @@ the generated code to a Python script!
 
    import clevercsv
 
-   with open("imdb.csv", "r", newline="", encoding=None) as fp:
+   with open("imdb.csv", "r", newline="", encoding="utf-8") as fp:
        reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\")
        rows = list(reader)
 
