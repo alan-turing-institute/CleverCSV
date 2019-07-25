@@ -146,7 +146,81 @@ AVAILABLE COMMANDS
 
 Each of the commands has further options (for instance, the ``code`` command 
 can generate code for importing a Pandas DataFrame). Use
-``clevercsv help <command>`` for more information.
+``clevercsv help <command>`` for more information. Below are some examples for 
+each command:
+
+#### Code
+
+Code generation is useful when you don't want to detect the dialect of the 
+same file over and over again. You simply run the following command and copy 
+the generated code to a Python script!
+
+```bash
+$ clevercsv code imdb.csv
+
+# Code generated with CleverCSV
+
+import clevercsv
+
+with open("imdb.csv", "r", newline="", encoding=None) as fp:
+    reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\")
+    rows = list(reader)
+```
+
+We also have a version that reads a Pandas dataframe:
+
+```bash
+$ clevercsv code --pandas imdb.csv
+
+# Code generated with CleverCSV
+
+import clevercsv
+
+df = clevercsv.csv2df("imdb.csv", delimiter=",", quotechar="", escapechar="\")
+```
+
+#### Detect
+
+Detection is useful when you only want to know the dialect.
+
+```bash
+$ clevercsv detect imdb.csv
+Detected: SimpleDialect(',', '', '\\')
+```
+
+The ``--plain`` flag gives the components of the dialect on separate lines, 
+which makes combining it with ``grep`` easier.
+
+```bash
+$ clevercsv detect --plain imdb.csv
+delimiter = ,
+quotechar =
+escapechar = \
+```
+
+#### Standardize
+
+Use the ``standardize`` command when you want to rewrite a file using the 
+RFC-4180 standard:
+
+```bash
+$ clevercsv standardize --output imdb_standard.csv imdb.csv
+```
+
+In this particular example the use of the escape character is replaced by 
+using quotes.
+
+#### View
+
+This command allows you to view the file in the terminal. The dialect is of 
+course detected using CleverCSV! Both this command and the ``standardize`` 
+command support the ``--transpose`` flag, if you want to transpose the file 
+before viewing or saving:
+
+```bash
+$ clevercsv view --transpose imdb.csv
+```
+
 
 ## Contributors
 
