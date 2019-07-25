@@ -29,7 +29,7 @@ class ConsoleTestCase(unittest.TestCase):
 
     def _detect_test_wrap(self, table, dialect):
         tmpfname = self._build_file(table, dialect)
-        exp = 'Detected: ' + str(dialect)
+        exp = "Detected: " + str(dialect)
 
         application = build_application()
         command = application.find("detect")
@@ -74,7 +74,7 @@ class ConsoleTestCase(unittest.TestCase):
         tester = CommandTester(command)
         tester.execute(f"--encoding '{encoding}' {tmpfname}")
 
-        exp = 'Detected: ' + str(dialect)
+        exp = "Detected: " + str(dialect)
 
         try:
             output = tester.io.fetch_output().strip()
@@ -92,7 +92,7 @@ class ConsoleTestCase(unittest.TestCase):
         tester = CommandTester(command)
         tester.execute(f"--num-chars 5 {tmpfname}")
 
-        exp = 'Detected: ' + str(dialect)
+        exp = "Detected: " + str(dialect)
 
         try:
             output = tester.io.fetch_output().strip()
