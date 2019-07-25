@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.3.3
+
+* Ensure detected encoding is in the generated Python code for the ``clevercsv 
+  code`` command.
+* Ensure encoding is detected in ``wrappers.detect_dialect``.
+* Bugfix in integration test
+* Expand readme
+
 ## Version 0.3.2
 
 * Add documentation on [Read the Docs](https://clevercsv.readthedocs.io/)

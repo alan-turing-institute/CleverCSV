@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "clevercsv"
-version = "0.3.2"
+version = "0.3.3"
 description = "A drop-in replacement for the Python CSV module with improved dialect detection"
 authors = ["Gertjan van den Burg <gertjanvandenburg@gmail.com>"]
 license = "MIT"
