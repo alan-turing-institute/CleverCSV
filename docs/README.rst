@@ -181,7 +181,7 @@ Code generation is useful when you don't want to detect the dialect of the
 same file over and over again. You simply run the following command and copy 
 the generated code to a Python script!
 
-.. code-block:: bash
+.. code-block:: text
 
    $ clevercsv code imdb.csv
 
@@ -195,7 +195,7 @@ the generated code to a Python script!
 
 We also have a version that reads a Pandas dataframe:
 
-.. code-block:: bash
+.. code-block:: text
 
    $ clevercsv code --pandas imdb.csv
 
@@ -210,7 +210,7 @@ Detect
 
 Detection is useful when you only want to know the dialect.
 
-.. code-block:: bash
+.. code-block:: text
 
    $ clevercsv detect imdb.csv
    Detected: SimpleDialect(',', '', '\\')
@@ -218,7 +218,7 @@ Detection is useful when you only want to know the dialect.
 The ``--plain`` flag gives the components of the dialect on separate lines, 
 which makes combining it with ``grep`` easier.
 
-.. code-block:: bash
+.. code-block:: text
 
    $ clevercsv detect --plain imdb.csv
    delimiter = ,
@@ -231,7 +231,7 @@ Standardize
 Use the ``standardize`` command when you want to rewrite a file using the 
 RFC-4180 standard:
 
-.. code-block:: bash
+.. code-block:: text
 
    $ clevercsv standardize --output imdb_standard.csv imdb.csv
 
@@ -246,7 +246,7 @@ course detected using CleverCSV! Both this command and the ``standardize``
 command support the ``--transpose`` flag, if you want to transpose the file 
 before viewing or saving:
 
-.. code-block:: bash
+.. code-block:: text
 
    $ clevercsv view --transpose imdb.csv
 
