@@ -18,7 +18,7 @@ import colorama
 def wait_for_enter():
     input(
         colorama.Style.DIM
-        + "\nPress Enter to continue "
+        + "\nPress Enter to continue"
         + colorama.Style.RESET_ALL
     )
     print()
@@ -32,9 +32,14 @@ class Step:
         wait_for_enter()
 
     def run(self):
-        self.pre()
-        self.action()
-        self.post()
+        try:
+            self.pre()
+            self.action()
+            self.post()
+        except KeyboardInterrupt:
+            print(colorama.Fore.RED + "\nInterrupted." + 
+                    colorama.Style.RESET_ALL)
+            raise SystemExit(1)
 
     def instruct(self, msg):
         print(colorama.Fore.GREEN + msg + colorama.Style.RESET_ALL)
@@ -163,6 +168,7 @@ def main():
     colorama.init()
     procedure = [
         GitToMaster(),
+        GitAdd(),
         PushToGitHub(),
         WaitForTravis(),
         BumpVersionPoetry(),
