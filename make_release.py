@@ -127,7 +127,8 @@ class InstallFromTestPyPI(Step):
 
 class TestCleverCSV(Step):
     def action(self):
-        self.print_run("clevercsv help")
+        self.instruct("Inspect correct version with:")
+        self.print_run("clevercsv -V")
 
 
 class DeactivateVenv(Step):
