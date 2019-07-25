@@ -3,6 +3,7 @@
 from cleo import Command
 
 from clevercsv import __version__
+from clevercsv.utils import get_encoding
 from clevercsv.wrappers import detect_dialect
 
 from ._utils import parse_int
@@ -32,7 +33,7 @@ and copy the generated code to a Python script.
 
     def handle(self):
         filename = self.argument("path")
-        encoding = self.option("encoding")
+        encoding = self.option("encoding") or get_encoding(filename)
         num_chars = parse_int(self.option("num-chars"), "num-chars")
         dialect = detect_dialect(
             filename,
@@ -57,9 +58,10 @@ and copy the generated code to a Python script.
                 "",
             ]
         else:
+            enc = "None" if encoding is None else f'"{encoding}"'
             code = base + [
                 "",
-                f'with open("{filename}", "r", newline="", encoding={encoding}) as fp:',
+                f'with open("{filename}", "r", newline="", encoding={enc}) as fp:',
                 f"    reader = clevercsv.reader(fp, "
                 + f"delimiter={d}, quotechar={q}, escapechar={e})",
                 "    rows = list(reader)",
