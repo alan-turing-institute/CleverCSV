@@ -140,7 +140,6 @@ def detect_dialect(filename, num_chars=None, encoding=None, verbose=False):
     verbose : bool
         Enable verbose mode during detection.
 
-
     Returns
     -------
     dialect : SimpleDialect
@@ -148,7 +147,8 @@ def detect_dialect(filename, num_chars=None, encoding=None, verbose=False):
         failed.
 
     """
-    with open(filename, "r", newline="", encoding=encoding) as fp:
+    enc = encoding or get_encoding(filename)
+    with open(filename, "r", newline="", encoding=enc) as fp:
         data = fp.read(num_chars) if num_chars else fp.read()
         dialect = Detector().detect(data, verbose=verbose)
     return dialect
