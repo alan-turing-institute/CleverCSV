@@ -164,6 +164,13 @@ class WaitForTravis(Step):
         )
 
 
+class WaitForRTD(Step):
+    def action(self):
+        self.instruct(
+            "Wait for ReadTheDocs to complete and verify that its successful"
+        )
+
+
 def main():
     colorama.init()
     procedure = [
@@ -171,6 +178,7 @@ def main():
         GitAdd(),
         PushToGitHub(),
         WaitForTravis(),
+        WaitForRTD(),
         BumpVersionPoetry(),
         BumpVersionPackage(),
         UpdateChangelog(),
