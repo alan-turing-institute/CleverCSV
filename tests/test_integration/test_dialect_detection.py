@@ -122,11 +122,13 @@ def load_test_cases():
 
 
 def clear_output_files(partial):
-    files = {True: [LOG_SUCCESS_PARTIAL, LOG_FAILED_PARTIAL, 
-        LOG_ERROR_PARTIAL],
-        False: [LOG_SUCCESS, LOG_FAILED, LOG_ERROR]}
-    delete = lambda f : os.unlink(f) if os.path.exists(f) else None
-    map(delete, files[partial])
+    files = {
+        True: [LOG_SUCCESS_PARTIAL, LOG_FAILED_PARTIAL, LOG_ERROR_PARTIAL],
+        False: [LOG_SUCCESS, LOG_FAILED, LOG_ERROR],
+    }
+    delete = lambda f: os.unlink(f) if os.path.exists(f) else None
+    any(map(delete, files[partial]))
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
