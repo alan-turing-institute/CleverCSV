@@ -12,9 +12,9 @@ an issue or submit a pull request!*
 
 - [CleverCSV on Github](https://github.com/alan-turing-institute/CleverCSV)
 - [CleverCSV on PyPI](https://pypi.org/project/clevercsv/)
-- [Demo of CleverCSV on Binder 
-  (interactive!)](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb)
-- [Paper on arXiv](https://arxiv.org/abs/1811.11242)
+- [Demo of CleverCSV on Binder (interactive!)](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb)
+- [Paper (PDF)](https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf)
+- [Paper (HTML)](https://rdcu.be/bLVur)
 - [Reproducible Research Repo](https://github.com/alan-turing-institute/CSV_Wrangling/)
 
 ## Introduction
@@ -32,8 +32,9 @@ files, thus making it easier to simply point to a CSV file and load it,
 without the need for human inspection. In the future, we hope to solve some of 
 the other issues of CSV files too.
 
-CleverCSV is [based on science](https://arxiv.org/abs/1811.11242). We 
-investigated thousands of real-world CSV files to find a robust way to 
+CleverCSV is [based on 
+science](https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf). 
+We investigated thousands of real-world CSV files to find a robust way to 
 automatically detect the dialect of a file. This may seem like an easy 
 problem, but to a computer a CSV file is simply a long string, and every 
 dialect will give you *some* table. In CleverCSV we use a technique based on 
