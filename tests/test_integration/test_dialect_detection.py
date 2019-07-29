@@ -30,7 +30,6 @@ LOG_SUCCESS_PARTIAL = os.path.join(THIS_DIR, "success_partial.log")
 LOG_ERROR_PARTIAL = os.path.join(THIS_DIR, "error_partial.log")
 LOG_FAILED_PARTIAL = os.path.join(THIS_DIR, "failed_partial.log")
 
-
 TIMEOUT = 5 * 60
 N_BYTES_PARTIAL = 10000
 
@@ -53,9 +52,14 @@ def log_result(name, kind, verbose, partial):
 def worker(args, return_dict, **kwargs):
     det = clevercsv.Detector()
     filename, encoding, partial = args
+    return_dict["error"] = False
+    return_dict["dialect"] = None
     with gzip.open(filename, "rt", newline="", encoding=encoding) as fp:
         data = fp.read(N_BYTES_PARTIAL) if partial else fp.read()
-        return_dict["dialect"] = det.detect(data, **kwargs)
+        try:
+            return_dict["dialect"] = det.detect(data, **kwargs)
+        except clevercsv.Error:
+            return_dict["error"] = True
 
 
 def run_with_timeout(args, kwargs, limit):
@@ -68,8 +72,8 @@ def run_with_timeout(args, kwargs, limit):
     p.join(limit)
     if p.is_alive():
         p.terminate()
-        return None
-    return return_dict.get("dialect", None)
+        return None, True
+    return return_dict["dialect"], return_dict["error"]
 
 
 def run_test(name, gz_filename, annotation, verbose=True, partial=False):
@@ -80,12 +84,9 @@ def run_test(name, gz_filename, annotation, verbose=True, partial=False):
             enc = chardet.detect(fid.read())["encoding"]
 
     true_dialect = annotation["dialect"]
-    try:
-        dialect = run_with_timeout((gz_filename, enc, partial), {}, TIMEOUT)
-    except (KeyboardInterrupt, EOFError):
-        raise
-    except:
-        log_result(name, "error", verbose, partial)
+    dialect, error = run_with_timeout((gz_filename, enc, partial), {}, TIMEOUT)
+    if error:
+        return log_result(name, "error", verbose, partial)
 
     if dialect is None:
         log_result(name, "failure", verbose, partial)
