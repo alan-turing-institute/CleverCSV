@@ -13,14 +13,33 @@ Date: 2019-07-23
 """
 
 import colorama
+import os
+
+
+def colored(msg, color=None, style=None):
+    colors = {
+        "red": colorama.Fore.RED,
+        "green": colorama.Fore.GREEN,
+        "cyan": colorama.Fore.CYAN,
+        "yellow": colorama.Fore.YELLOW,
+        None: "",
+    }
+    styles = {
+        "bright": colorama.Style.BRIGHT,
+        "dim": colorama.Style.DIM,
+        None: "",
+    }
+    pre = colors[color] + styles[style]
+    post = colorama.Style.RESET_ALL
+    return f"{pre}{msg}{post}"
+
+
+def cprint(msg, color=None, style=None):
+    print(colored(msg, color=color, style=style))
 
 
 def wait_for_enter():
-    input(
-        colorama.Style.DIM
-        + "\nPress Enter to continue"
-        + colorama.Style.RESET_ALL
-    )
+    input(colored("\nPress Enter to continue", style="dim"))
     print()
 
 
@@ -37,30 +56,18 @@ class Step:
             self.action()
             self.post()
         except KeyboardInterrupt:
-            print(colorama.Fore.RED + "\nInterrupted." + 
-                    colorama.Style.RESET_ALL)
+            cprint("\nInterrupted.", color="red")
             raise SystemExit(1)
 
     def instruct(self, msg):
-        print(colorama.Fore.GREEN + msg + colorama.Style.RESET_ALL)
+        cprint(msg, color="green")
 
     def print_run(self, msg):
-        print(
-            colorama.Fore.CYAN
-            + colorama.Style.BRIGHT
-            + "Run:"
-            + colorama.Style.RESET_ALL
-        )
+        cprint("Run:", color="cyan", style="bright")
         self.print_cmd(msg)
 
     def print_cmd(self, msg):
-        print(
-            colorama.Fore.CYAN
-            + colorama.Style.BRIGHT
-            + "\t"
-            + msg
-            + colorama.Style.RESET_ALL
-        )
+        cprint("\t" + msg, color="cyan", style="bright")
 
     def do_cmd(self, cmd):
         cprint(f"Going to run: {cmd}", color="cyan", style="bright")
@@ -70,6 +77,7 @@ class Step:
 
 class GitToMaster(Step):
     def action(self):
+        self.instruct("Make sure you're on master and changes are merged in")
         self.print_run("git checkout master")
 
 
@@ -203,6 +211,7 @@ def main():
     ]
     for step in procedure:
         step.run()
+    cprint('\nDone!', color='yellow', style='bright')
 
 
 if __name__ == "__main__":
