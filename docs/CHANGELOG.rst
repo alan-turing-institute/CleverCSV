@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 0.3.4
+-------------
+
+
+* Ensure the C parser is used in the ``reader``.
+* Update integration tests to improve error handling
+* Readme updates
+
 Version 0.3.3
 -------------
 
