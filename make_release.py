@@ -62,6 +62,11 @@ class Step:
             + colorama.Style.RESET_ALL
         )
 
+    def do_cmd(self, cmd):
+        cprint(f"Going to run: {cmd}", color="cyan", style="bright")
+        wait_for_enter()
+        os.system(cmd)
+
 
 class GitToMaster(Step):
     def action(self):
@@ -75,7 +80,7 @@ class UpdateChangelog(Step):
 
 class RunTests(Step):
     def action(self):
-        self.print_run("make test")
+        self.do_cmd("make test")
 
 
 class BumpVersionPoetry(Step):
@@ -92,22 +97,22 @@ class BumpVersionPackage(Step):
 
 class MakeClean(Step):
     def action(self):
-        self.print_run("make clean")
+        self.do_cmd("make clean")
 
 
 class MakeDocs(Step):
     def action(self):
-        self.print_run("make docs")
+        self.do_cmd("make docs")
 
 
 class MakeDist(Step):
     def action(self):
-        self.print_run("make dist")
+        self.do_cmd("make dist")
 
 
 class PushToTestPyPI(Step):
     def action(self):
-        self.print_run(
+        self.do_cmd(
             "twine upload --repository-url https://test.pypi.org/legacy/ dist/*"
         )
 
@@ -150,7 +155,7 @@ class GitAdd(Step):
 
 class PushToPyPI(Step):
     def action(self):
-        self.print_run("twine upload dist/*")
+        self.do_cmd("twine upload dist/*")
 
 
 class PushToGitHub(Step):
