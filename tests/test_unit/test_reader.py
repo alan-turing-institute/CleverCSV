@@ -159,11 +159,12 @@ class ReaderTestCase(unittest.TestCase):
             quotechar='"',
         )
         self._read_test(
-           ['A"B\nB\rB"C', 'D"E"F', "G"],
-           [['A"B\nB\rB"C'], ['D"E"F'], ["G"]],
-           delimiter="",
-           quotechar='"',
+            ['A"B\nB\rB"C', 'D"E"F', "G"],
+            [['A"B\nB\rB"C'], ['D"E"F'], ["G"]],
+            delimiter="",
+            quotechar='"',
         )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

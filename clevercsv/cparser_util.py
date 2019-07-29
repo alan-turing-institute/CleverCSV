@@ -7,8 +7,9 @@ Python utility functions that wrap the C parser.
 
 import io
 
-from .cparser import Parser
+from .cparser import Parser, Error as ParserError
 from .dialect import SimpleDialect
+from .exceptions import Error
 from .parser import field_size_limit
 
 
@@ -35,8 +36,11 @@ def parse_data(
         escapechar=dialect.escapechar,
         field_limit=field_size_limit(),
     )
-    for row in parser:
-        yield row
+    try:
+        for row in parser:
+            yield row
+    except ParserError as e:
+        raise Error(str(e))
 
 
 def parse_string(data, *args, **kwargs):
