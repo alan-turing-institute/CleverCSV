@@ -49,11 +49,15 @@ please **cite CleverCSV if you use the package**. Here's a BibTeX entry you
 can use:
 
 ```bib
-@article{van2018wrangling,
-    title={Wrangling Messy {CSV} Files by Detecting Row and Type Patterns},
-    author={{van den Burg}, G. J. J. and Naz{\'a}bal, A. and Sutton, C.},
-    journal={arXiv preprint arXiv:1811.11242},
-    year={2018}
+@article{van2019wrangling,
+        title = {Wrangling Messy {CSV} Files by Detecting Row and Type Patterns},
+        author = {{van den Burg}, G. J. J. and Nazabal, A. and Sutton, C.},
+        journal = {Data Mining and Knowledge Discovery},
+        year = {2019},
+        month = {Jul},
+        day = {26},
+        issn = {1573-756X},
+        doi = {10.1007/s10618-019-00646-y},
 }
 ```
 
