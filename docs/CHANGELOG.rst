@@ -2,6 +2,12 @@
 Changelog
 =========
 
+Version 0.3.5
+-------------
+
+
+* Remove Python parser - this speeds up file reading and tie breaking
+
 Version 0.3.4
 -------------
 
