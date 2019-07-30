@@ -10,11 +10,10 @@ Author: Gertjan van den Burg
 
 import csv
 
+from . import field_size_limit
 from .cparser import Parser, Error as ParserError
 from .dialect import SimpleDialect
 from .exceptions import Error
-from .parser import field_size_limit
-
 
 class reader(object):
     def __init__(self, csvfile, dialect="excel", **fmtparams):
@@ -39,13 +38,13 @@ class reader(object):
 
     def __iter__(self):
         self.parser_gen = Parser(
-                self.csvfile,
-                delimiter=self.dialect.delimiter,
-                quotechar=self.dialect.quotechar,
-                escapechar=self.dialect.escapechar,
-                field_limit=field_size_limit(),
-                strict=self.dialect.strict
-            )
+            self.csvfile,
+            delimiter=self.dialect.delimiter,
+            quotechar=self.dialect.quotechar,
+            escapechar=self.dialect.escapechar,
+            field_limit=field_size_limit(),
+            strict=self.dialect.strict,
+        )
         return self
 
     def __next__(self):

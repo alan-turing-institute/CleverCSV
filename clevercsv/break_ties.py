@@ -7,7 +7,7 @@ Author: Gertjan van den Burg
 
 """
 
-from .parser import parse_string
+from .cparser_util import parse_string
 from .utils import pairwise
 
 

@@ -7,12 +7,11 @@ Author: Gertjan van den Burg
 
 """
 
-from .potential_dialects import get_dialects
+from . import field_size_limit
+from .break_ties import tie_breaker
 from .detect_pattern import pattern_score
 from .detect_type import type_score
-from .break_ties import tie_breaker
-from .parser import field_size_limit
-
+from .potential_dialects import get_dialects
 
 def detect_dialect_consistency(data, delimiters=None, verbose=False):
     """Detect the dialect with the data consistency measure

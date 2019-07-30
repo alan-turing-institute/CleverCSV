@@ -10,7 +10,29 @@ import io
 from .cparser import Parser, Error as ParserError
 from .dialect import SimpleDialect
 from .exceptions import Error
-from .parser import field_size_limit
+
+_FIELD_SIZE_LIMIT = 128 * 1024
+
+def field_size_limit(*args, **kwargs):
+    """Get/Set the limit to the field size.
+
+    This function is adapted from the one in the Python CSV module. See the 
+    documentation there.
+    """
+    global _FIELD_SIZE_LIMIT
+    old_limit = _FIELD_SIZE_LIMIT
+    args = list(args) + list(kwargs.values())
+    if not 0 <= len(args) <= 1:
+        raise TypeError(
+            "field_size_limit expected at most 1 arguments, got %i" % len(args)
+        )
+    if len(args) == 0:
+        return old_limit
+    limit = args[0]
+    if not isinstance(limit, int):
+        raise TypeError("limit must be an integer")
+    _FIELD_SIZE_LIMIT = int(limit)
+    return old_limit
 
 
 def parse_data(
