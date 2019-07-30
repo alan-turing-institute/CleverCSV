@@ -256,7 +256,10 @@ class ParserTestCase(unittest.TestCase):
 
     def test_parse_other_2(self):
         self._parse_test(
-            'a,b "c" d,e', [["a", 'b "c" d', "e"]], delimiter=",", quotechar='"'
+            'a,b "c" d,e',
+            [["a", 'b "c" d', "e"]],
+            delimiter=",",
+            quotechar='"',
         )
 
     def test_parse_other_3(self):
@@ -307,12 +310,18 @@ class ParserTestCase(unittest.TestCase):
 
     def test_parse_quote_mismatch_1(self):
         self._parse_test(
-            'a,b,c"d,e\n', [["a", "b", 'c"d,e\n']], delimiter=",", quotechar='"'
+            'a,b,c"d,e\n',
+            [["a", "b", 'c"d,e\n']],
+            delimiter=",",
+            quotechar='"',
         )
 
     def test_parse_quote_mismatch_2(self):
         self._parse_test(
-            'a,b,c"d,e\n', [["a", "b", 'c"d', "e"]], delimiter=",", quotechar=""
+            'a,b,c"d,e\n',
+            [["a", "b", 'c"d', "e"]],
+            delimiter=",",
+            quotechar="",
         )
 
     def test_parse_quote_mismatch_3(self):

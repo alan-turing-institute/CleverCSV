@@ -272,7 +272,6 @@ def type_score(data, dialect, eps=DEFAULT_EPS_TYPE):
 
     Parameters
     ----------
-
     data: str
         the data as a single string
 

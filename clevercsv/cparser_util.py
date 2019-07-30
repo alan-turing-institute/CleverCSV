@@ -36,26 +36,54 @@ def field_size_limit(*args, **kwargs):
 
 
 def parse_data(
-    iterable, dialect=None, delimiter=None, quotechar=None, escapechar=None
+    data, dialect=None, delimiter=None, quotechar=None, escapechar=None
 ):
-    """
-    Parse iterable given dialect. Wraps the C parser.
+    """Parse the data given a dialect using the C parser
+
+    Parameters
+    ----------
+    data : iterable
+        The data of the CSV file as an iterable
+
+    dialect : SimpleDialect
+        The dialect to use for the parsing. If None, the dialect with each 
+        component set to the empty string is used.
+
+    delimiter : str
+        The delimiter to use. If not None, overwrites the delimiter in the 
+        dialect.
+
+    quotechar : str
+        The quote character to use. If not None, overwrites the quote character 
+        in the dialect.
+
+    escapechar : str
+        The escape character to use. If not None, overwrites the escape 
+        character in the dialect.
+
+    Yields
+    ------
+    rows : list
+        The rows of the file as a list of cells.
+
+    Raises
+    ------
+    Error
+        When an error occurs during parsing.
 
     """
     if dialect is None:
         dialect = SimpleDialect("", "", "")
-    if not delimiter is None:
-        dialect.delimiter = delimiter
-    if not quotechar is None:
-        dialect.quotechar = quotechar
-    if not escapechar is None:
-        dialect.escapechar = escapechar
+
+    delimiter_ = delimiter if not delimiter is None else dialect.delimiter
+    quotechar_ = quotechar if not quotechar is None else dialect.quotechar
+    escapechar_ = escapechar if not escapechar is None else dialect.escapechar
 
     parser = Parser(
-        iterable,
-        delimiter=dialect.delimiter,
-        quotechar=dialect.quotechar,
-        escapechar=dialect.escapechar,
+        data,
+        delimiter=delimiter_,
+        quotechar=quotechar_,
+        escapechar=escapechar_,
         field_limit=field_size_limit(),
     )
     try:

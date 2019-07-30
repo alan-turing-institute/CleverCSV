@@ -171,7 +171,7 @@ class TypeDetectorTestCase(unittest.TestCase):
             "12.01-99",
             "5.024.2896",
             "2512-012.1",
-            "12 01/2542"
+            "12 01/2542",
         ]
         for date in no_date:
             with self.subTest(date=date):
