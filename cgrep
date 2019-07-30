@@ -1,0 +1,10 @@
+#!/bin/bash
+
+grep --color=auto -HnR \
+	--exclude-dir=.git \
+	--exclude-dir=cover \
+	--exclude-dir=docs \
+	--exclude-dir=build \
+	--exclude=*.pyc \
+	--exclude=*.db \
+	--exclude=*.swp "$@"

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+vim $(grep -HnRl \
+	--exclude-dir=.git \
+	--exclude-dir=cover \
+	--exclude-dir=docs \
+	--exclude-dir=build \
+	--exclude=*.pyc \
+	--exclude=*.swp \
+	--exclude=*.db \
+	$@ | sort)
