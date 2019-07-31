@@ -10,10 +10,10 @@ Author: Gertjan van den Burg
 import unittest
 
 from clevercsv.potential_dialects import (
-    masked_by_quotechar,
     filter_urls,
     get_delimiters,
     get_quotechars,
+    masked_by_quotechar,
 )
 
 

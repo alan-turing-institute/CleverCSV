@@ -7,10 +7,10 @@ Author: Gertjan van den Burg
 
 """
 
-import unittest
-import tempfile
-import pandas as pd
 import os
+import pandas as pd
+import tempfile
+import unittest
 
 from clevercsv import wrappers, writer
 from clevercsv.dialect import SimpleDialect

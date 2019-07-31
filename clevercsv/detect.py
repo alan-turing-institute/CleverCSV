@@ -9,8 +9,8 @@ Author: Gertjan van den Burg
 
 from io import StringIO
 
-from .normal_form import detect_dialect_normal
 from .consistency import detect_dialect_consistency
+from .normal_form import detect_dialect_normal
 from .read import reader
 
 

@@ -7,9 +7,9 @@ Author: Gertjan van den Burg
 
 """
 
+import os
 import pandas as pd
 import warnings
-import os
 
 from pandas.errors import ParserWarning
 

@@ -7,8 +7,8 @@ Author: Gertjan van den Burg
 """
 
 import os
-import unittest
 import tempfile
+import unittest
 
 from cleo.testers import CommandTester
 
