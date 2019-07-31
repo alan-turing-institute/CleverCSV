@@ -42,6 +42,8 @@ file to the standard RFC-4180 format [1].
         dialect = detect_dialect(
             path, num_chars=num_chars, encoding=encoding, verbose=verbose
         )
+        if dialect is None:
+            return self.line("Dialect detection failed.")
         out = (
             io.StringIO(newline=None)
             if output is None

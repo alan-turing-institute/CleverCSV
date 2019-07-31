@@ -15,6 +15,7 @@ from pandas.errors import ParserWarning
 
 from .detect import Detector
 from .dict_read_write import DictReader
+from .exceptions import NoDetectionResult
 from .read import reader
 from .utils import get_encoding
 
@@ -67,6 +68,11 @@ def read_csv(
     rows: list
         Returns rows as a list of lists.
 
+    Raises
+    ------
+    NoDetectionResult
+        When the dialect detection fails.
+
     """
     if encoding is None:
         encoding = get_encoding(filename)
@@ -74,6 +80,8 @@ def read_csv(
         if dialect is None:
             data = fid.read(num_chars) if num_chars else fid.read()
             dialect = Detector().detect(data, verbose=verbose)
+            if dialect is None:
+                raise NoDetectionResult()
             fid.seek(0)
         r = reader(fid, dialect)
         return list(r)

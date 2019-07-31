@@ -11,3 +11,6 @@ from .cparser import Error as ParserError
 
 class Error(ParserError):
     pass
+
+class NoDetectionResult(Exception):
+    pass

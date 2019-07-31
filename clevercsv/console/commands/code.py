@@ -41,6 +41,8 @@ and copy the generated code to a Python script.
             encoding=encoding,
             verbose=self.option("verbose"),
         )
+        if dialect is None:
+            return self.line("Dialect detection failed.")
 
         d = f'"{dialect.delimiter}"'
         q = '"%s"' % (dialect.quotechar.replace('"', '\\"'))
