@@ -170,12 +170,12 @@ class DeactivateVenv(Step):
 
 class GitTagVersion(Step):
     def action(self, context):
-        self.print_run(f"git tag v{context['version']}")
+        self.do_cmd(f"git tag v{context['version']}")
 
 
 class GitAdd(Step):
     def action(self, context):
-        self.instruct("Add everything to git")
+        self.instruct("Add everything to git and commit")
         self.print_run("git gui")
 
 
@@ -186,7 +186,7 @@ class PushToPyPI(Step):
 
 class PushToGitHub(Step):
     def action(self, context):
-        self.print_run("git push -u --tags origin master")
+        self.do_cmd("git push -u --tags origin master")
 
 
 class WaitForTravis(Step):
