@@ -13,6 +13,7 @@ from .exceptions import Error
 
 _FIELD_SIZE_LIMIT = 128 * 1024
 
+
 def field_size_limit(*args, **kwargs):
     """Get/Set the limit to the field size.
 

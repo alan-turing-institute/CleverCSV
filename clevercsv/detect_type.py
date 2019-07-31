@@ -249,7 +249,6 @@ class TypeDetector(object):
         return self._run_regex(cell, "unix_path")
 
 
-
 def gen_known_type(cells):
     """
     Utility that yields a generator over whether or not the provided cells are 

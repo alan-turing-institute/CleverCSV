@@ -43,8 +43,20 @@ def is_potential_escapechar(char, encoding, block_char=None):
 
     ctr = unicodedata.category(as_unicode)
     if block_char is None:
-        block_char = ["!", "?", '"', "'", ".", ",", ";", ":", "%", "*", "&", 
-                "#"]
+        block_char = [
+            "!",
+            "?",
+            '"',
+            "'",
+            ".",
+            ",",
+            ";",
+            ":",
+            "%",
+            "*",
+            "&",
+            "#",
+        ]
     if ctr == "Po":
         if as_unicode in block_char:
             return False

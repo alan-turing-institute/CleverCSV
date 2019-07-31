@@ -41,5 +41,6 @@ class PotentialDialectTestCase(unittest.TestCase):
         out = get_delimiters(data, "UTF-8")
         self.assertEqual(out, exp)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

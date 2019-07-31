@@ -28,7 +28,8 @@ class PatternTestCase(unittest.TestCase):
 
     def test_abstraction_2(self):
         out = detect_pattern.make_abstraction(
-            "A,\rA,A,A\r", SimpleDialect(delimiter=",", quotechar="", escapechar="")
+            "A,\rA,A,A\r",
+            SimpleDialect(delimiter=",", quotechar="", escapechar=""),
         )
         exp = "CDCRCDCDC"
         self.assertEqual(exp, out)
@@ -73,7 +74,8 @@ class PatternTestCase(unittest.TestCase):
 
     def test_abstraction_8(self):
         out = detect_pattern.make_abstraction(
-            ',"",,\r\n', SimpleDialect(delimiter=",", quotechar='"', escapechar="")
+            ',"",,\r\n',
+            SimpleDialect(delimiter=",", quotechar='"', escapechar=""),
         )
         exp = "CDCDCDC"
         self.assertEqual(exp, out)
@@ -84,42 +86,48 @@ class PatternTestCase(unittest.TestCase):
 
     def test_abstraction_9(self):
         out = detect_pattern.make_abstraction(
-            "A,B|,C", SimpleDialect(delimiter=",", quotechar="", escapechar="|")
+            "A,B|,C",
+            SimpleDialect(delimiter=",", quotechar="", escapechar="|"),
         )
         exp = "CDC"
         self.assertEqual(exp, out)
 
     def test_abstraction_10(self):
         out = detect_pattern.make_abstraction(
-            'A,"B,C|"D"', SimpleDialect(delimiter=",", quotechar='"', escapechar="|")
+            'A,"B,C|"D"',
+            SimpleDialect(delimiter=",", quotechar='"', escapechar="|"),
         )
         exp = "CDC"
         self.assertEqual(exp, out)
 
     def test_abstraction_11(self):
         out = detect_pattern.make_abstraction(
-            "a,|b,c", SimpleDialect(delimiter=",", quotechar="", escapechar="|")
+            "a,|b,c",
+            SimpleDialect(delimiter=",", quotechar="", escapechar="|"),
         )
         exp = "CDCDC"
         self.assertEqual(exp, out)
 
     def test_abstraction_12(self):
         out = detect_pattern.make_abstraction(
-            "a,b|,c", SimpleDialect(delimiter=",", quotechar="", escapechar="|")
+            "a,b|,c",
+            SimpleDialect(delimiter=",", quotechar="", escapechar="|"),
         )
         exp = "CDC"
         self.assertEqual(exp, out)
 
     def test_abstraction_13(self):
         out = detect_pattern.make_abstraction(
-            'a,"b,c|""', SimpleDialect(delimiter=",", quotechar='"', escapechar="|")
+            'a,"b,c|""',
+            SimpleDialect(delimiter=",", quotechar='"', escapechar="|"),
         )
         exp = "CDC"
         self.assertEqual(exp, out)
 
     def test_abstraction_14(self):
         out = detect_pattern.make_abstraction(
-            "a,b||c", SimpleDialect(delimiter=",", quotechar="", escapechar="|")
+            "a,b||c",
+            SimpleDialect(delimiter=",", quotechar="", escapechar="|"),
         )
         exp = "CDC"
         self.assertEqual(exp, out)

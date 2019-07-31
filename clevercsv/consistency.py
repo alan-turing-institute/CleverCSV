@@ -13,6 +13,7 @@ from .detect_pattern import pattern_score
 from .detect_type import type_score
 from .potential_dialects import get_dialects
 
+
 def detect_dialect_consistency(data, delimiters=None, verbose=False):
     """Detect the dialect with the data consistency measure
 
@@ -55,10 +56,7 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
     for dialect in sorted(dialects):
         P = pattern_score(data, dialect)
         if P < Qmax:
-            log(
-                "%15r:\tP = %15.6f\tskip."
-                % (dialect, P)
-            )
+            log("%15r:\tP = %15.6f\tskip." % (dialect, P))
             continue
         T = type_score(data, dialect)
         Q = P * T

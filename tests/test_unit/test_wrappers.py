@@ -106,7 +106,7 @@ class WrappersTestCase(unittest.TestCase):
             self._read_test_rows(rows, exp)
 
         # This raises a NoDetectionResult due to the spacing after the
-        # delimiter, which confuses the detection algorithm. Support for 
+        # delimiter, which confuses the detection algorithm. Support for
         # detecting 'skipinitialspace' should fix this problem.
         rows = ['1, "AA"', '2, "BB"', '3, "CC"']
         exp = [["1", "AA"], ["2", "BB"], ["3", "CC"]]

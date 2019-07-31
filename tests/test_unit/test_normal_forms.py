@@ -50,7 +50,7 @@ class NormalFormTestCase(unittest.TestCase):
         self.assertFalse(is_form_2('a,"",3\n1,2,3', dialect))
 
     def test_form_3(self):
-        A = SimpleDialect(delimiter=',', quotechar="'", escapechar="")
+        A = SimpleDialect(delimiter=",", quotechar="'", escapechar="")
         Q = SimpleDialect(delimiter=",", quotechar='"', escapechar="")
 
         self.assertTrue(is_form_3('A,B\nC,"D"', Q))
@@ -59,9 +59,8 @@ class NormalFormTestCase(unittest.TestCase):
         self.assertFalse(is_form_3('A,\nC,"d,e"', Q))
         self.assertFalse(is_form_3("3;4,B\nC,D", Q))
 
-        self.assertFalse(is_form_3("A,B\n\"C\",D\n", A))
-        self.assertTrue(is_form_3("A,B\n\"C\",D\n", Q))
-
+        self.assertFalse(is_form_3('A,B\n"C",D\n', A))
+        self.assertTrue(is_form_3('A,B\n"C",D\n', Q))
 
     def test_form_4(self):
         quoted = SimpleDialect(delimiter="", quotechar='"', escapechar="")
@@ -90,5 +89,6 @@ class NormalFormTestCase(unittest.TestCase):
         self.assertFalse(is_form_5("A,B\n1,\n2,3", dialect))
         self.assertFalse(is_form_5('"A,""B"""\n"1,"\n"2,3"', dialect))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
