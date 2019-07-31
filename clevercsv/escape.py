@@ -8,7 +8,6 @@ Date: 2018-11-06
 """
 
 import codecs
-import six
 import unicodedata
 
 
@@ -40,10 +39,7 @@ def is_potential_escapechar(char, encoding, block_char=None):
         Whether the character is considered a potential escape or not.
 
     """
-    if six.PY2:
-        as_unicode = codecs.decode(char.encode(encoding), encoding)
-    else:
-        as_unicode = codecs.decode(bytes(char, encoding), encoding=encoding)
+    as_unicode = codecs.decode(bytes(char, encoding), encoding=encoding)
 
     ctr = unicodedata.category(as_unicode)
     if block_char is None:

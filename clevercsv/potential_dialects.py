@@ -10,7 +10,6 @@ Author: Gertjan van den Burg
 import codecs
 import itertools
 import regex
-import six
 import unicodedata
 
 from .dialect import SimpleDialect
@@ -97,10 +96,7 @@ def unicode_category(x, encoding=None):
         The Unicode category of the character.
 
     """
-    if six.PY2:
-        as_unicode = codecs.decode(x.encode(encoding), encoding)
-    else:
-        as_unicode = codecs.decode(bytes(x, encoding), encoding=encoding)
+    as_unicode = codecs.decode(bytes(x, encoding), encoding=encoding)
     return unicodedata.category(as_unicode)
 
 

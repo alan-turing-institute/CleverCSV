@@ -8,14 +8,8 @@ Author: Gertjan van den Burg
 """
 
 import regex
-import six
 
 from .cparser_util import parse_string
-
-if six.PY2:
-    _chr = unichr
-else:
-    _chr = chr
 
 DEFAULT_EPS_TYPE = 1e-10
 
@@ -54,8 +48,8 @@ SPECIALS_ALLOWED = [
     "\uFE16",
     "\uFE56",
     "\uFF1F",
-    _chr(69955),  # chakma question mark
-    _chr(125279),  # adlam initial question mark
+    chr(69955),  # chakma question mark
+    chr(125279),  # adlam initial question mark
     # Exclamation marks
     "\u0021",
     "\u00A1",
@@ -71,7 +65,7 @@ SPECIALS_ALLOWED = [
     "\uFE15",
     "\uFE57",
     "\uFF01",
-    _chr(125278),  # adlam initial exclamation mark
+    chr(125278),  # adlam initial exclamation mark
 ]
 
 PATTERNS = {
