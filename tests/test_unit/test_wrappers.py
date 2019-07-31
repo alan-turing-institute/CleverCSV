@@ -12,8 +12,8 @@ import tempfile
 import pandas as pd
 import os
 
-from ccsv import wrappers, writer
-from ccsv.dialect import SimpleDialect
+from clevercsv import wrappers, writer
+from clevercsv.dialect import SimpleDialect
 
 
 class WrappersTestCase(unittest.TestCase):
@@ -29,6 +29,19 @@ class WrappersTestCase(unittest.TestCase):
 
         try:
             self.assertTrue(df.equals(exp_df))
+        finally:
+            os.unlink(tmpfname)
+
+    def _read_test(self, table, dialect):
+        tmpfd, tmpfname = tempfile.mkstemp()
+        tmpid = os.fdopen(tmpfd, "w")
+        w = writer(tmpid, dialect=dialect)
+        w.writerows(table)
+        tmpid.close()
+
+        exp = [list(map(str, r)) for r in table]
+        try:
+            self.assertEqual(exp, wrappers.read_csv(tmpfname))
         finally:
             os.unlink(tmpfname)
 
@@ -52,3 +65,24 @@ class WrappersTestCase(unittest.TestCase):
         dialect = SimpleDialect(delimiter=",", quotechar='"', escapechar="")
         with self.subTest(name="double"):
             self._df_test(table, dialect)
+
+    def test_read_csv(self):
+        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        with self.subTest(name="simple"):
+            self._read_test(table, dialect)
+
+        table = [["A,0", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=",", quotechar="", escapechar="\\")
+        with self.subTest(name="escaped"):
+            self._read_test(table, dialect)
+
+        table = [["A,0", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=",", quotechar='"', escapechar="")
+        with self.subTest(name="quoted"):
+            self._read_test(table, dialect)
+
+        table = [['a"A,0"b', "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=",", quotechar='"', escapechar="")
+        with self.subTest(name="double"):
+            self._read_test(table, dialect)

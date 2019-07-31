@@ -3,25 +3,19 @@
 """
 Integration tests for dialect detection.
 
-This module generates the test cases based on the available annotated CSV 
-files. See https://stackoverflow.com/q/32939 for more info.
-
 Author: G.J.J. van den Burg
 
 """
 
-import ccsv
+import argparse
 import chardet
+import clevercsv
 import gzip
 import json
 import multiprocessing
-import nose
 import os
-import unittest
+import termcolor
 import warnings
-
-from parameterized import parameterized
-from logresults import LogResults
 
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 SOURCE_DIR = os.path.join(THIS_DIR, "data")
@@ -32,7 +26,78 @@ LOG_SUCCESS = os.path.join(THIS_DIR, "success.log")
 LOG_ERROR = os.path.join(THIS_DIR, "error.log")
 LOG_FAILED = os.path.join(THIS_DIR, "failed.log")
 
+LOG_SUCCESS_PARTIAL = os.path.join(THIS_DIR, "success_partial.log")
+LOG_ERROR_PARTIAL = os.path.join(THIS_DIR, "error_partial.log")
+LOG_FAILED_PARTIAL = os.path.join(THIS_DIR, "failed_partial.log")
+
 TIMEOUT = 5 * 60
+N_BYTES_PARTIAL = 10000
+
+
+def log_result(name, kind, verbose, partial):
+    table = {
+        "error": (LOG_ERROR, LOG_ERROR_PARTIAL, "yellow"),
+        "success": (LOG_SUCCESS, LOG_SUCCESS_PARTIAL, "green"),
+        "failure": (LOG_FAILED, LOG_FAILED_PARTIAL, "red"),
+    }
+    outfull, outpartial, color = table.get(kind)
+    fname = outpartial if partial else outfull
+
+    with open(fname, "a") as fp:
+        fp.write(name + "\n")
+    if verbose:
+        termcolor.cprint(name, color=color)
+
+
+def worker(args, return_dict, **kwargs):
+    det = clevercsv.Detector()
+    filename, encoding, partial = args
+    return_dict["error"] = False
+    return_dict["dialect"] = None
+    with gzip.open(filename, "rt", newline="", encoding=encoding) as fp:
+        data = fp.read(N_BYTES_PARTIAL) if partial else fp.read()
+        try:
+            return_dict["dialect"] = det.detect(data, **kwargs)
+        except clevercsv.Error:
+            return_dict["error"] = True
+
+
+def run_with_timeout(args, kwargs, limit):
+    manager = multiprocessing.Manager()
+    return_dict = manager.dict()
+    p = multiprocessing.Process(
+        target=worker, args=(args, return_dict), kwargs=kwargs
+    )
+    p.start()
+    p.join(limit)
+    if p.is_alive():
+        p.terminate()
+        return None, True
+    return return_dict["dialect"], return_dict["error"]
+
+
+def run_test(name, gz_filename, annotation, verbose=True, partial=False):
+    if "encoding" in annotation:
+        enc = annotation["encoding"]
+    else:
+        with gzip.open(gz_filename, "rb") as fid:
+            enc = chardet.detect(fid.read())["encoding"]
+
+    true_dialect = annotation["dialect"]
+    dialect, error = run_with_timeout((gz_filename, enc, partial), {}, TIMEOUT)
+    if error:
+        return log_result(name, "error", verbose, partial)
+
+    if dialect is None:
+        log_result(name, "failure", verbose, partial)
+    elif dialect.delimiter != true_dialect["delimiter"]:
+        log_result(name, "failure", verbose, partial)
+    elif dialect.quotechar != true_dialect["quotechar"]:
+        log_result(name, "failure", verbose, partial)
+    elif dialect.escapechar != true_dialect["escapechar"]:
+        log_result(name, "failure", verbose, partial)
+    else:
+        log_result(name, "success", verbose, partial)
 
 
 def load_test_cases():
@@ -57,44 +122,41 @@ def load_test_cases():
     return cases
 
 
-def worker(args, return_dict, **kwargs):
-    det = ccsv.Detector()
-    filename, encoding = args
-    with gzip.open(filename, "rt", newline="", encoding=encoding) as fid:
-        return_dict["dialect"] = det.detect(fid.read())
+def clear_output_files(partial):
+    files = {
+        True: [LOG_SUCCESS_PARTIAL, LOG_FAILED_PARTIAL, LOG_ERROR_PARTIAL],
+        False: [LOG_SUCCESS, LOG_FAILED, LOG_ERROR],
+    }
+    delete = lambda f: os.unlink(f) if os.path.exists(f) else None
+    any(map(delete, files[partial]))
 
 
-def run_with_timeout(args, kwargs, limit):
-    manager = multiprocessing.Manager()
-    return_dict = manager.dict()
-    p = multiprocessing.Process(
-        target=worker, args=(args, return_dict), kwargs=kwargs
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--partial",
+        help="Run test with partial file data",
+        action="store_true",
     )
-    p.start()
-    p.join(limit)
-    if p.is_alive():
-        p.terminate()
-        return None
-    return return_dict.get("dialect", None)
+    parser.add_argument(
+        "-v", "--verbose", help="Be verbose", action="store_true"
+    )
+    return parser.parse_args()
 
 
-class TestDetector(unittest.TestCase):
-    @parameterized.expand(load_test_cases)
-    def test_dialect(self, name, gz_filename, annotation):
-        if "encoding" in annotation:
-            enc = annotation["encoding"]
-        else:
-            with gzip.open(gz_filename, "rb") as fid:
-                enc = chardet.detect(fid.read())["encoding"]
-
-        det = ccsv.Detector()
-        true_dialect = annotation["dialect"]
-        dialect = run_with_timeout((gz_filename, enc), {}, TIMEOUT)
-        self.assertIsNotNone(dialect)
-        self.assertEqual(dialect.delimiter, true_dialect["delimiter"])
-        self.assertEqual(dialect.quotechar, true_dialect["quotechar"])
-        self.assertEqual(dialect.escapechar, true_dialect["escapechar"])
+def main():
+    args = parse_args()
+    clear_output_files(args.partial)
+    cases = load_test_cases()
+    for name, gz_filename, annotation in cases:
+        run_test(
+            name,
+            gz_filename,
+            annotation,
+            verbose=args.verbose,
+            partial=args.partial,
+        )
 
 
 if __name__ == "__main__":
-    nose.main(addplugins=[LogResults(LOG_SUCCESS, LOG_ERROR, LOG_FAILED)])
+    main()

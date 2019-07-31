@@ -7,12 +7,11 @@ Author: Gertjan van den Burg
 
 """
 
-from .potential_dialects import get_dialects
+from . import field_size_limit
+from .break_ties import tie_breaker
 from .detect_pattern import pattern_score
 from .detect_type import type_score
-from .break_ties import tie_breaker
-from .parser import field_size_limit
-
+from .potential_dialects import get_dialects
 
 def detect_dialect_consistency(data, delimiters=None, verbose=False):
     """Detect the dialect with the data consistency measure
@@ -57,8 +56,8 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
         P = pattern_score(data, dialect)
         if P < Qmax:
             log(
-                "%15r:\tP = %15.6f\tT = %15.6f\tQ = %15.6f"
-                % (dialect, P, float("nan"), float("nan"))
+                "%15r:\tP = %15.6f\tskip."
+                % (dialect, P)
             )
             continue
         T = type_score(data, dialect)
@@ -78,3 +77,23 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
 
     field_size_limit(old_limit)
     return result
+
+
+def consistency_scores(data, dialects, skip=True):
+    scores = {}
+
+    Qmax = -float("inf")
+    for dialect in sorted(dialects):
+        P = pattern_score(data, dialect)
+        if P < Qmax and skip:
+            scores[dialect] = {
+                "pattern": P,
+                "type": float("nan"),
+                "Q": float("nan"),
+            }
+            continue
+        T = type_score(data, dialect)
+        Q = P * T
+        Qmax = max(Q, Qmax)
+        scores[dialect] = {"pattern": P, "type": T, "Q": Q}
+    return scores

@@ -7,6 +7,8 @@ tests/test_integration/__pycache__/
 tests/test_unit/__pycache__/
 .coverage
 clevercsv.egg-info/
-ccsv/.coverage
-ccsv/*.so
+clevercsv/.coverage
+clevercsv/*.so
 dist/*
+docs/_build
+docs/_static

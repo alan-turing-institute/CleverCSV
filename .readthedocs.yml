@@ -1,0 +1,16 @@
+# Read the Docs configuration file for CleverCSV
+#
+version: 2
+
+sphinx:
+  configuration: docs/conf.py
+
+formats: all
+
+python:
+  version: 3.6
+  install:
+    - method: setuptools
+      path: .
+    - requirements: requirements.txt
+

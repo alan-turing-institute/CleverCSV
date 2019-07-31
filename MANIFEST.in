@@ -1,7 +1,8 @@
 include setup.py
 include README.md
 include LICENSE
-recursive-include ccsv *.py
+include requirements.txt
+recursive-include clevercsv *.py
 recursive-include src *.c
 recursive-include bin *
 recursive-include tests/test_unit *.py
@@ -10,3 +11,6 @@ exclude poetry.lock
 exclude pyproject.toml
 exclude Makefile
 exclude .gitignore
+exclude .travis.yml
+prune notes
+prune auxiliary

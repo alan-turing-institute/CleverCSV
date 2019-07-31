@@ -1,16 +1,20 @@
 # CleverCSV: A Clever CSV Parser
 
 [![Build Status](https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master)](https://travis-ci.org/alan-turing-institute/CleverCSV)
+[![PyPI version](https://badge.fury.io/py/clevercsv.svg)](https://pypi.org/project/clevercsv/)
+[![Documentation Status](https://readthedocs.org/projects/clevercsv/badge/?version=latest)](https://clevercsv.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb)
 
 *This package is currently in beta. If you encounter any problems, please open 
 an issue or submit a pull request!*
 
-Handy links:
+**Handy links:**
 
 - [CleverCSV on Github](https://github.com/alan-turing-institute/CleverCSV)
 - [CleverCSV on PyPI](https://pypi.org/project/clevercsv/)
-- [Paper on arXiv](https://arxiv.org/abs/1811.11242)
+- [Demo of CleverCSV on Binder (interactive!)](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb)
+- [Paper (PDF)](https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf)
+- [Paper (HTML)](https://rdcu.be/bLVur)
 - [Reproducible Research Repo](https://github.com/alan-turing-institute/CSV_Wrangling/)
 
 ## Introduction
@@ -21,18 +25,16 @@ Handy links:
   tables, headers or no headers, escape characters, and there's no support for 
   data dictionaries.
 
-CleverCSV is a Python package that hopes to solve many of the pain points of 
+CleverCSV is a Python package that aims to solve many of the pain points of 
 CSV files, while maintaining many of the good things. The package 
 automatically detects (with high accuracy) the format (*dialect*) of CSV 
 files, thus making it easier to simply point to a CSV file and load it, 
 without the need for human inspection. In the future, we hope to solve some of 
 the other issues of CSV files too.
 
-**A Demo of CleverCSV is available on 
-[BinderHub](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb).**
-
-CleverCSV is [**based on science**](https://arxiv.org/abs/1811.11242). We 
-investigated thousands of real-world CSV files to find a robust way to 
+CleverCSV is [based on 
+science](https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf). 
+We investigated thousands of real-world CSV files to find a robust way to 
 automatically detect the dialect of a file. This may seem like an easy 
 problem, but to a computer a CSV file is simply a long string, and every 
 dialect will give you *some* table. In CleverCSV we use a technique based on 
@@ -47,13 +49,22 @@ please **cite CleverCSV if you use the package**. Here's a BibTeX entry you
 can use:
 
 ```bib
-@article{van2018wrangling,
-    title={Wrangling Messy {CSV} Files by Detecting Row and Type Patterns},
-    author={{van den Burg}, G. J. J. and Naz{\'a}bal, A. and Sutton, C.},
-    journal={arXiv preprint arXiv:1811.11242},
-    year={2018}
+@article{van2019wrangling,
+        title = {Wrangling Messy {CSV} Files by Detecting Row and Type Patterns},
+        author = {{van den Burg}, G. J. J. and Nazabal, A. and Sutton, C.},
+        journal = {Data Mining and Knowledge Discovery},
+        year = {2019},
+        month = {Jul},
+        day = {26},
+        issn = {1573-756X},
+        doi = {10.1007/s10618-019-00646-y},
 }
 ```
+
+And of course, if you like the package please *spread the word!* You can do 
+this by Tweeting about it 
+([#CleverCSV](https://twitter.com/hashtag/clevercsv)) or clicking the ⭐️ [on 
+GitHub](https://github.com/alan-turing-institute/CleverCSV)!
 
 ## Installation
 
@@ -76,7 +87,7 @@ want to replace the builtin CSV module with CleverCSV, you only have to add
 one letter:
 
 ```python
-import ccsv
+import clevercsv
 ```
 
 CleverCSV provides an improved version of the dialect sniffer in the CSV 
@@ -85,7 +96,7 @@ a wrapper for loading a CSV file using [Pandas](https://pandas.pydata.org/),
 that uses CleverCSV to detect the dialect of the file:
 
 ```python
-from ccsv import csv2df
+from clevercsv import csv2df
 
 df = csv2df("data.csv")
 ```
@@ -94,13 +105,14 @@ Of course, you can also use the traditional way of loading a CSV file, as in
 the Python CSV module:
 
 ```python
-import ccsv
+# importing this way makes it easy to port existing code to CleverCsv
+import clevercsv as csv
 
 with open("data.csv", "r", newline="") as fp:
   # you can use verbose=True to see what CleverCSV does:
-  dialect = ccsv.Sniffer().sniff(fid.read(), verbose=False)
+  dialect = csv.Sniffer().sniff(fid.read(), verbose=False)
   fp.seek(0)
-  reader = ccsv.reader(fp, dialect)
+  reader = csv.reader(fp, dialect)
   rows = list(reader)
 ```
 
@@ -110,16 +122,110 @@ lot of the functionality is similar to the CSV package in Python!)
 
 ### Command-Line Tool
 
-The ``clevercsv`` command line tool can be useful when dealing with CSV files 
-on the command line. At the moment, ``clevercsv`` supports three commands:
+The ``clevercsv`` command line application has a number of handy features to 
+make working with CSV files easier. For instance, it can be used to view a CSV 
+file on the command line while automatically detecting the dialect. It can 
+also generate Python code for importing data from a file with the correct 
+dialect. The full help text is as follows:
 
-- ``detect``: detect the dialect of a given CSV file
-- ``view``: detect the dialect and view the file as a spreadsheet using 
-  [tabview](https://github.com/TabViewer/tabview)
-- ``standardize``: after detecting the dialect of a CSV file, standardize it 
-  to the CSV spec in [RFC-4180](https://tools.ietf.org/html/rfc4180).
+```text
+USAGE
+  clevercsv [-h] [-v] [-V] <command> [<arg1>] ... [<argN>]
 
-On the terminal, run ``clevercsv -h`` for more information.
+ARGUMENTS
+  <command>       The command to execute
+  <arg>           The arguments of the command
+
+GLOBAL OPTIONS
+  -h (--help)     Display this help message.
+  -v (--verbose)  Enable verbose mode.
+  -V (--version)  Display the application version.
+
+AVAILABLE COMMANDS
+  code            Generate Python code for importing the CSV file.
+  detect          Detect the dialect of a CSV file
+  help            Display the manual of a command
+  standardize     Convert a CSV file to one that conforms to RFC-4180.
+  view            View the CSV file on the command line using TabView
+```
+
+Each of the commands has further options (for instance, the ``code`` command 
+can generate code for importing a Pandas DataFrame). Use
+``clevercsv help <command>`` for more information. Below are some examples for 
+each command:
+
+#### Code
+
+Code generation is useful when you don't want to detect the dialect of the 
+same file over and over again. You simply run the following command and copy 
+the generated code to a Python script!
+
+```text
+$ clevercsv code imdb.csv
+
+# Code generated with CleverCSV
+
+import clevercsv
+
+with open("imdb.csv", "r", newline="", encoding="utf-8") as fp:
+    reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\")
+    rows = list(reader)
+```
+
+We also have a version that reads a Pandas dataframe:
+
+```text
+$ clevercsv code --pandas imdb.csv
+
+# Code generated with CleverCSV
+
+import clevercsv
+
+df = clevercsv.csv2df("imdb.csv", delimiter=",", quotechar="", escapechar="\")
+```
+
+#### Detect
+
+Detection is useful when you only want to know the dialect.
+
+```text
+$ clevercsv detect imdb.csv
+Detected: SimpleDialect(',', '', '\\')
+```
+
+The ``--plain`` flag gives the components of the dialect on separate lines, 
+which makes combining it with ``grep`` easier.
+
+```text
+$ clevercsv detect --plain imdb.csv
+delimiter = ,
+quotechar =
+escapechar = \
+```
+
+#### Standardize
+
+Use the ``standardize`` command when you want to rewrite a file using the 
+RFC-4180 standard:
+
+```text
+$ clevercsv standardize --output imdb_standard.csv imdb.csv
+```
+
+In this particular example the use of the escape character is replaced by 
+using quotes.
+
+#### View
+
+This command allows you to view the file in the terminal. The dialect is of 
+course detected using CleverCSV! Both this command and the ``standardize`` 
+command support the ``--transpose`` flag, if you want to transpose the file 
+before viewing or saving:
+
+```text
+$ clevercsv view --transpose imdb.csv
+```
+
 
 ## Contributors
 
@@ -137,7 +243,7 @@ Scientific work:
 ## Contributing
 
 If you want to encourage development of CleverCSV, the best thing to do now is 
-to *spread the word!*.
+to *spread the word!*
 
 If you encounter an issue in CleverCSV, please open an issue or submit a pull 
 request!

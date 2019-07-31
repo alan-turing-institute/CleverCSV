@@ -14,7 +14,6 @@ from distutils.extension import Extension
 
 # Package meta-data.
 NAME = "clevercsv"
-SHORTNAME = "ccsv"
 DESCRIPTION = "A clever CSV parser"
 URL = "https://github.com/alan-turing-institute/CleverCSV"
 EMAIL = "gertjanvandenburg@gmail.com"
@@ -23,7 +22,7 @@ REQUIRES_PYTHON = ">=3.0.0"
 VERSION = None
 
 # What packages are required for this module to be executed?
-REQUIRED = ["regex", "chardet", "pandas", "tabview"]
+REQUIRED = []
 
 # What packages are optional?
 EXTRAS = {}
@@ -43,10 +42,16 @@ try:
 except FileNotFoundError:
     long_description = DESCRIPTION
 
+try:
+    with io.open(os.path.join(here, 'requirements.txt'), encoding='utf-8') as f:
+        REQUIRED = [l.strip() for l in f.readlines()]
+except FileNotFoundError:
+    pass
+
 # Load the package's __version__.py module as a dictionary.
 about = {}
 if not VERSION:
-    project_slug = SHORTNAME.lower().replace("-", "_").replace(" ", "_")
+    project_slug = NAME.lower().replace("-", "_").replace(" ", "_")
     with open(os.path.join(here, project_slug, "__version__.py")) as f:
         exec(f.read(), about)
 else:
@@ -110,11 +115,11 @@ setup(
     extras_require=EXTRAS,
     include_package_data=True,
     license="MIT",
-    scripts=["bin/clevercsv"],
     ext_modules=[
-        Extension("ccsv.cparser", sources=["src/cparser.c"]),
-        Extension("ccsv.cabstraction", sources=["src/abstraction.c"]),
+        Extension("clevercsv.cparser", sources=["src/cparser.c"]),
+        Extension("clevercsv.cabstraction", sources=["src/abstraction.c"]),
     ],
+    entry_points={"console_scripts": ["clevercsv = clevercsv.__main__:main"]},
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers

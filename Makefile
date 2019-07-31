@@ -19,7 +19,7 @@ in: inplace
 inplace:
 	python setup.py build_ext -i
 
-install: ## Install for the current user using the default python command
+install: requirements.txt ## Install for the current user using the default python command
 	python setup.py build_ext --inplace
 	python setup.py install --user
 
@@ -27,14 +27,10 @@ test: in ## Run nosetests using the default nosetests command
 	poetry run green -v ./tests/test_unit
 
 integration: install ## Run integration tests with nose
-	python ./tests/test_integration/test_dialect_detection.py \
-		--with-logresults --rednose -v -s \
-		-w ./tests/test_integration/
+	python ./tests/test_integration/test_dialect_detection.py -v
 
 integration_partial: install ## Run partial integration test with nose
-	python ./tests/test_integration/test_dialect_detection_partial.py \
-		--with-logresults --rednose -v -s \
-		-w ./tests/test_integration/
+	python ./tests/test_integration/test_dialect_detection.py -v --partial
 
 cover: test ## Test unit test coverage using default nosetests
 	nosetests --with-coverage --cover-package=$(PACKAGE) \
@@ -52,9 +48,14 @@ clean: ## Clean build dist and egg directories left after install
 develop: ## Install a development version of the package needed for testing
 	python setup.py develop --user
 
-dist: ## Make Python source distribution
+dist: requirements.txt ## Make Python source distribution
 	python setup.py sdist
 
 docs: doc
 doc: install ## Build documentation with Sphinx
+	m2r README.md && mv README.rst $(DOC_DIR)
+	m2r CHANGELOG.md && mv CHANGELOG.rst $(DOC_DIR)
 	$(MAKE) -C $(DOC_DIR) html
+
+requirements.txt: pyproject.toml
+	poetry run pip freeze > $@

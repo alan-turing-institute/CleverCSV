@@ -7,6 +7,7 @@ Author: Gertjan van den Burg
 
 """
 
+from .cparser import Error as ParserError
 
-class Error(Exception):
+class Error(ParserError):
     pass

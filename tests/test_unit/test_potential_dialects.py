@@ -9,7 +9,7 @@ Author: Gertjan van den Burg
 
 import unittest
 
-from ccsv.potential_dialects import (
+from clevercsv.potential_dialects import (
     masked_by_quotechar,
     filter_urls,
     get_delimiters,

@@ -2,7 +2,7 @@
 
 """
 Drop-in replacement for the Python csv reader class. This is a wrapper for the 
-Parser class, defined in :mod:`parser`.
+Parser class, defined in :mod:`cparser`.
 
 Author: Gertjan van den Burg
 
@@ -10,9 +10,10 @@ Author: Gertjan van den Burg
 
 import csv
 
+from . import field_size_limit
+from .cparser import Parser, Error as ParserError
 from .dialect import SimpleDialect
-from .parser import Parser
-
+from .exceptions import Error
 
 class reader(object):
     def __init__(self, csvfile, dialect="excel", **fmtparams):
@@ -36,14 +37,23 @@ class reader(object):
         return sd
 
     def __iter__(self):
-        self.parser = Parser(self.dialect)
-        self.parser_gen = self.parser.parse(self.csvfile)
+        self.parser_gen = Parser(
+            self.csvfile,
+            delimiter=self.dialect.delimiter,
+            quotechar=self.dialect.quotechar,
+            escapechar=self.dialect.escapechar,
+            field_limit=field_size_limit(),
+            strict=self.dialect.strict,
+        )
         return self
 
     def __next__(self):
         if self.parser_gen is None:
             self.__iter__()
-        row = next(self.parser_gen)
+        try:
+            row = next(self.parser_gen)
+        except ParserError as e:
+            raise Error(str(e))
         self.line_num += 1
         return row
 

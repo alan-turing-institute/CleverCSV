@@ -11,8 +11,8 @@ from __future__ import division
 
 import unittest
 
-from ccsv import detect_pattern
-from ccsv.dialect import SimpleDialect
+from clevercsv import detect_pattern
+from clevercsv.dialect import SimpleDialect
 
 
 class PatternTestCase(unittest.TestCase):

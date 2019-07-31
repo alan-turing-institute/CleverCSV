@@ -91,7 +91,7 @@ PATTERNS = {
     "time_HH": "(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])",
     "time_hmm": "([0-9]|1[0-9]|2[0-3]):([0-5][0-9])",
     "currency": "\p{Sc}\s?(.*)",
-    "unix_path": "[\/~]{1,2}(?:[a-zA-Z0-9\.]+(?:[\/]{1,2}))+(?:[a-zA-Z0-9\.]+)",
+    "unix_path": "[\/~]{1,2}(?:[a-zA-Z0-9\.]+(?:[\/]{1,2}))?(?:[a-zA-Z0-9\.]+)",
     "date": "((0[1-9]|1[0-2])((0[1-9]|[12]\d|3[01])([12]\d{3}|\d{2})|(?P<sep1>[-\/. ])(0?[1-9]|[12]\d|3[01])(?P=sep1)([12]\d{3}|\d{2}))|(0[1-9]|[12]\d|3[01])((0[1-9]|1[0-2])([12]\d{3}|\d{2})|(?P<sep2>[-\/. ])(0?[1-9]|1[0-2])(?P=sep2)([12]\d{3}|\d{2}))|([12]\d{3}|\d{2})((?P<sep3>[-\/. ])(0?[1-9]|1[0-2])(?P=sep3)(0?[1-9]|[12]\d|3[01])|年(0?[1-9]|1[0-2])月(0?[1-9]|[12]\d|3[01])日|년(0?[1-9]|1[0-2])월(0?[1-9]|[12]\d|3[01])일|(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01]))|(([1-9]|1[0-2])(?P<sep4>[-\/. ])(0?[1-9]|[12]\d|3[01])(?P=sep4)([12]\d{3}|\d{2})|([1-9]|[12]\d|3[01])(?P<sep5>[-\/. ])(0?[1-9]|1[0-2])(?P=sep5)([12]\d{3}|\d{2})))",
 }
 
@@ -118,6 +118,7 @@ class TypeDetector(object):
             ("percentage", self.is_percentage),
             ("currency", self.is_currency),
             ("unicode_alphanum", self.is_unicode_alphanum),
+            ("unix_path", self.is_unix_path),
             ("nan", self.is_nan),
             ("date", self.is_date),
             ("datetime", self.is_datetime),
@@ -248,6 +249,12 @@ class TypeDetector(object):
             return True
         return False
 
+    def is_unix_path(self, cell):
+        if self.strip_whitespace:
+            cell = cell.strip(" ")
+        return self._run_regex(cell, "unix_path")
+
+
 
 def gen_known_type(cells):
     """
@@ -265,7 +272,6 @@ def type_score(data, dialect, eps=DEFAULT_EPS_TYPE):
 
     Parameters
     ----------
-
     data: str
         the data as a single string
 

@@ -9,12 +9,12 @@ Author: Gertjan van den Burg
 
 import unittest
 
-import ccsv
+import clevercsv
 
 
 class ReaderTestCase(unittest.TestCase):
     def _read_test(self, input, expect, **kwargs):
-        reader = ccsv.reader(input, **kwargs)
+        reader = clevercsv.reader(input, **kwargs)
         result = list(reader)
         self.assertEqual(result, expect)
 
@@ -22,17 +22,17 @@ class ReaderTestCase(unittest.TestCase):
         self._read_test([], [])
         self._read_test([""], [[]])
         self.assertRaises(
-            ccsv.Error, self._read_test, ['"ab"c'], None, strict=1
+            clevercsv.Error, self._read_test, ['"ab"c'], None, strict=1
         )
         self.assertRaises(
-            ccsv.Error, self._read_test, ["ab\0c"], None, strict=1
+            clevercsv.Error, self._read_test, ["ab\0c"], None, strict=1
         )
         # This commented test doesn't make sense for us, because we assert that
         # a field is only a quoted field if it begins *and* ends with a quote
         # character (except for the last field of a file, which only needs to
         # end in a quotechar if we're not strict).
         # self._read_test(['"ab"c'], [["abc"]], doublequote=0)
-        self.assertRaises(ccsv.Error, self._read_test, [b"ab\0c"], None)
+        self.assertRaises(clevercsv.Error, self._read_test, [b"ab\0c"], None)
 
     def test_read_eol(self):
         self._read_test(["a,b"], [["a", "b"]])
@@ -40,9 +40,9 @@ class ReaderTestCase(unittest.TestCase):
         self._read_test(["a,b\r\n"], [["a", "b"]])
         self._read_test(["a,b\r"], [["a", "b"]])
         # these tests from CPython don't apply for now.
-        self.assertRaises(ccsv.Error, self._read_test, ["a,b\rc,d"], [])
-        self.assertRaises(ccsv.Error, self._read_test, ["a,b\rc,d"], [])
-        self.assertRaises(ccsv.Error, self._read_test, ["a,b\rc,d"], [])
+        self.assertRaises(clevercsv.Error, self._read_test, ["a,b\rc,d"], [])
+        self.assertRaises(clevercsv.Error, self._read_test, ["a,b\rc,d"], [])
+        self.assertRaises(clevercsv.Error, self._read_test, ["a,b\rc,d"], [])
 
     def test_read_eof(self):
         self._read_test(['a,"'], [["a", ""]])
@@ -62,24 +62,24 @@ class ReaderTestCase(unittest.TestCase):
         self._read_test(['a,"b,c"\\'], [["a", "b,c"]], escapechar="\\")
 
     def test_read_bigfield(self):
-        limit = ccsv.field_size_limit()
+        limit = clevercsv.field_size_limit()
         try:
             size = 500
             bigstring = "X" * size
             bigline = "%s,%s" % (bigstring, bigstring)
             self._read_test([bigline], [[bigstring, bigstring]])
-            ccsv.field_size_limit(size)
+            clevercsv.field_size_limit(size)
             self._read_test([bigline], [[bigstring, bigstring]])
-            self.assertEqual(ccsv.field_size_limit(), size)
-            ccsv.field_size_limit(size=-1)
-            self.assertRaises(ccsv.Error, self._read_test, [bigline], [])
-            self.assertRaises(TypeError, ccsv.field_size_limit, None)
-            self.assertRaises(TypeError, ccsv.field_size_limit, 1, None)
+            self.assertEqual(clevercsv.field_size_limit(), size)
+            clevercsv.field_size_limit(size=-1)
+            self.assertRaises(clevercsv.Error, self._read_test, [bigline], [])
+            self.assertRaises(TypeError, clevercsv.field_size_limit, None)
+            self.assertRaises(TypeError, clevercsv.field_size_limit, 1, None)
         finally:
-            ccsv.field_size_limit(limit)
+            clevercsv.field_size_limit(limit)
 
     def test_read_linenum(self):
-        r = ccsv.reader(["line,1", "line,2", "line,3"])
+        r = clevercsv.reader(["line,1", "line,2", "line,3"])
         self.assertEqual(r.line_num, 0)
         self.assertEqual(next(r), ["line", "1"])
         self.assertEqual(r.line_num, 1)
@@ -95,7 +95,7 @@ class ReaderTestCase(unittest.TestCase):
             for l in x:
                 yield l
 
-        r = ccsv.reader(gen(["line,1", "line,2", "line,3"]))
+        r = clevercsv.reader(gen(["line,1", "line,2", "line,3"]))
         self.assertEqual(next(r), ["line", "1"])
         self.assertEqual(next(r), ["line", "2"])
         self.assertEqual(next(r), ["line", "3"])
@@ -159,11 +159,12 @@ class ReaderTestCase(unittest.TestCase):
             quotechar='"',
         )
         self._read_test(
-           ['A"B\nB\rB"C', 'D"E"F', "G"],
-           [['A"B\nB\rB"C'], ['D"E"F'], ["G"]],
-           delimiter="",
-           quotechar='"',
+            ['A"B\nB\rB"C', 'D"E"F', "G"],
+            [['A"B\nB\rB"C'], ['D"E"F'], ["G"]],
+            delimiter="",
+            quotechar='"',
         )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
