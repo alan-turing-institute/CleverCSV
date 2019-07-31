@@ -62,4 +62,4 @@ doc: install ## Build documentation with Sphinx
 	$(MAKE) -C $(DOC_DIR) html
 
 requirements.txt: pyproject.toml
-	poetry run pip freeze > $@
+	poetry run pip freeze | grep -v clevercsv > $@
