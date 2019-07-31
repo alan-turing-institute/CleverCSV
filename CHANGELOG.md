@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.3.6
+
+* Cleanly handle failure to detect dialect in console application
+* Remove any (partial) support for Python 2
+
 ## Version 0.3.5
 
 * Remove Python parser - this speeds up file reading and tie breaking
