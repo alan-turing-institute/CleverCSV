@@ -11,7 +11,7 @@
    :maxdepth: 2
 
    changelog
-   source/clevercsv
+   source/modules
 
 
 Indices and tables
