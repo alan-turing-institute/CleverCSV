@@ -94,7 +94,7 @@ import clevercsv
 CleverCSV provides an improved version of the dialect sniffer in the CSV 
 module, but it also adds some useful wrapper functions. These functions 
 automatically detect the dialect and aim to make working with CSV files 
-easier. We currently have the following functions:
+easier. We currently have the following helper functions:
 
 * [``detect_dialect`` 
   ](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.detect_dialect): 
