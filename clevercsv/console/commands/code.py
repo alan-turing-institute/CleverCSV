@@ -46,7 +46,7 @@ and copy the generated code to a Python script.
 
         d = f'"{dialect.delimiter}"'
         q = '"%s"' % (dialect.quotechar.replace('"', '\\"'))
-        e = f'"{dialect.escapechar}"'
+        e = repr(f"{dialect.escapechar}").replace("'", '"')
         base = [
             "",
             f"# Code generated with CleverCSV version {__version__}",

@@ -172,7 +172,7 @@ $ clevercsv code imdb.csv
 import clevercsv
 
 with open("imdb.csv", "r", newline="", encoding="utf-8") as fp:
-    reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\")
+    reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\\")
     rows = list(reader)
 ```
 
@@ -185,7 +185,7 @@ $ clevercsv code --pandas imdb.csv
 
 import clevercsv
 
-df = clevercsv.csv2df("imdb.csv", delimiter=",", quotechar="", escapechar="\")
+df = clevercsv.csv2df("imdb.csv", delimiter=",", quotechar="", escapechar="\\")
 ```
 
 #### Detect
