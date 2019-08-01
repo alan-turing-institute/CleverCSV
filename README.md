@@ -96,13 +96,12 @@ module, but it also adds some useful wrapper functions. These functions
 automatically detect the dialect and aim to make working with CSV files 
 easier. We currently have the following helper functions:
 
-* [``detect_dialect`` 
-  ](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.detect_dialect): 
+* [detect_dialect](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.detect_dialect): 
   takes a path to a CSV file and returns the detected dialect
-* [``read_csv``](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.read_csv): 
+* [read_csv](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.read_csv): 
   automatically detects the dialect and encoding of the file, and returns the 
   data as a list of rows.
-* [``csv2df``](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.csv2df) 
+* [csv2df](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.csv2df) 
   detects the dialect and encoding of the file and then uses Pandas' to read 
   the CSV into a DataFrame.
 
