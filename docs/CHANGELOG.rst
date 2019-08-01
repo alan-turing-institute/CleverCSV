@@ -2,6 +2,13 @@
 Changelog
 =========
 
+Version 0.3.7
+-------------
+
+
+* Bugfix for console script ``code`` command
+* Update readme
+
 Version 0.3.6
 -------------
 

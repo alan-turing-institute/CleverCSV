@@ -200,7 +200,7 @@ the generated code to a Python script!
    import clevercsv
 
    with open("imdb.csv", "r", newline="", encoding="utf-8") as fp:
-       reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\")
+       reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\\")
        rows = list(reader)
 
 We also have a version that reads a Pandas dataframe:
@@ -213,7 +213,7 @@ We also have a version that reads a Pandas dataframe:
 
    import clevercsv
 
-   df = clevercsv.csv2df("imdb.csv", delimiter=",", quotechar="", escapechar="\")
+   df = clevercsv.csv2df("imdb.csv", delimiter=",", quotechar="", escapechar="\\")
 
 Detect
 ~~~~~~
