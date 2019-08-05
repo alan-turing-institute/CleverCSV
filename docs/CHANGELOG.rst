@@ -2,6 +2,28 @@
 Changelog
 =========
 
+Version 0.4.0
+-------------
+
+
+* Update URL regular expression and add unit tests
+* Add IPv4 type detection
+* Add tie-breaker for combined quotechar and escapechar ties
+
+Version 0.3.7
+-------------
+
+
+* Bugfix for console script ``code`` command
+* Update readme
+
+Version 0.3.6
+-------------
+
+
+* Cleanly handle failure to detect dialect in console application
+* Remove any (partial) support for Python 2
+
 Version 0.3.5
 -------------
 

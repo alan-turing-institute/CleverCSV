@@ -120,7 +120,7 @@ class SimpleDialect(object):
         return self.__key() == other.__key()
 
     def __lt__(self, other):
-        # This provides a partial order on dialect objects with the goal of 
+        # This provides a partial order on dialect objects with the goal of
         # speeding up the consistency measure.
         if not isinstance(other, SimpleDialect):
             return False

@@ -15,6 +15,7 @@ from .cparser import Parser, Error as ParserError
 from .dialect import SimpleDialect
 from .exceptions import Error
 
+
 class reader(object):
     def __init__(self, csvfile, dialect="excel", **fmtparams):
         self.csvfile = csvfile

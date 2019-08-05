@@ -103,14 +103,16 @@ Stonecutters Seafood and Chop House+ Lemont+ IL+ 12/19/02+ Week Back
     def test_has_header(self):
         detector = Detector()
         self.assertEqual(detector.has_header(self.sample1), False)
-        self.assertEqual(detector.has_header(self.header1 + self.sample1), 
-                True)
+        self.assertEqual(
+            detector.has_header(self.header1 + self.sample1), True
+        )
 
     def test_has_header_regex_special_delimiter(self):
         detector = Detector()
         self.assertEqual(detector.has_header(self.sample8), False)
-        self.assertEqual(detector.has_header(self.header2 + self.sample8), 
-                True)
+        self.assertEqual(
+            detector.has_header(self.header2 + self.sample8), True
+        )
 
 
 if __name__ == "__main__":

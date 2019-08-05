@@ -8,4 +8,4 @@ vim $(grep -HnRl \
 	--exclude=*.pyc \
 	--exclude=*.swp \
 	--exclude=*.db \
-	$@ | sort)
+	"$@" | sort)

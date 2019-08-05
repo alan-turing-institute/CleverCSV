@@ -17,9 +17,7 @@ class TypeDetectorTestCase(unittest.TestCase):
     def setUp(self):
         self.td = TypeDetector()
 
-    """
-    NUMBERS
-    """
+    # NUMBERS
 
     def test_number(self):
         yes_number = [
@@ -109,9 +107,7 @@ class TypeDetectorTestCase(unittest.TestCase):
             with self.subTest(num=num):
                 self.assertFalse(self.td.is_number(num))
 
-    """
-    DATES
-    """
+    # DATES
 
     def test_date(self):
         yes_date = [
@@ -176,6 +172,111 @@ class TypeDetectorTestCase(unittest.TestCase):
         for date in no_date:
             with self.subTest(date=date):
                 self.assertFalse(self.td.is_date(date))
+
+    # URLs
+
+    def test_url(self):
+        # Some cases copied from https://mathiasbynens.be/demo/url-regex
+        yes_url = [
+            "Cocoal.icio.us",
+            "Websquash.com",
+            "bbc.co.uk",
+            "ebay.com",
+            "en.wikipedia.com",
+            "ftp://foo.bar/baz",
+            "http://127.0.0.1",
+            "http://127.0.0.1/uoshostel/web/app_dev.php/assets/img/size2.jpg",
+            "http://1337.net",
+            "http://142.42.1.1/",
+            "http://142.42.1.1:8080/",
+            "http://223.255.255.254",
+            "http://a.b-c.de",
+            "http://code.google.com/events/#&product=browser",
+            "http://en.wikipedia.com",
+            "http://experiment.local/frameworks/symphony2/web/app_dev.php/admin/categories",
+            "http://foo.bar/?q=Test%20URL-encoded%20stuff",
+            "http://foo.com/(something)?after=parens",
+            "http://foo.com/blah_(wikipedia)#cite-1",
+            "http://foo.com/blah_(wikipedia)_blah#cite-1",
+            "http://foo.com/blah_blah",
+            "http://foo.com/blah_blah/",
+            "http://foo.com/blah_blah_(wikipedia)",
+            "http://foo.com/blah_blah_(wikipedia)_(again)",
+            "http://fridley-tigers.com",
+            "http://gertjan.dev",
+            "http://hi.fridley-tigers.com",
+            "http://j.mp",
+            "http://localhost/1234.html",
+            "http://localhost/Symfony/web/app_dev.php/index",
+            "http://localhost/pidev/WebSmartravel/web/app_dev.php/travel_admin/1/js/bootstrap.js",
+            "http://localhost/webSmartravel/web/app_dev.php/admin",
+            "http://mainhostel.localdev.com/app_dev.php/location",
+            "http://simplegreensmoothies.com/Recipes/kiwi-strawberry-twist",
+            "http://t.co/VSD0L81Yrt",
+            "http://t.co/VSD0L81Yrt.html",
+            "http://www.bbc.co.uk",
+            "http://www.beloithistoricalsociety.com/hanchett.htm",
+            "http://www.co-operativefood.co.uk/find-us/?q=UK&lat=52.451935&long=-1.887871&filters=Food&options=",
+            "http://www.deutsche-wein-strasse.de/Panorama/Flemlingen/flemlingen.htm",
+            "http://www.example.com/wpstyle/?p=364",
+            "http://www.google.com/url?q=http%3A%2F%2Fbit.ly%2F1sneR2w&sa=D&sntz=1&usg=AFQjCNGs2NJSTFm8Dzx-755C0K0_KDuiew",
+            "http://www.iceland.co.uk/",
+            "http://www.iceland.co.uk/store-finder/",
+            "http://www.iceland.co.uk/store-finder/?StoreFinderSearch=S45%209JE",
+            "http://www.marksandspencer.com/MSStoreDetailsView?SAPStoreId=2804",
+            "http://www.sainsburys.co.uk/sol/storelocator/storelocator_detail_view.jsp?storeId=4526&bmForm=store_details",
+            "http://www.stackoverflow.com/",
+            "https://en.wikipedia.com",
+            "https://gertjan.dev",
+            "https://google.com",
+            "https://localhost",
+            "https://www.example.com/foo/?bar=baz&inga=42&quux",
+            "test.example.com/~name",
+            "www.google.com",
+            "www.google.com/",
+            "www.menominee-nsn.gov/",
+        ]
+        for url in yes_url:
+            with self.subTest(url=url):
+                self.assertTrue(self.td.is_url(url))
+        no_url = [
+            "//",
+            "///",
+            "///a",
+            "//a",
+            ":// should fail",
+            "a@b.com",
+            "ftps://foo.bar/",
+            "h://test",
+            "http:// shouldfail.com",
+            "http://",
+            "http://#",
+            "http://##",
+            "http://##/",
+            "http://-a.b.co",
+            "http://-error-.invalid/",
+            "http://.",
+            "http://..",
+            "http://../",
+            "http://.www.foo.bar./",
+            "http://.www.foo.bar/",
+            "http:///a",
+            "http://1.1.1.1.1",
+            "http://123.123.123",
+            "http://3628126748",
+            "http://?",
+            "http://??",
+            "http://??/",
+            "http://a.b--c.de/",
+            "http://a.b-.co",
+            "http://foo.bar/foo(bar)baz quux",
+            "http://foo.bar?q=Spaces should be encoded",
+            "http://www.foo.bar./",
+            "rdar://1234",
+        ]
+        for url in no_url:
+            with self.subTest(url=url):
+                self.assertFalse(self.td.is_url(url))
 
     """
     Type Score tests

@@ -10,5 +10,5 @@ from .detect import Detector as Sniffer
 from .dict_read_write import DictReader, DictWriter
 from .exceptions import Error
 from .read import reader
-from .wrappers import csv2df, read_as_dicts, read_csv
+from .wrappers import detect_dialect, csv2df, read_as_dicts, read_csv
 from .write import writer

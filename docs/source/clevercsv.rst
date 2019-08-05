@@ -1,139 +1,149 @@
-CleverCSV API Documentation
-===========================
+clevercsv package
+=================
 
-break\_ties
+Subpackages
 -----------
+
+.. toctree::
+
+   clevercsv.console
+
+Submodules
+----------
+
+clevercsv.break\_ties module
+----------------------------
 
 .. automodule:: clevercsv.break_ties
    :members:
    :undoc-members:
    :show-inheritance:
 
-consistency
------------
-
+clevercsv.consistency module
+----------------------------
 
 .. automodule:: clevercsv.consistency
    :members:
    :undoc-members:
    :show-inheritance:
 
-cparser\_util
--------------
+clevercsv.cparser\_util module
+------------------------------
 
 .. automodule:: clevercsv.cparser_util
    :members:
    :undoc-members:
    :show-inheritance:
 
-detect
-------
+clevercsv.detect module
+-----------------------
 
 .. automodule:: clevercsv.detect
    :members:
    :undoc-members:
    :show-inheritance:
 
-detect\_pattern
----------------
+clevercsv.detect\_pattern module
+--------------------------------
 
 .. automodule:: clevercsv.detect_pattern
    :members:
    :undoc-members:
    :show-inheritance:
 
-detect\_type
-------------
+clevercsv.detect\_type module
+-----------------------------
 
 .. automodule:: clevercsv.detect_type
    :members:
    :undoc-members:
    :show-inheritance:
 
-dialect
--------
+clevercsv.dialect module
+------------------------
 
 .. automodule:: clevercsv.dialect
    :members:
    :undoc-members:
    :show-inheritance:
 
-dict\_read\_write
------------------
+clevercsv.dict\_read\_write module
+----------------------------------
 
 .. automodule:: clevercsv.dict_read_write
    :members:
    :undoc-members:
    :show-inheritance:
 
-escape
-------
+clevercsv.escape module
+-----------------------
 
 .. automodule:: clevercsv.escape
    :members:
    :undoc-members:
    :show-inheritance:
 
-exceptions
-----------
+clevercsv.exceptions module
+---------------------------
 
 .. automodule:: clevercsv.exceptions
    :members:
    :undoc-members:
    :show-inheritance:
 
-normal\_form
-------------
+clevercsv.normal\_form module
+-----------------------------
 
 .. automodule:: clevercsv.normal_form
    :members:
    :undoc-members:
    :show-inheritance:
 
-parser
-------
-
-.. automodule:: clevercsv.parser
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-potential\_dialects
--------------------
+clevercsv.potential\_dialects module
+------------------------------------
 
 .. automodule:: clevercsv.potential_dialects
    :members:
    :undoc-members:
    :show-inheritance:
 
-read
-----
+clevercsv.read module
+---------------------
 
 .. automodule:: clevercsv.read
    :members:
    :undoc-members:
    :show-inheritance:
 
-utils
------
+clevercsv.utils module
+----------------------
 
 .. automodule:: clevercsv.utils
    :members:
    :undoc-members:
    :show-inheritance:
 
-wrappers
---------
+clevercsv.wrappers module
+-------------------------
 
 .. automodule:: clevercsv.wrappers
    :members:
    :undoc-members:
    :show-inheritance:
 
-write
------
+clevercsv.write module
+----------------------
 
 .. automodule:: clevercsv.write
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: clevercsv
    :members:
    :undoc-members:
    :show-inheritance:

@@ -7,13 +7,14 @@ Author: Gertjan van den Burg
 
 """
 
-import unittest
-import tempfile
-import pandas as pd
 import os
+import pandas as pd
+import tempfile
+import unittest
 
 from clevercsv import wrappers, writer
 from clevercsv.dialect import SimpleDialect
+from clevercsv.exceptions import NoDetectionResult
 
 
 class WrappersTestCase(unittest.TestCase):
@@ -42,6 +43,18 @@ class WrappersTestCase(unittest.TestCase):
         exp = [list(map(str, r)) for r in table]
         try:
             self.assertEqual(exp, wrappers.read_csv(tmpfname))
+        finally:
+            os.unlink(tmpfname)
+
+    def _read_test_rows(self, rows, expected):
+        contents = "\n".join(rows)
+        tmpfd, tmpfname = tempfile.mkstemp()
+        tmpid = os.fdopen(tmpfd, "w")
+        tmpid.write(contents)
+        tmpid.close()
+
+        try:
+            self.assertEqual(expected, wrappers.read_csv(tmpfname))
         finally:
             os.unlink(tmpfname)
 
@@ -86,3 +99,17 @@ class WrappersTestCase(unittest.TestCase):
         dialect = SimpleDialect(delimiter=",", quotechar='"', escapechar="")
         with self.subTest(name="double"):
             self._read_test(table, dialect)
+
+        rows = ['1,"AA"', '2,"BB"', '3,"CC"']
+        exp = [["1", "AA"], ["2", "BB"], ["3", "CC"]]
+        with self.subTest(name="rowtest"):
+            self._read_test_rows(rows, exp)
+
+        # This raises a NoDetectionResult due to the spacing after the
+        # delimiter, which confuses the detection algorithm. Support for
+        # detecting 'skipinitialspace' should fix this problem.
+        rows = ['1, "AA"', '2, "BB"', '3, "CC"']
+        exp = [["1", "AA"], ["2", "BB"], ["3", "CC"]]
+        with self.subTest(name="raises2"):
+            with self.assertRaises(NoDetectionResult):
+                self._read_test_rows(rows, exp)

@@ -99,31 +99,36 @@ The package is available on PyPI:
 Usage
 -----
 
-CleverCSV consists of a Python library and a command line tool 
-(\ ``clevercsv``\ ).
+CleverCSV consists of a Python library and a command line tool called 
+``clevercsv``.
 
 Library
 ^^^^^^^
 
 We designed CleverCSV to provide a drop-in replacement for the built-in CSV 
 module, with some useful functionality added to it. Therefore, if you simply 
-want to replace the builtin CSV module with CleverCSV, you only have to add 
-one letter:
+want to replace the builtin CSV module with CleverCSV, you can import 
+CleverCSV as follows, and use it as you would use the builtin `csv 
+module <https://docs.python.org/3/library/csv.html>`_.
 
 .. code-block:: python
 
    import clevercsv
 
 CleverCSV provides an improved version of the dialect sniffer in the CSV 
-module, but it also adds some useful wrapper functions. For instance, there's 
-a wrapper for loading a CSV file using `Pandas <https://pandas.pydata.org/>`_\ , 
-that uses CleverCSV to detect the dialect of the file:
+module, but it also adds some useful wrapper functions. These functions 
+automatically detect the dialect and aim to make working with CSV files 
+easier. We currently have the following helper functions:
 
-.. code-block:: python
 
-   from clevercsv import csv2df
-
-   df = csv2df("data.csv")
+* `detect_dialect <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.detect_dialect>`_\ : 
+  takes a path to a CSV file and returns the detected dialect
+* `read_csv <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.read_csv>`_\ : 
+  automatically detects the dialect and encoding of the file, and returns the 
+  data as a list of rows.
+* `csv2df <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.csv2df>`_\ : 
+  detects the dialect and encoding of the file and then uses Pandas to read 
+  the CSV into a DataFrame.
 
 Of course, you can also use the traditional way of loading a CSV file, as in 
 the Python CSV module:
@@ -141,8 +146,8 @@ the Python CSV module:
      rows = list(reader)
 
 That's the basics! If you want more details, you can look at the code of the 
-package or the test suite. Documentation will be provided in the future (but a 
-lot of the functionality is similar to the CSV package in Python!)
+package, the test suite, or the `API 
+documentation <https://clevercsv.readthedocs.io/en/latest/source/modules.html>`_.
 
 Command-Line Tool
 ^^^^^^^^^^^^^^^^^
@@ -195,7 +200,7 @@ the generated code to a Python script!
    import clevercsv
 
    with open("imdb.csv", "r", newline="", encoding="utf-8") as fp:
-       reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\")
+       reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\\")
        rows = list(reader)
 
 We also have a version that reads a Pandas dataframe:
@@ -208,7 +213,7 @@ We also have a version that reads a Pandas dataframe:
 
    import clevercsv
 
-   df = clevercsv.csv2df("imdb.csv", delimiter=",", quotechar="", escapechar="\")
+   df = clevercsv.csv2df("imdb.csv", delimiter=",", quotechar="", escapechar="\\")
 
 Detect
 ~~~~~~

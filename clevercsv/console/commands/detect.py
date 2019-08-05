@@ -30,9 +30,11 @@ class DetectCommand(Command):
             encoding=self.option("encoding"),
             verbose=verbose,
         )
+        if dialect is None:
+            return self.line("Dialect detection failed.")
         if self.option("plain"):
             self.line(f"delimiter = {dialect.delimiter}".strip())
             self.line(f"quotechar = {dialect.quotechar}".strip())
             self.line(f"escapechar = {dialect.escapechar}".strip())
         else:
-            self.line('Detected: ' + str(dialect))
+            self.line("Detected: " + str(dialect))

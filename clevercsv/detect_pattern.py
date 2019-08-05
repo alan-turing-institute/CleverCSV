@@ -7,8 +7,6 @@ Author: Gertjan van den Burg
 
 """
 
-from __future__ import division
-
 import collections
 
 from .cabstraction import base_abstraction

@@ -7,8 +7,8 @@ Author: Gertjan van den Burg
 """
 
 import os
-import unittest
 import tempfile
+import unittest
 
 from cleo.testers import CommandTester
 
@@ -192,6 +192,34 @@ import clevercsv
 
 with open("{tmpfname}", "r", newline="", encoding="{encoding}") as fp:
     reader = clevercsv.reader(fp, delimiter=";", quotechar="", escapechar="")
+    rows = list(reader)
+
+"""
+        try:
+            output = tester.io.fetch_output()
+            self.assertEqual(exp, output)
+        finally:
+            os.unlink(tmpfname)
+
+    def test_code_4(self):
+        table = [["Å", "B,D", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=",", quotechar="", escapechar="\\")
+        encoding = "ISO-8859-1"
+        tmpfname = self._build_file(table, dialect, encoding=encoding)
+
+        application = build_application()
+        command = application.find("code")
+        tester = CommandTester(command)
+        tester.execute(tmpfname)
+
+        exp = f"""\
+
+# Code generated with CleverCSV version {__version__}
+
+import clevercsv
+
+with open("{tmpfname}", "r", newline="", encoding="{encoding}") as fp:
+    reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\\\\")
     rows = list(reader)
 
 """
