@@ -22,6 +22,7 @@ def colored(msg, color=None, style=None):
         "green": colorama.Fore.GREEN,
         "cyan": colorama.Fore.CYAN,
         "yellow": colorama.Fore.YELLOW,
+        "magenta": colorama.Fore.MAGENTA,
         None: "",
     }
     styles = {
@@ -41,6 +42,14 @@ def cprint(msg, color=None, style=None):
 def wait_for_enter():
     input(colored("\nPress Enter to continue", style="dim"))
     print()
+
+
+def get_package_name():
+    with open("./pyproject.toml", "r") as fp:
+        nameline = next(
+            (l.strip() for l in fp if l.startswith("name = ")), None
+        )
+        return nameline.split("=")[-1].strip().strip('"')
 
 
 class Step:
@@ -70,7 +79,7 @@ class Step:
         cprint("\t" + msg, color="cyan", style="bright")
 
     def do_cmd(self, cmd):
-        cprint(f"Going to run: {cmd}", color="cyan", style="bright")
+        cprint(f"Going to run: {cmd}", color="magenta", style="bright")
         wait_for_enter()
         os.system(cmd)
 
@@ -116,7 +125,7 @@ class BumpVersionPackage(Step):
         self.instruct(
             f"Update __version__.py with version: {context['version']}"
         )
-        self.print_run("vi clevercsv/__version__.py")
+        self.print_run(f"vi {context['pkgname']}/__version__.py")
 
 
 class MakeClean(Step):
@@ -150,7 +159,7 @@ class InstallFromTestPyPI(Step):
         self.print_cmd("source bin/activate")
         self.print_cmd(
             "pip install --index-url https://test.pypi.org/simple/ "
-            + f"--extra-index-url https://pypi.org/simple clevercsv=={context['version']}"
+            + f"--extra-index-url https://pypi.org/simple {context['pkgname']}=={context['version']}"
         )
 
 
@@ -159,13 +168,13 @@ class TestCleverCSV(Step):
         self.instruct(
             f"Ensure that the following command gives version {context['version']}"
         )
-        self.print_run("clevercsv -V")
+        self.print_run(f"{context['pkgname']} -V")
 
 
 class DeactivateVenv(Step):
     def action(self, context):
         self.print_run("deactivate")
-        self.print_cmd("cd /path/to/clevercsv")
+        self.instruct("Go back to the project directory")
 
 
 class GitTagVersion(Step):
@@ -228,6 +237,7 @@ def main():
         PushToGitHub(),
     ]
     context = {}
+    context["pkgname"] = get_package_name()
     for step in procedure:
         step.run(context)
     cprint("\nDone!", color="yellow", style="bright")
