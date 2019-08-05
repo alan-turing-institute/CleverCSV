@@ -72,8 +72,9 @@ PATTERNS = {
     "number_1": "^(?=[+-\.\d])[+-]?(?:0|[1-9]\d*)?(((?P<dot>((?<=\d)\.|\.(?=\d)))?(?(dot)(?P<yes_dot>\d*(\d*[eE][+-]?\d+)?)|(?P<no_dot>((?<=\d)[eE][+-]?\d+)?)))|((?P<comma>,)?(?(comma)(?P<yes_comma>\d+(\d+[eE][+-]?\d+)?)|(?P<no_comma>((?<=\d)[eE][+-]?\d+)?))))$",
     "number_2": "[+-]?(?:[1-9]|[1-9]\d{0,2})(?:\,\d{3})+\.\d*",
     "number_3": "[+-]?(?:[1-9]|[1-9]\d{0,2})(?:\.\d{3})+\,\d*",
-    "url": "(?:(?:[A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)(?:(?:\/[\+~%\/.\w\-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?",
+    "url": "((https?|ftp):\/\/(?!\-))?(((([\p{L}\p{N}]*\-?[\p{L}\p{N}]+)+\.)+([a-z]{2,3}|local)(\.[a-z]{2,3})?)|localhost|(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\:\d{1,5})?))(\/[\p{L}\p{N}_\/()~?=&%\-\#\.]*)?(\.[a-z]+)?",
     "email": r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
+    "ipv4": "(?:\d{1,3}\.){3}\d{1,3}",
     "unicode_alphanum": "(\p{N}?\p{L}+[\p{N}\p{L}\ "
     + regex.escape("".join(SPECIALS_ALLOWED))
     + "]*|\p{L}?[\p{N}\p{L}\ "
@@ -106,7 +107,9 @@ class TypeDetector(object):
     def detect_type(self, cell):
         type_tests = [
             ("empty", self.is_empty),
-            ("url_or_email", self.is_url_or_email),
+            ("url", self.is_url),
+            ("email", self.is_email),
+            ("ipv4", self.is_ipv4),
             ("number", self.is_number),
             ("time", self.is_time),
             ("percentage", self.is_percentage),
@@ -140,8 +143,14 @@ class TypeDetector(object):
             return True
         return False
 
-    def is_url_or_email(self, cell):
-        return self._run_regex(cell, "url") or self._run_regex(cell, "email")
+    def is_ipv4(self, cell):
+        return self._run_regex(cell, "ipv4")
+
+    def is_url(self, cell):
+        return self._run_regex(cell, "url")
+
+    def is_email(self, cell):
+        return self._run_regex(cell, "email")
 
     def is_unicode_alphanum(self, cell):
         return self._run_regex(cell, "unicode_alphanum")
