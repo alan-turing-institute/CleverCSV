@@ -101,8 +101,8 @@ easier. We currently have the following helper functions:
 * [read_csv](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.read_csv): 
   automatically detects the dialect and encoding of the file, and returns the 
   data as a list of rows.
-* [csv2df](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.csv2df) 
-  detects the dialect and encoding of the file and then uses Pandas' to read 
+* [csv2df](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.csv2df): 
+  detects the dialect and encoding of the file and then uses Pandas to read 
   the CSV into a DataFrame.
 
 Of course, you can also use the traditional way of loading a CSV file, as in 

@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 0.4.0
+-------------
+
+
+* Update URL regular expression and add unit tests
+* Add IPv4 type detection
+* Add tie-breaker for combined quotechar and escapechar ties
+
 Version 0.3.7
 -------------
 
