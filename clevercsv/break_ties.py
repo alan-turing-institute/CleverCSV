@@ -79,7 +79,11 @@ def break_ties_two(data, A, B):
         The chosen dialect if the tie can be broken, None otherwise.
 
     """
-    if A.delimiter == B.delimiter and A.escapechar == B.escapechar:
+    keys = {"delimiter", "quotechar", "escapechar"}
+    diff_only_in_key = lambda key: all(
+        getattr(A, x) == getattr(B, x) for x in keys if x != key
+    )
+    if diff_only_in_key("quotechar"):
         if A.quotechar == "" or B.quotechar == "":
             d_no = A if A.quotechar == "" else B
             d_yes = B if d_no == A else A
@@ -93,7 +97,7 @@ def break_ties_two(data, A, B):
             else:
                 # quotechar has an effect
                 return d_yes
-    elif A.quotechar == B.quotechar and A.escapechar == B.escapechar:
+    elif diff_only_in_key("delimiter"):
         if sorted([A.delimiter, B.delimiter]) == sorted([",", " "]):
             # Artifact due to type detection (comma as radix point)
             if A.delimiter == ",":
@@ -106,7 +110,7 @@ def break_ties_two(data, A, B):
                 return B
             else:
                 return A
-    elif A.delimiter == B.delimiter and A.quotechar == B.quotechar:
+    elif diff_only_in_key("escapechar"):
         Dnone, Descape = (A, B) if A.escapechar == "" else (B, A)
 
         X = list(parse_string(data, Dnone))
@@ -148,6 +152,40 @@ def break_ties_two(data, A, B):
                 return Descape
             else:
                 return Dnone
+    elif A.delimiter == B.delimiter:
+        Aq, Ae = A.quotechar, A.escapechar
+        Bq, Be = B.quotechar, B.escapechar
+        if (Aq, Ae) == ("", "") or (Bq, Be) == ("", ""):
+            # This case is activated if the escapechar+quotechar combination
+            # occurs in the cells (i.e. "Jill\'s data") but no actual quoting
+            # is done with the quote character.
+            d_no = A if (Aq, Ae) == ("", "") else B
+            d_yes = B if d_no == A else A
+
+            X = list(parse_string(data, dialect=d_no))
+            Y = list(parse_string(data, dialect=d_yes))
+
+            if len(X) != len(Y):
+                return None
+            for x, y in zip(X, Y):
+                if len(x) != len(y):
+                    return None
+
+            # if we're here, then there is no effect on structure.
+            # we test if the only cells that differ are those that have an
+            # escapechar+quotechar combination.
+            eq = d_yes.escapechar + d_yes.quotechar
+            for rX, rY in zip(X, Y):
+                for x, y in zip(rX, rY):
+                    if x != y:
+                        if not eq in x:
+                            return None
+
+            # Now we know that the only cells that have the
+            # escapechar+quotechar combination are the cause of the difference.
+            # The right thing to do is to return the dialect that uses them.
+            return d_yes
+
     return None
 
 
