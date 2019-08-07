@@ -1,12 +1,9 @@
-# CleverCSV: A Clever CSV Parser
+# CleverCSV: A Clever CSV Package
 
 [![Build Status](https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master)](https://travis-ci.org/alan-turing-institute/CleverCSV)
 [![PyPI version](https://badge.fury.io/py/clevercsv.svg)](https://pypi.org/project/clevercsv/)
 [![Documentation Status](https://readthedocs.org/projects/clevercsv/badge/?version=latest)](https://clevercsv.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb)
-
-*This package is currently in beta. If you encounter any problems, please open 
-an issue or submit a pull request!*
 
 **Handy links:**
 

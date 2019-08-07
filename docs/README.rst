@@ -1,6 +1,6 @@
 
-CleverCSV: A Clever CSV Parser
-==============================
+CleverCSV: A Clever CSV Package
+===============================
 
 
 .. image:: https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master
@@ -22,9 +22,6 @@ CleverCSV: A Clever CSV Parser
    :target: https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb
    :alt: Binder
 
-
-*This package is currently in beta. If you encounter any problems, please open 
-an issue or submit a pull request!*
 
 **Handy links:**
 
