@@ -148,8 +148,11 @@ class Asker(object):
                 ans = input("%s[%s] " % (prompt, "/".join(sorted(options))))
             if ans == "quit":
                 self.quit()
+            elif ans == "less":
+                self.close(clean=False)
+                self.open_less()
             elif ans in ["vi", "vim"]:
-                self.close()
+                self.close(clean=False)
                 self.open_vim()
             elif ans in ["hlt", "hltab"]:
                 self.pane.send_keys("/\\t")
@@ -279,13 +282,13 @@ class Asker(object):
         self.pane.send_keys("less -N -f %s" % self.filename)
         self.opened_less = True
 
-    def close(self):
+    def close(self, clean=True):
         if self.opened_less:
             self.close_less()
         elif self.opened_vim:
             self.close_vim()
         self.pane.clear()
-        if not self.decompressed_file is None:
+        if clean and not self.decompressed_file is None:
             os.unlink(self.decompressed_file)
 
     def close_vim(self):
@@ -318,6 +321,7 @@ def annotate_file(filename, name, tmux_pane):
         asker.close()
         return out
     out["dialect"] = asker.dialect
+    out["encoding"] = asker.encoding
     asker.close()
     return out
 
