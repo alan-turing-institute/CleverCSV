@@ -15,6 +15,7 @@ DEFAULT_EPS_TYPE = 1e-10
 
 # Used this site: https://unicode-search.net/unicode-namesearch.pl
 SPECIALS_ALLOWED = [
+    '_',
     # Periods
     "\u002e",
     "\u06d4",
