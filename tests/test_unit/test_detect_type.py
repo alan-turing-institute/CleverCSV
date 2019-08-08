@@ -278,6 +278,26 @@ class TypeDetectorTestCase(unittest.TestCase):
             with self.subTest(url=url):
                 self.assertFalse(self.td.is_url(url))
 
+    # Unix path
+
+    def test_unix_path(self):
+        yes_path = [
+            "/Users/person/abc/def-ghi/blabla.csv.test",
+            "/home/username/share/a/_b/c_d/e.py",
+            "/home/username/share",
+            "/home/username",
+            "/home/username/",
+            "~/share/",
+            "./share",
+        ]
+        for path in yes_path:
+            with self.subTest(path=path):
+                self.assertTrue(self.td.is_unix_path(path))
+        no_path = ["", "~share", ".share"]
+        for path in no_path:
+            with self.subTest(path=path):
+                self.assertFalse(self.td.is_unix_path(path))
+
     """
     Type Score tests
     """
