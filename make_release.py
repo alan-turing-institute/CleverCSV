@@ -14,6 +14,7 @@ Date: 2019-07-23
 
 import colorama
 import os
+import webbrowser
 
 
 def colored(msg, color=None, style=None):
@@ -203,12 +204,18 @@ class WaitForTravis(Step):
         self.instruct(
             "Wait for Travis to complete and verify that its successful"
         )
+        webbrowser.open_new_tab(
+            "https://travis-ci.org/alan-turing-institute/CleverCSV"
+        )
 
 
 class WaitForRTD(Step):
     def action(self, context):
         self.instruct(
             "Wait for ReadTheDocs to complete and verify that its successful"
+        )
+        webbrowser.open_new_tab(
+            "https://readthedocs.org/projects/clevercsv/builds/"
         )
 
 
