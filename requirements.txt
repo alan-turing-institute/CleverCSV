@@ -14,4 +14,5 @@ pytz==2019.1
 regex==2018.11.22
 six==1.12.0
 tabview==1.4.3
+termcolor==1.1.0
 Unidecode==1.1.1
