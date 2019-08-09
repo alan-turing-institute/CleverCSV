@@ -25,10 +25,12 @@ TEST_DIALECTS = os.path.join(SOURCE_DIR, "dialects")
 LOG_SUCCESS = os.path.join(THIS_DIR, "success.log")
 LOG_ERROR = os.path.join(THIS_DIR, "error.log")
 LOG_FAILED = os.path.join(THIS_DIR, "failed.log")
+LOG_METHOD = os.path.join(THIS_DIR, "method.log")
 
 LOG_SUCCESS_PARTIAL = os.path.join(THIS_DIR, "success_partial.log")
 LOG_ERROR_PARTIAL = os.path.join(THIS_DIR, "error_partial.log")
 LOG_FAILED_PARTIAL = os.path.join(THIS_DIR, "failed_partial.log")
+LOG_METHOD_PARTIAL = os.path.join(THIS_DIR, "method_partial.log")
 
 TIMEOUT = 5 * 60
 N_BYTES_PARTIAL = 10000
@@ -49,15 +51,23 @@ def log_result(name, kind, verbose, partial):
         termcolor.cprint(name, color=color)
 
 
+def log_method(name, method, partial):
+    fname = LOG_METHOD_PARTIAL if partial else LOG_METHOD
+    with open(fname, "a") as fp:
+        fp.write(f"{name},{method}\n")
+
+
 def worker(args, return_dict, **kwargs):
     det = clevercsv.Detector()
     filename, encoding, partial = args
     return_dict["error"] = False
     return_dict["dialect"] = None
+    return_dict["method"] = None
     with gzip.open(filename, "rt", newline="", encoding=encoding) as fp:
         data = fp.read(N_BYTES_PARTIAL) if partial else fp.read()
         try:
             return_dict["dialect"] = det.detect(data, **kwargs)
+            return_dict["method"] = det.method_
         except clevercsv.Error:
             return_dict["error"] = True
 
@@ -72,11 +82,11 @@ def run_with_timeout(args, kwargs, limit):
     p.join(limit)
     if p.is_alive():
         p.terminate()
-        return None, True
-    return return_dict["dialect"], return_dict["error"]
+        return None, True, None
+    return return_dict["dialect"], return_dict["error"], return_dict["method"]
 
 
-def run_test(name, gz_filename, annotation, verbose=True, partial=False):
+def run_test(name, gz_filename, annotation, verbose=1, partial=False):
     if "encoding" in annotation:
         enc = annotation["encoding"]
     else:
@@ -84,7 +94,9 @@ def run_test(name, gz_filename, annotation, verbose=True, partial=False):
             enc = chardet.detect(fid.read())["encoding"]
 
     true_dialect = annotation["dialect"]
-    dialect, error = run_with_timeout((gz_filename, enc, partial), {}, TIMEOUT)
+    dialect, error, method = run_with_timeout(
+        (gz_filename, enc, partial), {"verbose": verbose > 1}, TIMEOUT
+    )
     if error:
         return log_result(name, "error", verbose, partial)
 
@@ -98,6 +110,8 @@ def run_test(name, gz_filename, annotation, verbose=True, partial=False):
         log_result(name, "failure", verbose, partial)
     else:
         log_result(name, "success", verbose, partial)
+
+    log_method(name, method, partial)
 
 
 def load_test_cases():
@@ -124,8 +138,13 @@ def load_test_cases():
 
 def clear_output_files(partial):
     files = {
-        True: [LOG_SUCCESS_PARTIAL, LOG_FAILED_PARTIAL, LOG_ERROR_PARTIAL],
-        False: [LOG_SUCCESS, LOG_FAILED, LOG_ERROR],
+        True: [
+            LOG_SUCCESS_PARTIAL,
+            LOG_FAILED_PARTIAL,
+            LOG_ERROR_PARTIAL,
+            LOG_METHOD_PARTIAL,
+        ],
+        False: [LOG_SUCCESS, LOG_FAILED, LOG_ERROR, LOG_METHOD],
     }
     delete = lambda f: os.unlink(f) if os.path.exists(f) else None
     any(map(delete, files[partial]))
@@ -138,9 +157,7 @@ def parse_args():
         help="Run test with partial file data",
         action="store_true",
     )
-    parser.add_argument(
-        "-v", "--verbose", help="Be verbose", action="store_true"
-    )
+    parser.add_argument("-v", "--verbose", help="Be verbose", action="count")
     return parser.parse_args()
 
 
