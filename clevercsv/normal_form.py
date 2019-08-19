@@ -46,6 +46,7 @@ def detect_dialect_normal(
     """
     if delimiters is None:
         delimiters = DELIMS
+    delimiters = list(delimiters)
     for delim, quotechar in itertools.product(delimiters, QUOTECHARS):
         if maybe_has_escapechar(data, encoding, delim, quotechar):
             if verbose:
@@ -181,6 +182,8 @@ def split_file(data):
 def split_row(row, dialect):
     # no nested quotes
     if dialect.quotechar == "" or not dialect.quotechar in row:
+        if dialect.delimiter == "":
+            return [row]
         return row.split(dialect.delimiter)
 
     cells = []
