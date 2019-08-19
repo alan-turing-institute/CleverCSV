@@ -11,6 +11,7 @@ from .. import __version__
 from .config import Config
 from .commands import (
     CodeCommand,
+    CodeGenCommand,
     DetectCommand,
     StandardizeCommand,
     ViewCommand,
@@ -24,4 +25,5 @@ def build_application():
     app.add(DetectCommand())
     app.add(StandardizeCommand())
     app.add(CodeCommand())
+    app.add(CodeGenCommand())
     return app
