@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
+"""
+Definitions for the ``detect`` command of the CleverCSV CLI.
+"""
 
 from cleo import Command
 
+from clevercsv.utils import get_encoding
 from clevercsv.wrappers import detect_dialect
+
 from ._utils import parse_int
+from ._warnings import WARNINGS
 
 
 class DetectCommand(Command):
@@ -22,16 +28,23 @@ class DetectCommand(Command):
     help = "The <info>detect</info> command detects the dialect of a given CSV file."
 
     def handle(self):
+        self.filename = self.argument("path")
+        self.encoding = self.option("encoding") or get_encoding(self.filename)
         verbose = self.io.verbosity > 0
         num_chars = parse_int(self.option("num-chars"), "num-chars")
-        dialect = detect_dialect(
-            self.argument("path"),
-            num_chars=num_chars,
-            encoding=self.option("encoding"),
-            verbose=verbose,
-        )
+        try:
+            dialect = detect_dialect(
+                self.filename,
+                num_chars=num_chars,
+                encoding=self.encoding,
+                verbose=verbose,
+            )
+        except UnicodeDecodeError:
+            return self.line_error(WARNINGS["unicodedecodeerror"])
+
         if dialect is None:
             return self.line("Dialect detection failed.")
+
         if self.option("plain"):
             self.line(f"delimiter = {dialect.delimiter}".strip())
             self.line(f"quotechar = {dialect.quotechar}".strip())

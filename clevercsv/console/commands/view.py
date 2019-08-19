@@ -8,6 +8,7 @@ from clevercsv.exceptions import NoDetectionResult
 from clevercsv.wrappers import read_csv
 
 from ._utils import parse_int
+from ._warnings import WARNINGS
 
 
 class ViewCommand(Command):
@@ -38,6 +39,8 @@ Use the <info>view</info> command to view a CSV file on the command line.
             )
         except NoDetectionResult:
             self.line("Dialect detection failed.")
+        except UnicodeDecodeError:
+            return self.line(WARNINGS["unicodedecodeerror"])
         if self.option("transpose"):
             rows = list(map(list, zip(*rows)))
         tabview.view(rows)

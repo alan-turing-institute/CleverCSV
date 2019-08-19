@@ -9,6 +9,7 @@ from clevercsv.wrappers import detect_dialect
 from clevercsv.write import writer
 
 from ._utils import parse_int
+from ._warnings import WARNINGS
 
 
 class StandardizeCommand(Command):
@@ -39,11 +40,16 @@ file to the standard RFC-4180 format [1].
         encoding = self.option("encoding")
         num_chars = parse_int(self.option("num-chars"), "num-chars")
 
-        dialect = detect_dialect(
-            path, num_chars=num_chars, encoding=encoding, verbose=verbose
-        )
+        try:
+            dialect = detect_dialect(
+                path, num_chars=num_chars, encoding=encoding, verbose=verbose
+            )
+        except UnicodeDecodeError:
+            return self.line(WARNINGS["unicodedecodeerror"])
+
         if dialect is None:
             return self.line("Dialect detection failed.")
+
         out = (
             io.StringIO(newline=None)
             if output is None
