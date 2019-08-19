@@ -116,7 +116,7 @@ def get_delimiters(
     set ``block_cat`` of prohibited categories.  If it is, we don't allow it to 
     be a delimiter, with the exception of Tab (which is in the Control 
     category).  We furthermore block characters in :attr:`block_char` from 
-    being delimiters. 
+    being delimiters.
 
     Parameters
     ----------
