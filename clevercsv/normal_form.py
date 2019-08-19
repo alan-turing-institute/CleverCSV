@@ -36,10 +36,8 @@ def detect_dialect_normal(
     encoding : str
         The encoding of the data
 
-
     Returns
     -------
-
     dialect : SimpleDialect
         The dialect detected using normal forms, or None if no such dialect can 
         be found.
