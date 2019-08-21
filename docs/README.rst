@@ -23,7 +23,7 @@ CleverCSV: A Clever CSV Package
    :alt: Binder
 
 
-*CleverCSV provides a drop-in replacement of the Python ``csv`` package with 
+*CleverCSV provides a drop-in replacement of the Python* ``csv`` *package with 
 improved dialect detection for messy CSV files. It also provides a handy 
 command line tool that can standardize a messy file or generate Python code to 
 import it.*
