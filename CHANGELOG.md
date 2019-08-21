@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.4.1
+
+* Allow underscore in alphanumeric strings
+* Update unix path regular expression
+* Add more integration tests and log detection method
+
 ## Version 0.4.0
 
 * Update URL regular expression and add unit tests
