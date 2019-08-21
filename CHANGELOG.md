@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.4.2
+
+* Fix a failing build due to dependency version mismatch
+
 ## Version 0.4.1
 
 * Allow underscore in alphanumeric strings
