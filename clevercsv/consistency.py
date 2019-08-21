@@ -40,44 +40,29 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
 
     """
 
-    # wrapper for the print function
-    log = lambda *a, **kw: print(*a, **kw) if verbose else None
-
     # Get potential dialects
     dialects = get_dialects(data, delimiters=delimiters)
+    return detect_consistency_dialects(data, dialects, verbose=verbose)
+
+
+def detect_consistency_dialects(data, dialects, verbose=False):
+    """Wrapper for dialect detection with the consistency measure
+
+    This function takes a list of dialects to consider.
+    """
+    log = lambda *a, **kw: print(*a, **kw) if verbose else None
     log("Considering %i dialects." % len(dialects))
-    Qmax = -float("inf")
 
-    H = set()
-
-    # increase the field size limit to the max expected
     old_limit = field_size_limit(len(data) + 1)
-
-    for dialect in sorted(dialects):
-        P = pattern_score(data, dialect)
-        if P < Qmax:
-            log("%15r:\tP = %15.6f\tskip." % (dialect, P))
-            continue
-        T = type_score(data, dialect)
-        Q = P * T
-        if Q > Qmax:
-            H = set([dialect])
-            Qmax = Q
-        elif Q == Qmax:
-            H.add(dialect)
-
-        log("%15r:\tP = %15.6f\tT = %15.6f\tQ = %15.6f" % (dialect, P, T, Q))
-
-    if len(H) == 1:
-        result = H.pop()
-    else:
-        result = tie_breaker(data, list(H))
-
+    scores = consistency_scores(data, dialects, skip=True, logger=log)
+    H = get_best_set(scores)
+    result = break_ties(data, H)
     field_size_limit(old_limit)
+
     return result
 
 
-def consistency_scores(data, dialects, skip=True):
+def consistency_scores(data, dialects, skip=True, logger=print):
     scores = {}
 
     Qmax = -float("inf")
@@ -89,9 +74,27 @@ def consistency_scores(data, dialects, skip=True):
                 "type": float("nan"),
                 "Q": float("nan"),
             }
+            logger("%15r:\tP = %15.6f\tskip." % (dialect, P))
             continue
         T = type_score(data, dialect)
         Q = P * T
         Qmax = max(Q, Qmax)
         scores[dialect] = {"pattern": P, "type": T, "Q": Q}
+        logger(
+            "%15r:\tP = %15.6f\tT = %15.6f\tQ = %15.6f" % (dialect, P, T, Q)
+        )
     return scores
+
+
+def get_best_set(scores):
+    H = set()
+    Qmax = max((score["Q"] for score in scores.values()))
+    H = set([d for d, score in scores.items() if score["Q"] == Qmax])
+    return H
+
+
+def break_ties(data, dialects):
+    D = list(dialects)
+    if len(dialects) == 1:
+        return D[0]
+    return tie_breaker(data, D)
