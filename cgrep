@@ -5,6 +5,7 @@ grep --color=auto -HnR \
 	--exclude-dir=cover \
 	--exclude-dir=docs \
 	--exclude-dir=build \
+	--exclude-dir=tests/test_integration/data \
 	--exclude=*.pyc \
 	--exclude=*.db \
 	--exclude=*.swp "$@"
