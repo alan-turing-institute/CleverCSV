@@ -126,7 +126,9 @@ def csv2df(filename, *args, **kwargs):
     return df
 
 
-def detect_dialect(filename, num_chars=None, encoding=None, verbose=False):
+def detect_dialect(
+    filename, num_chars=None, encoding=None, verbose=False, method="auto"
+):
     """Detect the dialect of a CSV file
 
     This is a utility function that simply returns the detected dialect of a 
@@ -148,6 +150,11 @@ def detect_dialect(filename, num_chars=None, encoding=None, verbose=False):
     verbose : bool
         Enable verbose mode during detection.
 
+    method : str
+        Dialect detection method to use. Either 'normal' for normal form 
+        detection, 'consistency' for the consistency measure, or 'auto' for 
+        first normal and then consistency.
+
     Returns
     -------
     dialect : SimpleDialect
@@ -158,5 +165,5 @@ def detect_dialect(filename, num_chars=None, encoding=None, verbose=False):
     enc = encoding or get_encoding(filename)
     with open(filename, "r", newline="", encoding=enc) as fp:
         data = fp.read(num_chars) if num_chars else fp.read()
-        dialect = Detector().detect(data, verbose=verbose)
+        dialect = Detector().detect(data, verbose=verbose, method=method)
     return dialect

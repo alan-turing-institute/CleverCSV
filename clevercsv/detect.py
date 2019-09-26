@@ -35,17 +35,20 @@ class Detector(object):
         # Compatibility method for Python
         return self.detect(sample, delimiters=delimiters, verbose=verbose)
 
-    def detect(self, sample, delimiters=None, verbose=False):
+    def detect(self, sample, delimiters=None, verbose=False, method="auto"):
+        # method in ['auto', 'normal', 'consistency']
         # wrapper for the print function
         log = lambda *a, **kw: print(*a, **kw) if verbose else None
 
-        log("Running normal form detection ...")
-        dialect = detect_dialect_normal(
-            sample, delimiters=delimiters, verbose=verbose
-        )
-        if not dialect is None:
-            self.method_ = "normal"
-            return dialect
+        if method == "normal" or method == "auto":
+            log("Running normal form detection ...")
+            dialect = detect_dialect_normal(
+                sample, delimiters=delimiters, verbose=verbose
+            )
+            if not dialect is None:
+                self.method_ = "normal"
+                return dialect
+
         self.method_ = "consistency"
         log("Running data consistency measure ...")
         return detect_dialect_consistency(

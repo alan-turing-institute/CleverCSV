@@ -13,6 +13,7 @@ class DetectCommand(Command):
 
     detect
         { path : The path to the CSV file }
+        { --c|consistency : Use only the consistency measure for detection }
         { --e|encoding= : Set the encoding of the CSV file }
         { --n|num-chars= : Limit the number of characters to read for
         detection. This will speed up detection but may reduce accuracy. }
@@ -25,11 +26,13 @@ class DetectCommand(Command):
     def handle(self):
         verbose = self.io.verbosity > 0
         num_chars = parse_int(self.option("num-chars"), "num-chars")
+        method = 'consistency' if self.option('consistency') else 'auto'
         dialect = detect_dialect(
             self.argument("path"),
             num_chars=num_chars,
             encoding=self.option("encoding"),
             verbose=verbose,
+            method=method
         )
         if dialect is None:
             return self.line("Dialect detection failed.")
