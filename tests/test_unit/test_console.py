@@ -63,6 +63,7 @@ class ConsoleTestCase(unittest.TestCase):
         with self.subTest(name="double"):
             self._detect_test_wrap(table, dialect)
 
+
     def test_detect_opts_1(self):
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
@@ -228,6 +229,35 @@ with open("{tmpfname}", "r", newline="", encoding="{encoding}") as fp:
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
+
+    def test_code_5(self):
+        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter="\t", quotechar="", escapechar="")
+
+        tmpfname = self._build_file(table, dialect)
+
+        application = build_application()
+        command = application.find("code")
+        tester = CommandTester(command)
+        tester.execute(tmpfname)
+
+        exp = f"""\
+
+# Code generated with CleverCSV version {__version__}
+
+import clevercsv
+
+with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
+    reader = clevercsv.reader(fp, delimiter="\\t", quotechar="", escapechar="")
+    rows = list(reader)
+
+"""
+        try:
+            output = tester.io.fetch_output()
+            self.assertEqual(exp, output)
+        finally:
+            os.unlink(tmpfname)
+
 
     def test_standardize_1(self):
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]

@@ -44,7 +44,7 @@ and copy the generated code to a Python script.
         if dialect is None:
             return self.line("Dialect detection failed.")
 
-        d = f'"{dialect.delimiter}"'
+        d = '"\\t"' if dialect.delimiter == "\t" else f'"{dialect.delimiter}"'
         q = '"%s"' % (dialect.quotechar.replace('"', '\\"'))
         e = repr(f"{dialect.escapechar}").replace("'", '"')
         base = [
