@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.4.3
+
+* Add optional ``method`` parameter to dialect detector.
+* Bugfix for ``clevercsv code`` command when the delimiter is tab.
+
 ## Version 0.4.2
 
 * Fix a failing build due to dependency version mismatch
