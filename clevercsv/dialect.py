@@ -9,6 +9,7 @@ Author: Gertjan van den Burg
 """
 
 import csv
+import json
 import functools
 
 
@@ -100,6 +101,16 @@ class SimpleDialect(object):
             strict=self.strict,
         )
         return d
+
+    def serialize(self):
+        """ Serialize dialect to a JSON object """
+        return json.dumps(self.to_dict())
+
+    @classmethod
+    def deserialize(cls, obj):
+        """ Deserialize dialect from a JSON object """
+        return cls.from_dict(json.loads(obj))
+
 
     def __repr__(self):
         return "SimpleDialect(%r, %r, %r)" % (

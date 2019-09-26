@@ -17,6 +17,7 @@ class DetectCommand(Command):
         { --n|num-chars= : Limit the number of characters to read for
         detection. This will speed up detection but may reduce accuracy. }
         { --p|plain : Print the components of the dialect on separate lines. }
+        { --j|json : Print the components of the dialect as a JSON object. }
     """
 
     help = "The <info>detect</info> command detects the dialect of a given CSV file."
@@ -36,5 +37,7 @@ class DetectCommand(Command):
             self.line(f"delimiter = {dialect.delimiter}".strip())
             self.line(f"quotechar = {dialect.quotechar}".strip())
             self.line(f"escapechar = {dialect.escapechar}".strip())
+        elif self.option("json"):
+            self.line(dialect.serialize())
         else:
             self.line("Detected: " + str(dialect))
