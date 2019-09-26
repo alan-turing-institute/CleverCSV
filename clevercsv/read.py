@@ -31,6 +31,8 @@ class reader(object):
             sd = SimpleDialect.from_csv_dialect(dialect)
         elif isinstance(dialect, SimpleDialect):
             sd = dialect
+        else:
+            raise ValueError("Unknown dialect type: %r" % dialect)
         for key, value in fmtparams.items():
             if key in ["delimiter", "quotechar", "escapechar", "strict"]:
                 setattr(sd, key, value)
