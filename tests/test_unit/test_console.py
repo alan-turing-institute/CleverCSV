@@ -21,7 +21,7 @@ from clevercsv.write import writer
 class ConsoleTestCase(unittest.TestCase):
     def _build_file(self, table, dialect, encoding=None):
         tmpfd, tmpfname = tempfile.mkstemp(suffix=".csv")
-        tmpid = os.fdopen(tmpfd, "w", newline="\n", encoding=encoding)
+        tmpid = os.fdopen(tmpfd, "w", newline=None, encoding=encoding)
         w = writer(tmpid, dialect=dialect)
         w.writerows(table)
         tmpid.close()
@@ -267,7 +267,7 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         tester = CommandTester(command)
         tester.execute(tmpfname)
 
-        exp = '\n'.join(["A,B,C", "1,2,3", "4,5,6"])
+        exp = os.linesep.join(["A,B,C", "1,2,3", "4,5,6"])
         try:
             output = tester.io.fetch_output().strip()
             self.assertEqual(exp, output)
@@ -287,7 +287,7 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         tester = CommandTester(command)
         tester.execute(f"-o {tmpoutname} {tmpfname}")
 
-        exp = '\n'.join(["A,B,C", "1,2,3", "4,5,6", ""])
+        exp = "\n".join(["A,B,C", "1,2,3", "4,5,6", ""])
         with open(tmpoutname, "r") as fp:
             output = fp.read()
 
@@ -310,7 +310,7 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         tester = CommandTester(command)
         tester.execute(f"-t {tmpfname}")
 
-        exp = '\n'.join(["A,1,4", "B,2,5", "C,3,6"])
+        exp = os.linesep.join(["A,1,4", "B,2,5", "C,3,6"])
 
         try:
             output = tester.io.fetch_output().strip()

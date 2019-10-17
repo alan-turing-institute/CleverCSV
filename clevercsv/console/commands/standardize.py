@@ -58,7 +58,7 @@ file to the standard RFC-4180 format [1].
             for row in rows:
                 write.writerow(row)
         else:
-            with open(path, "r", newline="", encoding=encoding) as fp:
+            with open(path, "r", newline='', encoding=encoding) as fp:
                 read = reader(fp, dialect=dialect)
                 write = writer(out, dialect="excel")
                 for row in read:
