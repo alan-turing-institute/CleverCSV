@@ -4,10 +4,10 @@ branches:
 
 environment:
   CIBW_SKIP: cp27-* cp33-* cp34-* cp35-*
+  CIBW_BEFORE_BUILD: pip install --upgrade pip==18.1
 
 install:
   - set PATH=C:\Python37;%PATH%
-  - cmd: python -m pip install --upgrade pip==18.1
   - cmd: python -m pip install cibuildwheel==0.12.0
 
 build_script:
