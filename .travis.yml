@@ -8,22 +8,24 @@ matrix:
     - sudo: required
       services:
         - docker
-      env: PIP=pip
     - osx:
       language: generic
-      env: PIP=pip2
 
 env:
-  - CC="gcc"
+  global:
+    - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
+    - CC="gcc"
+    - PIP=pip3
+    - PYTHON=python3
 
 install:
-  - pip install --upgrade pip
+  - $PIP install --upgrade pip
   - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
   - source $HOME/.poetry/env
   - poetry install
-  - python setup.py build_ext --inplace
+  - $PYTHON setup.py build_ext --inplace
+  - poetry run green -v ./tests/test_unit
 
 script:
-  - poetry run green -v ./tests/test_unit
   - $PIP install cibuildwheel==0.12.0
   - cibuildwheel --output-dir wheelhouse
