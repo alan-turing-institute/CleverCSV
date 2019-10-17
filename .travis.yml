@@ -19,7 +19,7 @@ matrix:
       - docker
 
     - os: osx
-      language: generic
+      osx_image: xcode8.3
 
 env:
   global:
@@ -31,6 +31,10 @@ env:
     - PYTHON=python3
 
 install:
+  - if [ "${TRAVIS_OS_NAME:-}" == "osx" ]; then
+      brew update;
+      brew upgrade python;
+    fi
   - $PIP install --upgrade pip==18.1
   - $PYTHON setup.py build_ext --inplace
   - $PIP install -r requirements.txt
