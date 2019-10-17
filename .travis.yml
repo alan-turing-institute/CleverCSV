@@ -29,7 +29,7 @@ env:
 install:
   - $PIP install --upgrade pip
   - $PYTHON setup.py build_ext --inplace
-  - $PIP install .
+  - $PIP install -vvv .
   - green -v ./tests/test_unit
 
 script:
