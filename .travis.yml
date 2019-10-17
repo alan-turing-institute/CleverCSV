@@ -21,8 +21,7 @@ env:
   global:
     - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
     - CIBW_BEFORE_BUILD="pip install --upgrade pip==18.1"
-    - CIBW_TEST_REQUIRES=green
-    - CIBW_TEST_COMMAND="green -v {project}/tests/test_unit"
+    - CIBW_TEST_COMMAND="python3 -m unittest discover -s {project}/tests/test_unit/"
     - CC="gcc"
     - PIP=pip3
     - PYTHON=python3
