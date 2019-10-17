@@ -22,12 +22,13 @@ matrix:
 env:
   global:
     - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
+    - CIBW_BUILD_VERBOSITY=3
     - CC="gcc"
     - PIP=pip3
     - PYTHON=python3
 
 install:
-  - $PIP install --upgrade pip
+  - $PIP install --upgrade pip==18.1
   - $PYTHON setup.py build_ext --inplace
   - $PIP install -r requirements.txt
   - green -v ./tests/test_unit
