@@ -22,7 +22,8 @@ matrix:
 env:
   global:
     - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
-    - CIBW_BUILD_VERBOSITY=3
+    - CIBW_BEFORE_BUILD="pip install --upgrade pip==18.1"
+    - CIBW_BUILD_VERBOSITY=1
     - CC="gcc"
     - PIP=pip3
     - PYTHON=python3
