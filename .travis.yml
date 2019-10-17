@@ -5,9 +5,17 @@ python:
 
 matrix:
   include:
-    - sudo: required
-      services:
-        - docker
+    - os: linux
+      sudo: required
+      services: docker
+      python: '3.6'
+
+    - os: linux
+      dist: xenial
+      sudo: required
+      services: docker
+      python: '3.7'
+
     - osx:
       language: generic
 
