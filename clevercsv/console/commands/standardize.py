@@ -46,7 +46,7 @@ file to the standard RFC-4180 format [1].
         if dialect is None:
             return self.line("Dialect detection failed.")
         out = (
-            io.StringIO(newline=os.linesep)
+            io.StringIO(newline=None)
             if output is None
             else open(output, "w", encoding=encoding)
         )
