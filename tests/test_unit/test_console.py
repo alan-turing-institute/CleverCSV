@@ -267,9 +267,13 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         tester = CommandTester(command)
         tester.execute(tmpfname)
 
-        exp = os.linesep.join(["A,B,C", "1,2,3", "4,5,6"])
+        # Excel format (i.e. RFC4180) *requires* CRLF
+        crlf = "\r\n"
+        exp = crlf.join(["A,B,C", "1,2,3", "4,5,6"])
+        # add line terminator of last row
+        exp += crlf
         try:
-            output = tester.io.fetch_output().strip()
+            output = tester.io.fetch_output()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -287,8 +291,10 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         tester = CommandTester(command)
         tester.execute(f"-o {tmpoutname} {tmpfname}")
 
-        exp = "\n".join(["A,B,C", "1,2,3", "4,5,6", ""])
-        with open(tmpoutname, "r") as fp:
+        # Excel format (i.e. RFC4180) *requires* CRLF
+        crlf = "\r\n"
+        exp = crlf.join(["A,B,C", "1,2,3", "4,5,6", ""])
+        with open(tmpoutname, "r", newline='') as fp:
             output = fp.read()
 
         try:
@@ -310,10 +316,14 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         tester = CommandTester(command)
         tester.execute(f"-t {tmpfname}")
 
-        exp = os.linesep.join(["A,1,4", "B,2,5", "C,3,6"])
+        # Excel format (i.e. RFC4180) *requires* CRLF
+        crlf = "\r\n"
+        exp = crlf.join(["A,1,4", "B,2,5", "C,3,6"])
+        # add line terminator of last row
+        exp += crlf
 
         try:
-            output = tester.io.fetch_output().strip()
+            output = tester.io.fetch_output()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)

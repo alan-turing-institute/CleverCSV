@@ -46,22 +46,22 @@ file to the standard RFC-4180 format [1].
         if dialect is None:
             return self.line("Dialect detection failed.")
         out = (
-            io.StringIO(newline=None)
+            io.StringIO(newline="")
             if output is None
-            else open(output, "w", encoding=encoding)
+            else open(output, "w", newline="", encoding=encoding)
         )
         if self.option("transpose"):
             with open(path, "r", newline="", encoding=encoding) as fp:
                 read = reader(fp, dialect=dialect)
                 rows = list(read)
             rows = list(map(list, zip(*rows)))
-            write = writer(out, dialect="excel", lineterminator=os.linesep)
+            write = writer(out, dialect="excel")
             for row in rows:
                 write.writerow(row)
         else:
             with open(path, "r", newline="", encoding=encoding) as fp:
                 read = reader(fp, dialect=dialect)
-                write = writer(out, dialect="excel", lineterminator=os.linesep)
+                write = writer(out, dialect="excel")
                 for row in read:
                     write.writerow(row)
         if output is None:
