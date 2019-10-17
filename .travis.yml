@@ -13,20 +13,8 @@ matrix:
       services:
       - docker
 
-    #    - os: linux
-    #      sudo: required
-    #      services:
-    #        - docker
-    #      #python: '3.6'
-    #
-    #      #    - os: linux
-    #      #      dist: xenial
-    #      #      sudo: required
-    #      #      services: docker
-    #      #      #python: '3.7'
-
-        #- os: osx
-        #language: generic
+    - os: osx
+      language: generic
 
 env:
   global:
@@ -41,10 +29,9 @@ install:
   - $PIP install --upgrade pip==18.1
   - $PYTHON setup.py build_ext --inplace
   - $PIP install -r requirements.txt
-    #- green -v ./tests/test_unit
+  - python -m unittest discover -v -f -s ./tests/test_unit
 
 script:
-  - $PIP install -e git+https://github.com/joerick/cibuildwheel#egg=cibuildwheel
-  #- $PIP install cibuildwheel==0.12.0
+  - $PIP install -e git+git://github.com/joerick/cibuildwheel.git@5f416b194a488b79aaab7a696e23ab6958f99932#egg=cibuildwheel
   - cibuildwheel --output-dir wheelhouse
   - ls wheelhouse
