@@ -63,7 +63,6 @@ class ConsoleTestCase(unittest.TestCase):
         with self.subTest(name="double"):
             self._detect_test_wrap(table, dialect)
 
-
     def test_detect_opts_1(self):
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
@@ -258,7 +257,6 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         finally:
             os.unlink(tmpfname)
 
-
     def test_standardize_1(self):
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
@@ -269,7 +267,7 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         tester = CommandTester(command)
         tester.execute(tmpfname)
 
-        exp = "A,B,C\n1,2,3\n4,5,6"
+        exp = os.linesep.join(["A,B,C", "1,2,3", "4,5,6"])
         try:
             output = tester.io.fetch_output().strip()
             self.assertEqual(exp, output)
@@ -289,7 +287,7 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         tester = CommandTester(command)
         tester.execute(f"-o {tmpoutname} {tmpfname}")
 
-        exp = "A,B,C\n1,2,3\n4,5,6\n"
+        exp = os.linesep.join(["A,B,C", "1,2,3", "4,5,6", ""])
         with open(tmpoutname, "r") as fp:
             output = fp.read()
 
@@ -312,7 +310,7 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         tester = CommandTester(command)
         tester.execute(f"-t {tmpfname}")
 
-        exp = "A,1,4\nB,2,5\nC,3,6"
+        exp = os.linesep.join(["A,1,4","B,2,5","C,3,6"])
 
         try:
             output = tester.io.fetch_output().strip()
