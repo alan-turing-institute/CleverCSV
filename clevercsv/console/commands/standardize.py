@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import io
+import os
 
 from cleo import Command
 
@@ -45,7 +46,7 @@ file to the standard RFC-4180 format [1].
         if dialect is None:
             return self.line("Dialect detection failed.")
         out = (
-            io.StringIO(newline=None)
+            io.StringIO(newline=os.linesep)
             if output is None
             else open(output, "w", encoding=encoding)
         )
@@ -54,13 +55,13 @@ file to the standard RFC-4180 format [1].
                 read = reader(fp, dialect=dialect)
                 rows = list(read)
             rows = list(map(list, zip(*rows)))
-            write = writer(out, dialect="excel")
+            write = writer(out, dialect="excel", lineterminator=os.linesep)
             for row in rows:
                 write.writerow(row)
         else:
-            with open(path, "r", newline='', encoding=encoding) as fp:
+            with open(path, "r", newline="", encoding=encoding) as fp:
                 read = reader(fp, dialect=dialect)
-                write = writer(out, dialect="excel")
+                write = writer(out, dialect="excel", lineterminator=os.linesep)
                 for row in read:
                     write.writerow(row)
         if output is None:
