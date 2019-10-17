@@ -25,6 +25,7 @@ install:
   - ps: 'ls "C:/Program Files/Microsoft SDKs/Windows"'
   - pip install --upgrade pip==18.1
   - pip install -r requirements.txt
+  - python setup.py build_ext --inplace
 
 build: false
 
