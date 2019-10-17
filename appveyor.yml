@@ -4,7 +4,7 @@ branches:
 
 environment:
   CIBW_SKIP: cp27-* cp33-* cp34-* cp35-*
-  CIBW_BEFORE_BUILD: "c:\python36\python.exe -m pip install --upgrade pip==18.1"
+  CIBW_BEFORE_BUILD: "c:\\python36\\python.exe -m pip install --upgrade pip==18.1"
 
 install:
   - set PATH=C:\Python37;%PATH%
