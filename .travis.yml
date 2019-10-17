@@ -2,26 +2,33 @@ language: python
 
 matrix:
   include:
-    - os: linux
+    - language: python
+      dist: xenial
       sudo: required
+      python: "3.7"
       services:
-        - docker
-      #python: '3.6'
+      - docker
 
-      #    - os: linux
-      #      dist: xenial
-      #      sudo: required
-      #      services: docker
-      #      #python: '3.7'
+    #    - os: linux
+    #      sudo: required
+    #      services:
+    #        - docker
+    #      #python: '3.6'
+    #
+    #      #    - os: linux
+    #      #      dist: xenial
+    #      #      sudo: required
+    #      #      services: docker
+    #      #      #python: '3.7'
 
-    - os: osx
-      language: generic
+        #- os: osx
+        #language: generic
 
 env:
   global:
     - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
     - CIBW_BEFORE_BUILD="pip install --upgrade pip==18.1"
-    - CIBW_TEST_COMMAND="python3 -m unittest discover -s {project}/tests/test_unit/"
+    - CIBW_TEST_COMMAND="python3 -m unittest discover -f -s {project}/tests/test_unit/"
     - CC="gcc"
     - PIP=pip3
     - PYTHON=python3
