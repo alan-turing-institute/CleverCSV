@@ -28,11 +28,9 @@ env:
 
 install:
   - $PIP install --upgrade pip
-  - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-  - source $HOME/.poetry/env
-  - poetry install
   - $PYTHON setup.py build_ext --inplace
-  - poetry run green -v ./tests/test_unit
+  - $PIP install .
+  - green -v ./tests/test_unit
 
 script:
   - $PIP install cibuildwheel==0.12.0
