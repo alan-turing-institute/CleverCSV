@@ -7,8 +7,6 @@ branches:
   only:
     - travis
 
-language: python
-
 matrix:
   include:
     - language: python
