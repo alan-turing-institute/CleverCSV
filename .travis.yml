@@ -3,12 +3,21 @@ python:
   - "3.6"
   - "3.7"
 
+matrix:
+  include:
+    - sudo: required
+      services:
+        - docker
+      env: PIP=pip
+    - osx:
+      language: generic
+      env: PIP=pip2
+
 env:
   - CC="gcc"
 
 install:
   - pip install --upgrade pip
-  - pip install cibuildwheel==0.12.0
   - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
   - source $HOME/.poetry/env
   - poetry install
@@ -16,4 +25,5 @@ install:
 
 script:
   - poetry run green -v ./tests/test_unit
+  - $PIP install cibuildwheel==0.12.0
   - cibuildwheel --output-dir wheelhouse
