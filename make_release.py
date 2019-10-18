@@ -101,31 +101,23 @@ class RunTests(Step):
         self.do_cmd("make test")
 
 
-class BumpVersionPoetry(Step):
-    def action(self, context):
-        self.instruct("Bump poetry version (<version> = patch/minor/major)")
-        self.print_run("poetry version <version>")
-
-    def post(self, context):
-        wait_for_enter()
-        context["version"] = self._get_version()
-
-    def _get_version(self):
-        # Get the version from pyproject.toml
-        with open("./pyproject.toml", "r") as fp:
-            versionline = next(
-                (l.strip() for l in fp if l.startswith("version")), None
-            )
-        version = versionline.split("=")[-1].strip().strip('"')
-        return version
-
-
 class BumpVersionPackage(Step):
     def action(self, context):
         self.instruct(
             f"Update __version__.py with version: {context['version']}"
         )
         self.print_run(f"vi {context['pkgname']}/__version__.py")
+
+    def post(self, context):
+        wait_for_enter()
+        context["version"] = self._get_version(context)
+
+    def _get_version(self, context):
+        # Get the version from the version file
+        about = {}
+        with open(f"{context['pkgname'].lower()}/__version__.py", "r") as fp:
+            exec(fp.read(), about)
+        return about["__version__"]
 
 
 class MakeClean(Step):
@@ -220,7 +212,6 @@ def main():
         PushToGitHub(),
         WaitForTravis(),
         WaitForRTD(),
-        BumpVersionPoetry(),
         BumpVersionPackage(),
         UpdateChangelog(),
         MakeClean(),

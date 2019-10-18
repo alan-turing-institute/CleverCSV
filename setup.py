@@ -13,19 +13,36 @@ from setuptools import find_packages, setup, Command
 from distutils.extension import Extension
 
 # Package meta-data.
-NAME = "clevercsv"
-DESCRIPTION = "A clever CSV parser"
-URL = "https://github.com/alan-turing-institute/CleverCSV"
-EMAIL = "gertjanvandenburg@gmail.com"
 AUTHOR = "Gertjan van den Burg"
-REQUIRES_PYTHON = ">=3.0.0"
+DESCRIPTION = "A Python package for handling messy CSV files"
+EMAIL = "gertjanvandenburg@gmail.com"
+LICENSE = "MIT"
+LICENSE_TROVE = ("License :: OSI Approved :: MIT License",)
+NAME = "clevercsv"
+REQUIRES_PYTHON = ">=3.6.0"
+URL = "https://github.com/alan-turing-institute/CleverCSV"
 VERSION = None
 
 # What packages are required for this module to be executed?
-REQUIRED = []
+REQUIRED = [
+    "chardet>=3.0",
+    "cleo>=0.7.5",
+    "clikit>=0.3.1",
+    "pandas>=0.24.1",
+    "regex>=2018.11",
+    "tabview>=1.4",
+]
+
+docs_require = ["sphinx", "m2r"]
+test_require = []
+dev_require = ["green"]
 
 # What packages are optional?
-EXTRAS = {}
+EXTRAS = {
+    "docs": docs_require,
+    "tests": test_require,
+    "dev": docs_require + test_require + dev_require,
+}
 
 # The rest you shouldn't have to touch too much :)
 # ------------------------------------------------
@@ -42,12 +59,6 @@ try:
 except FileNotFoundError:
     long_description = DESCRIPTION
 
-try:
-    with io.open(os.path.join(here, 'requirements.txt'), encoding='utf-8') as f:
-        REQUIRED = [l.strip() for l in f.readlines()]
-except FileNotFoundError:
-    pass
-
 # Load the package's __version__.py module as a dictionary.
 about = {}
 if not VERSION:
@@ -56,46 +67,6 @@ if not VERSION:
         exec(f.read(), about)
 else:
     about["__version__"] = VERSION
-
-
-class UploadCommand(Command):
-    """Support setup.py upload."""
-
-    description = "Build and publish the package."
-    user_options = []
-
-    @staticmethod
-    def status(s):
-        """Prints things in bold."""
-        print("\033[1m{0}\033[0m".format(s))
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        try:
-            self.status("Removing previous builds…")
-            rmtree(os.path.join(here, "dist"))
-        except OSError:
-            pass
-
-        self.status("Building Source and Wheel (universal) distribution…")
-        os.system(
-            "{0} setup.py sdist bdist_wheel --universal".format(sys.executable)
-        )
-
-        self.status("Uploading the package to PyPI via Twine…")
-        os.system("twine upload dist/*")
-
-        self.status("Pushing git tags…")
-        os.system("git tag v{0}".format(about["__version__"]))
-        os.system("git push --tags")
-
-        sys.exit()
-
 
 # Where the magic happens:
 setup(
@@ -114,7 +85,7 @@ setup(
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
-    license="MIT",
+    license=LICENSE,
     ext_modules=[
         Extension("clevercsv.cparser", sources=["src/cparser.c"]),
         Extension("clevercsv.cabstraction", sources=["src/abstraction.c"]),
@@ -123,13 +94,11 @@ setup(
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        "License :: OSI Approved :: MIT License",
+        LICENSE_TROVE,
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
     ],
-    # $ setup.py publish support.
-    cmdclass={"upload": UploadCommand},
 )

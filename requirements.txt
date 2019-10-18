@@ -1,7 +1,0 @@
-chardet>=3.0
-cleo>=0.7.5
-clikit>=0.3.1
-pandas>=0.24.1
-regex>=2018.11
-six>=1.12
-tabview>=1.4
