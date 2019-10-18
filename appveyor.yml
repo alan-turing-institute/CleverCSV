@@ -2,6 +2,10 @@ branches:
   only:
     - appveyor
 
+environment:
+  global:
+    CIBW_BUILD: "cp36-* cp37-*"
+
 build_script:
   - pip install cibuildwheel==0.12.0
   - cibuildwheel --output-dir wheelhouse
