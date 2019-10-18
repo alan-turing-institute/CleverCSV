@@ -7,8 +7,6 @@ branches:
   only:
     - travis
 
-language: python
-
 matrix:
   include:
     - language: python
@@ -19,24 +17,30 @@ matrix:
       - docker
 
     - os: osx
-      language: generic
+      osx_image: xcode8.3
 
 env:
   global:
     - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
-    - CIBW_BEFORE_BUILD="pip install --upgrade pip==18.1"
+      #- CIBW_BEFORE_BUILD="pip install --upgrade pip==18.1"
     - CIBW_TEST_COMMAND="python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
     - CC="gcc"
     - PIP=pip3
     - PYTHON=python3
 
+
 install:
-  - $PIP install --upgrade pip==18.1
-  - $PYTHON setup.py build_ext --inplace
-  - $PIP install -r requirements.txt
-  - python -m unittest discover -v -f -s ./tests/test_unit
+  - if [ "${TRAVIS_OS_NAME:-}" == "osx" ]; then
+      brew update;
+      brew upgrade python;
+    fi
+  - $PIP install -e .[tests]
+  - $PYTHON -m unittest discover -v -f -s ./tests/test_unit
+  - find . -type f -iname '*.so' -print -delete
 
 script:
-  - $PIP install -e git+git://github.com/joerick/cibuildwheel.git@5f416b194a488b79aaab7a696e23ab6958f99932#egg=cibuildwheel
+  #- $PIP install -e 
+  #git+git://github.com/joerick/cibuildwheel.git@5f416b194a488b79aaab7a696e23ab6958f99932#egg=cibuildwheel
+  - $PIP install -e git+git://github.com/GjjvdBurg/cibuildwheel.git@0c33a585791cf09e56240e7bb7cca21866e8885c#egg=cibuildwheel
   - cibuildwheel --output-dir wheelhouse
   - ls wheelhouse
