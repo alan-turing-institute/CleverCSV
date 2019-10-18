@@ -17,11 +17,12 @@ environment:
 
 # Does the work
 build_script:
-  - pip install cibuildwheel==0.12.0
-  - cibuildwheel --output-dir wheelhouse
+  - set GIT_TAG = git tag -l --points-at HEAD
   - ps: dir "env:"
+    #- pip install cibuildwheel==0.12.0
+    #- cibuildwheel --output-dir wheelhouse
   - >
-    IF "%APPVEYOR_REPO_TAG%" == "true"
+    IF "%GIT_TAG%" != ""
     (
     python -m pip install twine
     &&
