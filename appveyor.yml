@@ -31,7 +31,9 @@ build_script:
   - >
     IF NOT "%GIT_TAG%" == ""
     (
-    python -m twine upload --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
+    ECHO "Uploading to PyPI"
+    &&
+    python -m twine upload --verbose --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
     )
 
 # Make AppVeyor return the artifacts in the web interface
