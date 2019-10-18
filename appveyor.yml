@@ -10,14 +10,17 @@ environment:
     CIBW_TEST_COMMAND: "python -m unittest discover -f -s {project}/tests/test_unit/"
     # We use a API token for PyPI
     TWINE_USERNAME: __token__
+
+  matrix:
     # Version of Python that we want to use for testing our package and 
     # running cibuildwheel.
-    PYTHON_VERSION: 3.7
+    - PYTHON_VERSION: 3.7
 
 # Configure the default Python version set by PYTHON_VERSION
 init:
   - set PY_VER=%PYTHON_VERSION:.=%
   - set PYTHON=C:\PYTHON%PY_VER%
+  - ps: dir "env:"
   - if %PLATFORM%==x64 (set PYTHON=%PYTHON%-x64)
   - set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
   - python --version
