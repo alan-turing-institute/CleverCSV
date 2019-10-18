@@ -4,13 +4,14 @@ branches:
 
 platform:
   - x64
+    #- x86
 
 environment:
   global:
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor_env.cmd"
 
   matrix:
-    - PYTHON_VERSION: 3.6
+    #- PYTHON_VERSION: 3.6
     - PYTHON_VERSION: 3.7
 
 init:
@@ -23,14 +24,12 @@ init:
 install:
   - ECHO 'Installed SDKs:'
   - ps: 'ls "C:/Program Files/Microsoft SDKs/Windows"'
-  - pip install --upgrade pip==18.1
-  - pip install -r requirements.txt
-  - python setup.py build_ext --inplace
+  - pip install -e .[tests]
 
 build: false
 
 test_script:
-  - python -m unittest discover -f -s .\\tests\\test_unit
+  - python -m unittest discover -v -f -s .\\tests\\test_unit
 
 after_test:
   - pip install --upgrade setuptools wheel
