@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import tabview
+try:
+    import tabview
+except ModuleNotFoundError:
+
+    class TabView:
+        def view(*args, **kwargs):
+            print("Unfortunately Tabview is not available on Windows.")
+    tabview = TabView()
+
 
 from cleo import Command
 
