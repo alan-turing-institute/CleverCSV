@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.4.4
+
+* Update ``standardize`` command to use CRLF line endings on all platforms.
+* Add work around for Tabview being unavailable on Windows.
+* Remove packaging and dependency management with Poetry.
+* Add support for building platform wheels on Travis and AppVeyor.
+
 ## Version 0.4.3
 
 * Add optional ``method`` parameter to dialect detector.
