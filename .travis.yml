@@ -28,15 +28,15 @@ env:
     - PIP=pip3
     - PYTHON=python3
 
-install:
-  - if [ "${TRAVIS_OS_NAME:-}" == "osx" ]; then
-      brew update;
-      brew upgrade python;
-    fi
-  - $PIP install --upgrade pip==18.1
-  - $PYTHON setup.py build_ext --inplace
-  - $PIP install -r requirements.txt
-  - $PYTHON -m unittest discover -v -f -s ./tests/test_unit
+      #install:
+      #  - if [ "${TRAVIS_OS_NAME:-}" == "osx" ]; then
+      #      brew update;
+      #      brew upgrade python;
+      #    fi
+      #  - $PIP install --upgrade pip==18.1
+      #  - $PYTHON setup.py build_ext --inplace
+      #  - $PIP install -r requirements.txt
+      #  - $PYTHON -m unittest discover -v -f -s ./tests/test_unit
 
 script:
   #- $PIP install -e 
