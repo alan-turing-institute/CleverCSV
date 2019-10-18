@@ -1,0 +1,56 @@
+branches:
+  only:
+    - master
+
+platform:
+  - x64
+
+environment:
+  global:
+    # CleverCSV requires Python 3.6+
+    CIBW_SKIP: cp27-* cp33-* cp34-* cp35-*
+    # We want to test the wheels that we build
+    CIBW_TEST_COMMAND: "python -m unittest discover -f -s {project}/tests/test_unit/"
+    # We use a API token for PyPI
+    TWINE_USERNAME: __token__
+    TWINE_PASSWORD:
+      secure: "VLzcLyawEe1o12Ia10GLeWzyRP+SZKRO1EwhvfxKQuanRqffyZWDiyhlf/40DBOZKmy1QSzIFEn7roIK4/sqR8hs1O0iZ+wvD/gJpHA4wAzIMvMkRFRtuYeKfYiU3eFhHOLOlYF3HlaohW9XJhvb4Cie9yChcrSWOeef/TNjNat8S1CfQHtE5xGHya3TJ4O/PE4ZcMG3yH9tMYUwafAXguOy1vJlHX9fsw62vCUyOdHJ0QERbZBAWGswcmNQN1MuDEDt2MMUVbEV2mjH3lET0g=="
+
+  matrix:
+    # Version of Python that we want to use for testing our package and 
+    # running cibuildwheel.
+    - PYTHON_VERSION: 3.7
+
+# Configure the default Python version set by PYTHON_VERSION
+init:
+  - set PY_VER=%PYTHON_VERSION:.=%
+  - set PYTHON=C:\PYTHON%PY_VER%
+  - if %PLATFORM%==x64 (set PYTHON=%PYTHON%-x64)
+  - set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+  - python --version
+
+before_build:
+  # Install and test the package before we do anything else
+  - pip install -e .[tests]
+  - python -m unittest discover -v -f -s ./tests/test_unit
+
+# Does the work
+build_script:
+  # Install cibuildwheel
+  - pip install cibuildwheel==0.12.0
+  # Run cibuildwheel
+  - cibuildwheel --output-dir wheelhouse
+
+after_build:
+  # Extract the git tag manually from the repo
+  # This is needed because the variable APPVEYOR_REPO_TAG is not set with 
+  # generic git repos
+  - ps: $env:GIT_TAG=$(git tag --points-at)
+  # Upload to PyPI if we have a tag set
+  - >
+    IF NOT "%GIT_TAG%" == ""
+    (
+    pip install twine
+    &&
+    python -m twine upload --skip-existing --verbose wheelhouse/*.whl
+    )

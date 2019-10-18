@@ -1,16 +1,80 @@
-language: python
-python:
-  - "3.6"
+# temporarily disable notifications
+notifications:
+  email: false
+
+
+# temporarily limit to the travis branch
+branches:
+  only:
+    - travis
+
+# The matrix defines the platform on which we build the wheels and run the 
+# unit tests. Since we use manylinux for the linux wheels, we only need one 
+# linux version.
+matrix:
+  include:
+    - language: python
+      dist: xenial
+      sudo: required
+      python: "3.7"
+      services:
+      - docker
+
+    - os: osx
+
 
 env:
-  - CC="gcc"
+  global:
+    # Twine username
+    - TWINE_USERNAME=__token__
+    - secure: "esChcOJ5bX2qLnkYhLVL/t3NZtlAWCJYDV6yWIg43wPV2GkUnIz01Qvrndyq4UsG6jLo7eoeuihEFV9uOfl9R202s1FWHn9rk1RNqedqfTn7o6xoVSgVMp9uf9etu9h774fO77aI4wxeYvhz0yv/c3x6O/gBy+hp01HRG0u0oCTH/Md4WhNK3N1FIGqP4DdLKLfvdrdc9Nq+frjG1UUZDLDcAU5PK+flFzaSjMZw7Q8QgeRxZdM6ZlzIsPAGpmO2Ax5Iin/i/PxHjtsH/fYjRoaN+HvDD52BIznK0gBzZJN4ubDw4k5X+QYUBzVOcqFG/Ueu64gJlyh1YX374nwcbZua73Y0FHD0tYgwQK+lejHDzHDSnnbZy0my9P0GRj521BQiIqQLKMG+8khue+RP4SsM5XbWUG/U6Da8KysFr2Vd5kUA9VPlufBb+R6ta+VsVDvQj03h0nSdL6hRkeE1u6z1OGNVpyEzCcb+bMR/+7vam39pgBL6BLOJXAD9VNDNeOdPqldO1fZKokD2J2EvYIYicBMYALCtuEzE2mhcFVyuBGbpy0onreBT8+dcQCdp6Wg4R5SiguOdtuJ2fN7StP0tk8EDAOf+QclDljgLYFugRMJoajIv/z9aCSXmWbNioDRyY5urIB9t4xyw9ZdCYpjgnv4mkaIu0x0k+0SLMaw="
+
+    # CleverCSV is python3.6+
+    - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
+
+    # We want to test the wheels that we build
+    - CIBW_TEST_COMMAND="python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
+
+    # Ensure C compiler is set
+    - CC="gcc"
+
+    # Use environment variable to make sure we get the right vesion of python 
+    # and pip
+    - PYTHON=python3
+    - PIP=pip3
+
 
 install:
-  - pip install --upgrade pip
-  - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-  - source $HOME/.poetry/env
-  - poetry install
-  - python setup.py build_ext --inplace
+  # On Mac, ensure we have the latest version of Python (to run cibuildwheel)
+  - if [ "${TRAVIS_OS_NAME:-}" == "osx" ]; then
+      brew update;
+      brew upgrade python;
+    fi
+
+  # Install CleverCSV with the test dependencies (extra_requires)
+  - $PIP install -e .[tests]
+
+  # Run the unit tests
+  - $PYTHON -m unittest discover -v -f -s ./tests/test_unit
+
+  # Remove compiled files (these conflict with cibuildwheel somehow)
+  - find . -type f -iname '*.so' -print -delete
+
 
 script:
-  - poetry run green -v ./tests/test_unit
+  # Use our patched version of cibuildwheel
+  - $PIP install -e git+git://github.com/GjjvdBurg/cibuildwheel.git@0c33a585791cf09e56240e7bb7cca21866e8885c#egg=cibuildwheel
+
+  # Run cibuildwheel
+  - cibuildwheel --output-dir wheelhouse
+
+  # List the results
+  - ls wheelhouse
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: ls -1 wheelhouse && $PIP install twine && $PYTHON -m twine upload --verbose --skip-existing wheelhouse/*
+  on:
+    branch: master
+    tag: true

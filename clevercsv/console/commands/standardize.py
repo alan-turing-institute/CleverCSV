@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import io
+import os
 
 from cleo import Command
 
@@ -45,9 +46,9 @@ file to the standard RFC-4180 format [1].
         if dialect is None:
             return self.line("Dialect detection failed.")
         out = (
-            io.StringIO(newline=None)
+            io.StringIO(newline="")
             if output is None
-            else open(output, "w", encoding=encoding)
+            else open(output, "w", newline="", encoding=encoding)
         )
         if self.option("transpose"):
             with open(path, "r", newline="", encoding=encoding) as fp:
