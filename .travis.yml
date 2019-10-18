@@ -72,6 +72,7 @@ script:
   - ls wheelhouse
 
 deploy:
+  skip_cleanup: true
   provider: script
   script: ls wheelhouse && $PIP install twine && $PYTHON -m twine upload --verbose --skip-existing --repository-url https://test.pypi.org/legacy/ wheelhouse/*
   on:
