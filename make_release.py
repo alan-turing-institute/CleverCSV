@@ -196,6 +196,12 @@ class WaitForTravis(Step):
             "Wait for Travis to complete and verify that its successful"
         )
 
+class WaitForAppVeyor(Step):
+    def action(self, context):
+        self.instruct(
+                "Wait for AppVeyor to complete and verify that its successful"
+                )
+
 
 class WaitForRTD(Step):
     def action(self, context):
@@ -211,6 +217,7 @@ def main():
         GitAdd(),
         PushToGitHub(),
         WaitForTravis(),
+        WaitForAppVeyor(),
         WaitForRTD(),
         BumpVersionPackage(),
         UpdateChangelog(),
