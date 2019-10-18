@@ -73,6 +73,9 @@ script:
   # List the results
   - ls wheelhouse
 
+  # Debug travis tag
+  - echo $TRAVIS_TAG
+
   # Upload to PyPI if we have a tag
   - |
     if [[ $TRAVIS_TAG ]]; then
