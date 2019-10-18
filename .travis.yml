@@ -34,9 +34,7 @@ install:
       brew update;
       brew upgrade python;
     fi
-    #- $PIP install --upgrade pip==18.1
-  - $PYTHON setup.py build_ext --inplace
-  - $PIP install -r requirements.txt
+  - $PIP install -e .[tests]
   - $PYTHON -m unittest discover -v -f -s ./tests/test_unit
   - find . -type f -iname '*.so' -print -delete
 
