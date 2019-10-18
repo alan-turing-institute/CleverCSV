@@ -2,6 +2,9 @@ branches:
   only:
     - appveyor
 
+platform:
+  - x64
+
 environment:
   global:
     # CleverCSV requires Python 3.6+
