@@ -8,6 +8,7 @@ branches:
   only:
     - travis
 
+secure: "GYIyspsK2uCrS0vGlknn1wbwKIE0JX39uIbCeNJLFiKmmpAF4Mne45IW0+45FKmbK3VotfA2reYmlxxsApPRLQTJPLcunNYrw3jDhjwciO9zBm4uU7CuHiGNQ7w3vk1ORwNzyDv8n82vhhZxmbfPQCHRzeXu9gybIEFk5/PxrTpiEKvrGm9rX3lNoGP5ZFPELdBG84D64qWt5motHGWDysdbJOyfF2UG0lIXJ81hpmPrDQsdoze3nGfrfsACPGwLnjOAcnxHiZxPg6OlGKMKui3tj6o9XJ6BE9JJF49hPFMisQ1XF8skMY7QI68OOEeixPX4kvkIFW0fzV+7NIXY+6kr7Js26eGZdbNNzzRJuyY56DW9kOl3ct5b+l/b0nomqwzDVqRx015Et3DZXTXenHxDZiqxJA8UUyMGmNBXp4vno8Y15shmdz5F8+WovrX2c7aiuwWbQHD/U3e9iuujV4m/RKiIoGg+/X6ETgbVoyw6IDOBhv12zOPc+VwrMauseDPehQgcXYh+Nj+01AaocjbkgmaXdqaiScPXIe6UNSFKov9azxKqEBr/phClOGUaQArbYAE05hvgPYEtwgo8kveJxbomRt+7q+wgYXCE52NEZijMJazhGxpBvRLSil9iBW5RgYXn59vRzD0M8FLibkGiFz5Av7BIsB7EFUcBciQ="
 
 # The matrix defines the platform on which we build the wheels and run the 
 # unit tests. Since we use manylinux for the linux wheels, we only need one 
@@ -27,6 +28,9 @@ matrix:
 
 env:
   global:
+    # Twine username
+    - TWINE_USERNAME=__token__
+
     # CleverCSV is python3.6+
     - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
 
@@ -68,3 +72,10 @@ script:
 
   # List the results
   - ls wheelhouse
+
+  # Upload to PyPI if we have a tag
+  - |
+    if [[ $TRAVIS_TAG ]]; then
+      $PIP install twine
+      $PYTHON -m twine upload --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
+    fi
