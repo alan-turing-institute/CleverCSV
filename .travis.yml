@@ -2,11 +2,16 @@
 notifications:
   email: false
 
+
 # temporarily limit to the travis branch
 branches:
   only:
     - travis
 
+
+# The matrix defines the platform on which we build the wheels and run the 
+# unit tests. Since we use manylinux for the linux wheels, we only need one 
+# linux version.
 matrix:
   include:
     - language: python
@@ -19,28 +24,47 @@ matrix:
     - os: osx
       osx_image: xcode8.3
 
+
 env:
   global:
+    # CleverCSV is python3.6+
     - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
-      #- CIBW_BEFORE_BUILD="pip install --upgrade pip==18.1"
+
+    # We want to test the wheels that we build
     - CIBW_TEST_COMMAND="python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
+
+    # Ensure C compiler is set
     - CC="gcc"
-    - PIP=pip3
+
+    # Use environment variable to make sure we get the right vesion of python 
+    # and pip
     - PYTHON=python3
+    - PIP=pip3
 
 
 install:
+  # On Mac, ensure we have the latest version of Python (to run cibuildwheel)
   - if [ "${TRAVIS_OS_NAME:-}" == "osx" ]; then
       brew update;
       brew upgrade python;
     fi
+
+  # Install CleverCSV with the test dependencies (extra_requires)
   - $PIP install -e .[tests]
+
+  # Run the unit tests
   - $PYTHON -m unittest discover -v -f -s ./tests/test_unit
+
+  # Remove compiled files (these conflict with cibuildwheel somehow)
   - find . -type f -iname '*.so' -print -delete
 
+
 script:
-  #- $PIP install -e 
-  #git+git://github.com/joerick/cibuildwheel.git@5f416b194a488b79aaab7a696e23ab6958f99932#egg=cibuildwheel
+  # Use our patched version of cibuildwheel
   - $PIP install -e git+git://github.com/GjjvdBurg/cibuildwheel.git@0c33a585791cf09e56240e7bb7cca21866e8885c#egg=cibuildwheel
+
+  # Run cibuildwheel
   - cibuildwheel --output-dir wheelhouse
+
+  # List the results
   - ls wheelhouse
