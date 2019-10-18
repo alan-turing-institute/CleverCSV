@@ -6,6 +6,7 @@ branches:
 environment:
   global:
     CIBW_BUILD: cp36-* cp37-*
+    CIBW_TEST_COMMAND: "python -m unittest discover -f -s {project}/tests/test_unit/"
 
   matrix:
     - PYTHON_VERSION: 3.7
