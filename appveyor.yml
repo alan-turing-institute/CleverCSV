@@ -2,19 +2,23 @@ branches:
   only:
     - appveyor
 
-
 environment:
   global:
+    # CleverCSV requires Python 3.6+
     CIBW_BUILD: cp36-* cp37-*
+    # We want to test the wheels that we build
     CIBW_TEST_COMMAND: "python -m unittest discover -f -s {project}/tests/test_unit/"
 
   matrix:
+    # Ensure the Python version AppVeyor uses is modern enough
     - PYTHON_VERSION: 3.7
 
+# Does the work
 build_script:
   - pip install cibuildwheel==0.12.0
   - cibuildwheel --output-dir wheelhouse
 
+# Make AppVeyor return the artifacts in the web interface
 artifacts:
   - path: "wheelhouse\\*.whl"
     name: Wheels
