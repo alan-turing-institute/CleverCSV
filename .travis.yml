@@ -76,8 +76,12 @@ script:
   - echo $TRAVIS_TAG
 
   # Upload to PyPI if we have a tag
-  - |
-    if [[ $TRAVIS_TAG ]]; then
-      $PIP install twine
-      $PYTHON -m twine upload --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
-    fi
+  - $PIP install twine
+  - $PYTHON -m twine upload --verbose --skip-existing --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
+
+    #  # Upload to PyPI if we have a tag
+    #  - |
+    #    if [[ $TRAVIS_TAG ]]; then
+    #      $PIP install twine
+    #      $PYTHON -m twine upload --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
+    #    fi
