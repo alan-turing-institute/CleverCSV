@@ -4,14 +4,14 @@ branches:
 
 platform:
   - x64
-    #- x86
+  - x86
 
 environment:
   global:
     CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor_env.cmd"
 
   matrix:
-    #- PYTHON_VERSION: 3.6
+    - PYTHON_VERSION: 3.6
     - PYTHON_VERSION: 3.7
 
 init:
