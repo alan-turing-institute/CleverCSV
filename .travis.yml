@@ -33,6 +33,8 @@ install:
       brew update;
       brew upgrade python;
     fi
+  - which sh
+  - ls -lh `which sh`
   - $PIP install --upgrade pip==18.1
   - $PYTHON setup.py build_ext --inplace
   - $PIP install -r requirements.txt
