@@ -5,7 +5,12 @@ CleverCSV: A Clever CSV Package
 
 .. image:: https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master
    :target: https://travis-ci.org/alan-turing-institute/CleverCSV
-   :alt: Build Status
+   :alt: Travis Build Status
+
+
+.. image:: https://ci.appveyor.com/api/projects/status/4pa1bbos12ty1i0k/branch/master?svg=true
+   :target: https://ci.appveyor.com/project/GjjvdBurg/clevercsv/branch/master
+   :alt: AppVeyor Build Status
 
 
 .. image:: https://badge.fury.io/py/clevercsv.svg
