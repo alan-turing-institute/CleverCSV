@@ -45,9 +45,9 @@ def wait_for_enter():
 
 
 def get_package_name():
-    with open("./pyproject.toml", "r") as fp:
+    with open("./setup.py", "r") as fp:
         nameline = next(
-            (l.strip() for l in fp if l.startswith("name = ")), None
+            (l.strip() for l in fp if l.startswith("NAME = ")), None
         )
         return nameline.split("=")[-1].strip().strip('"')
 
