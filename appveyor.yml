@@ -17,8 +17,9 @@ environment:
 
 # Does the work
 build_script:
-  - pip install -e .[tests]
-  - python -m unittest discover -v -f -s ./tests/test_unit
+  # Install and test the package before we do anything else
+  - pip3 install -e .[tests]
+  - python3 -m unittest discover -v -f -s ./tests/test_unit
   # Extract the git tag manually from the repo
   # This is needed because the variable APPVEYOR_REPO_TAG is not set with 
   # generic git repos
