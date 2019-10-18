@@ -33,7 +33,3 @@ build_script:
     &&
     python -m twine upload --skip-existing --verbose --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
     )
-# Make AppVeyor return the artifacts in the web interface
-artifacts:
-  - path: "wheelhouse\\*.whl"
-    name: Wheels
