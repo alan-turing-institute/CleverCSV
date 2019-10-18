@@ -1,12 +1,5 @@
-# temporarily disable notifications
-notifications:
-  email: false
-
-
-# temporarily limit to the travis branch
-branches:
-  only:
-    - travis
+# Travis-CI configuration for CleverCSV
+#
 
 # The matrix defines the platform on which we build the wheels and run the 
 # unit tests. Since we use manylinux for the linux wheels, we only need one 
