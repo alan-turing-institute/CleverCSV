@@ -28,23 +28,17 @@ env:
     - PIP=pip3
     - PYTHON=python3
 
-install:
-  - $PIP install --upgrade pip
-  - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | $PYTHON
-  - source $HOME/.poetry/env
-  - poetry install
-  - $PYTHON setup.py build_ext --inplace
-  - poetry run green -v ./tests/test_unit
 
-      #install:
-      #  - if [ "${TRAVIS_OS_NAME:-}" == "osx" ]; then
-      #      brew update;
-      #      brew upgrade python;
-      #    fi
-      #  - $PIP install --upgrade pip==18.1
-      #  - $PYTHON setup.py build_ext --inplace
-      #  - $PIP install -r requirements.txt
-      #  - $PYTHON -m unittest discover -v -f -s ./tests/test_unit
+install:
+  - if [ "${TRAVIS_OS_NAME:-}" == "osx" ]; then
+      brew update;
+      brew upgrade python;
+    fi
+  - $PIP install --upgrade pip==18.1
+  - $PYTHON setup.py build_ext --inplace
+  - $PIP install -r requirements.txt
+  - $PYTHON -m unittest discover -v -f -s ./tests/test_unit
+  - find . -type f -iname '*.so' -delete
 
 script:
   #- $PIP install -e 
