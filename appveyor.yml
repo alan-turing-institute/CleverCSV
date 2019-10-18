@@ -21,8 +21,6 @@ build_script:
   # This is needed because the variable APPVEYOR_REPO_TAG is not set with 
   # generic git repos
   - ps: $env:GIT_TAG=$(git tag --points-at)
-  # Install twine in case we need it
-  - pip install twine
   # Install cibuildwheel
   - pip install cibuildwheel==0.12.0
   # Run cibuildwheel
@@ -31,11 +29,10 @@ build_script:
   - >
     IF NOT "%GIT_TAG%" == ""
     (
-    ECHO "Uploading to PyPI"
+    pip install twine
     &&
-    python -m twine upload --verbose --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
+    python -m twine upload --skip-existing --verbose --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
     )
-
 # Make AppVeyor return the artifacts in the web interface
 artifacts:
   - path: "wheelhouse\\*.whl"
