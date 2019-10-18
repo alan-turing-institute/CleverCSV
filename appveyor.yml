@@ -2,9 +2,13 @@ branches:
   only:
     - appveyor
 
+
 environment:
   global:
-    CIBW_BUILD: "cp36-* cp37-*"
+    CIBW_BUILD: cp36-* cp37-*
+
+  matrix:
+    - PYTHON_VERSION: 3.7
 
 build_script:
   - pip install cibuildwheel==0.12.0
