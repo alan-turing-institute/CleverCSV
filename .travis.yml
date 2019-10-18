@@ -23,7 +23,6 @@ matrix:
       - docker
 
     - os: osx
-      osx_image: xcode8.3
 
 
 env:
