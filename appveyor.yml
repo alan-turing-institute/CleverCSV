@@ -8,6 +8,8 @@ environment:
     CIBW_BUILD: cp36-* cp37-*
     # We want to test the wheels that we build
     CIBW_TEST_COMMAND: "python -m unittest discover -f -s {project}/tests/test_unit/"
+    # We use a API token for PyPI
+    TWINE_USERNAME: __token__
 
   matrix:
     # Ensure the Python version AppVeyor uses is modern enough
@@ -17,6 +19,13 @@ environment:
 build_script:
   - pip install cibuildwheel==0.12.0
   - cibuildwheel --output-dir wheelhouse
+  - >
+    IF "%APPVEYOR_REPO_TAG%" == "true"
+    (
+    python -m pip install twine
+    &&
+    python -m twine upload --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
+    )
 
 # Make AppVeyor return the artifacts in the web interface
 artifacts:
