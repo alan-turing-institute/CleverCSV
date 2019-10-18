@@ -8,8 +8,6 @@ branches:
   only:
     - travis
 
-secure: "RD7yY1LdwvOM8QYPuQQdoErYpkikwGckJL0ojUi5ZASdR6KhA7QGsMTPR/1sp+HDgCRAW9WiFvSkiw5QXjkzf6Dz2o0VkS9qtV8HwIXzMcJDWUjZON8p2NJNdC4CnN6QU3l6j7lQqCt5ScWQ6dwm5R9sEmCJ+vjkyOrtX0QbnQ2qnzrDMtndGWRDNuGuXkmlRMKuqGdEz3D4DfiKQfKVbEOwmo7DuJ6idYrEV7//eQMDNb32I9uvmBxn07VWj2v+QcJjKC97BodLgx+NTt6HsNfS+nZIL5ncFe6HSM5D5+rjw9wEh3wY7sMI+sDDmsEHQsU+d0HwUCPd1GwCG1QFu4a+nCKCOTa446Pcw63nMcd47SukTvf61zjGfJX4eNwoPcwQ7G38ZU4gnn6pWR7SWKnbXeVC5WmWGsKH/sQXY6nq9t4C8MgcP2AjmAVaSxoqfpsv+wMKXgOkpIINauwl9GeNLBx4xuDAEtpJRoOfbKh7q4n6Az9yj2Y60jefytsA4n0TLcOfmG93ajV+AICmcshroneBxHWu7VSMcJk0EiLgr/1HNYL9Tx6DjO3QwXDZO85SvD+e37UM3kawLjDhCqBpzE4qL8I4U7ODhBnZPsiakuvDCSbe5PjPLT1Rfd4jRLmLSDKq25KQVQhtSaQUjXowDqs+luobZjklDLuF/vs="
-
 # The matrix defines the platform on which we build the wheels and run the 
 # unit tests. Since we use manylinux for the linux wheels, we only need one 
 # linux version.
@@ -29,6 +27,7 @@ env:
   global:
     # Twine username
     - TWINE_USERNAME=__token__
+    - secure: "RD7yY1LdwvOM8QYPuQQdoErYpkikwGckJL0ojUi5ZASdR6KhA7QGsMTPR/1sp+HDgCRAW9WiFvSkiw5QXjkzf6Dz2o0VkS9qtV8HwIXzMcJDWUjZON8p2NJNdC4CnN6QU3l6j7lQqCt5ScWQ6dwm5R9sEmCJ+vjkyOrtX0QbnQ2qnzrDMtndGWRDNuGuXkmlRMKuqGdEz3D4DfiKQfKVbEOwmo7DuJ6idYrEV7//eQMDNb32I9uvmBxn07VWj2v+QcJjKC97BodLgx+NTt6HsNfS+nZIL5ncFe6HSM5D5+rjw9wEh3wY7sMI+sDDmsEHQsU+d0HwUCPd1GwCG1QFu4a+nCKCOTa446Pcw63nMcd47SukTvf61zjGfJX4eNwoPcwQ7G38ZU4gnn6pWR7SWKnbXeVC5WmWGsKH/sQXY6nq9t4C8MgcP2AjmAVaSxoqfpsv+wMKXgOkpIINauwl9GeNLBx4xuDAEtpJRoOfbKh7q4n6Az9yj2Y60jefytsA4n0TLcOfmG93ajV+AICmcshroneBxHWu7VSMcJk0EiLgr/1HNYL9Tx6DjO3QwXDZO85SvD+e37UM3kawLjDhCqBpzE4qL8I4U7ODhBnZPsiakuvDCSbe5PjPLT1Rfd4jRLmLSDKq25KQVQhtSaQUjXowDqs+luobZjklDLuF/vs="
 
     # CleverCSV is python3.6+
     - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
