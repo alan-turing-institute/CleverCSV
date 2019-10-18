@@ -43,6 +43,6 @@ install:
 script:
   #- $PIP install -e 
   #git+git://github.com/joerick/cibuildwheel.git@5f416b194a488b79aaab7a696e23ab6958f99932#egg=cibuildwheel
-  - $PIP install -e git+git://github.com/GjjvdBurg/cibuildwheel.git@3842cfd853930814d27a6cd9df79ba80a69bf500#egg=cibuildwheel
+  - $PIP install -e git+git://github.com/GjjvdBurg/cibuildwheel.git@0c33a585791cf09e56240e7bb7cca21866e8885c#egg=cibuildwheel
   - cibuildwheel --output-dir wheelhouse
   - ls wheelhouse
