@@ -13,6 +13,8 @@ environment:
     CIBW_TEST_COMMAND: "python -m unittest discover -f -s {project}/tests/test_unit/"
     # We use a API token for PyPI
     TWINE_USERNAME: __token__
+    TWINE_PASSWORD:
+      secure: "eDMOxkk+jqxE0QIaZ/zrcpTQvfbhvKAkyJrAWCII0EsW5oFIRss7Cy8HwDvcSZI53Jtus6YrJcJDrOvunO+eoI8xj1B3dNBZjWdnbT+l9jzd1Q8cGQ7wEa1ho3gC2NB9BYqwyyNS/kPkv2PBec7hSlR2DAqRT2Sevotjy2hUhUqCEw81ZdAYSfZEuh2kt/uzembO9O1BYNGmQTyc80HYtDmxObz/PqPFgn3p4iaaJ/ZpnDLe9e9+ljqI7APQGoiO7lIaUyAfJ9BPmOGBdwCbfQ=="
 
   matrix:
     # Version of Python that we want to use for testing our package and 
