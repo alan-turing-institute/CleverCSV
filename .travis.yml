@@ -27,7 +27,7 @@ env:
   global:
     # Twine username
     - TWINE_USERNAME=__token__
-    - secure: "RD7yY1LdwvOM8QYPuQQdoErYpkikwGckJL0ojUi5ZASdR6KhA7QGsMTPR/1sp+HDgCRAW9WiFvSkiw5QXjkzf6Dz2o0VkS9qtV8HwIXzMcJDWUjZON8p2NJNdC4CnN6QU3l6j7lQqCt5ScWQ6dwm5R9sEmCJ+vjkyOrtX0QbnQ2qnzrDMtndGWRDNuGuXkmlRMKuqGdEz3D4DfiKQfKVbEOwmo7DuJ6idYrEV7//eQMDNb32I9uvmBxn07VWj2v+QcJjKC97BodLgx+NTt6HsNfS+nZIL5ncFe6HSM5D5+rjw9wEh3wY7sMI+sDDmsEHQsU+d0HwUCPd1GwCG1QFu4a+nCKCOTa446Pcw63nMcd47SukTvf61zjGfJX4eNwoPcwQ7G38ZU4gnn6pWR7SWKnbXeVC5WmWGsKH/sQXY6nq9t4C8MgcP2AjmAVaSxoqfpsv+wMKXgOkpIINauwl9GeNLBx4xuDAEtpJRoOfbKh7q4n6Az9yj2Y60jefytsA4n0TLcOfmG93ajV+AICmcshroneBxHWu7VSMcJk0EiLgr/1HNYL9Tx6DjO3QwXDZO85SvD+e37UM3kawLjDhCqBpzE4qL8I4U7ODhBnZPsiakuvDCSbe5PjPLT1Rfd4jRLmLSDKq25KQVQhtSaQUjXowDqs+luobZjklDLuF/vs="
+    - secure: "esChcOJ5bX2qLnkYhLVL/t3NZtlAWCJYDV6yWIg43wPV2GkUnIz01Qvrndyq4UsG6jLo7eoeuihEFV9uOfl9R202s1FWHn9rk1RNqedqfTn7o6xoVSgVMp9uf9etu9h774fO77aI4wxeYvhz0yv/c3x6O/gBy+hp01HRG0u0oCTH/Md4WhNK3N1FIGqP4DdLKLfvdrdc9Nq+frjG1UUZDLDcAU5PK+flFzaSjMZw7Q8QgeRxZdM6ZlzIsPAGpmO2Ax5Iin/i/PxHjtsH/fYjRoaN+HvDD52BIznK0gBzZJN4ubDw4k5X+QYUBzVOcqFG/Ueu64gJlyh1YX374nwcbZua73Y0FHD0tYgwQK+lejHDzHDSnnbZy0my9P0GRj521BQiIqQLKMG+8khue+RP4SsM5XbWUG/U6Da8KysFr2Vd5kUA9VPlufBb+R6ta+VsVDvQj03h0nSdL6hRkeE1u6z1OGNVpyEzCcb+bMR/+7vam39pgBL6BLOJXAD9VNDNeOdPqldO1fZKokD2J2EvYIYicBMYALCtuEzE2mhcFVyuBGbpy0onreBT8+dcQCdp6Wg4R5SiguOdtuJ2fN7StP0tk8EDAOf+QclDljgLYFugRMJoajIv/z9aCSXmWbNioDRyY5urIB9t4xyw9ZdCYpjgnv4mkaIu0x0k+0SLMaw="
 
     # CleverCSV is python3.6+
     - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
@@ -74,14 +74,7 @@ script:
 deploy:
   skip_cleanup: true
   provider: script
-  script: ls wheelhouse && $PIP install twine && $PYTHON -m twine upload --verbose --skip-existing --repository-url https://test.pypi.org/legacy/ wheelhouse/*
+  script: ls -1 wheelhouse && $PIP install twine && $PYTHON -m twine upload --verbose --skip-existing wheelhouse/*
   on:
-    branch: travis
-    #tag: true
-
-    #  # Upload to PyPI if we have a tag
-    #  - |
-    #    if [[ $TRAVIS_TAG ]]; then
-    #      $PIP install twine
-    #      $PYTHON -m twine upload --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
-    #    fi
+    branch: master
+    tag: true

@@ -1,6 +1,6 @@
 branches:
   only:
-    - appveyor
+    - master
 
 platform:
   - x64
@@ -14,7 +14,7 @@ environment:
     # We use a API token for PyPI
     TWINE_USERNAME: __token__
     TWINE_PASSWORD:
-      secure: "eDMOxkk+jqxE0QIaZ/zrcpTQvfbhvKAkyJrAWCII0EsW5oFIRss7Cy8HwDvcSZI53Jtus6YrJcJDrOvunO+eoI8xj1B3dNBZjWdnbT+l9jzd1Q8cGQ7wEa1ho3gC2NB9BYqwyyNS/kPkv2PBec7hSlR2DAqRT2Sevotjy2hUhUqCEw81ZdAYSfZEuh2kt/uzembO9O1BYNGmQTyc80HYtDmxObz/PqPFgn3p4iaaJ/ZpnDLe9e9+ljqI7APQGoiO7lIaUyAfJ9BPmOGBdwCbfQ=="
+      secure: "VLzcLyawEe1o12Ia10GLeWzyRP+SZKRO1EwhvfxKQuanRqffyZWDiyhlf/40DBOZKmy1QSzIFEn7roIK4/sqR8hs1O0iZ+wvD/gJpHA4wAzIMvMkRFRtuYeKfYiU3eFhHOLOlYF3HlaohW9XJhvb4Cie9yChcrSWOeef/TNjNat8S1CfQHtE5xGHya3TJ4O/PE4ZcMG3yH9tMYUwafAXguOy1vJlHX9fsw62vCUyOdHJ0QERbZBAWGswcmNQN1MuDEDt2MMUVbEV2mjH3lET0g=="
 
   matrix:
     # Version of Python that we want to use for testing our package and 
@@ -52,5 +52,5 @@ after_build:
     (
     pip install twine
     &&
-    python -m twine upload --skip-existing --verbose --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
+    python -m twine upload --skip-existing --verbose wheelhouse/*.whl
     )
