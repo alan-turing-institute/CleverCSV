@@ -6,10 +6,8 @@
 
 import io
 import os
-import sys
-from shutil import rmtree
 
-from setuptools import find_packages, setup, Command
+from setuptools import find_packages, setup
 from distutils.extension import Extension
 
 # Package meta-data.
@@ -17,7 +15,7 @@ AUTHOR = "Gertjan van den Burg"
 DESCRIPTION = "A Python package for handling messy CSV files"
 EMAIL = "gertjanvandenburg@gmail.com"
 LICENSE = "MIT"
-LICENSE_TROVE = ("License :: OSI Approved :: MIT License",)
+LICENSE_TROVE = "License :: OSI Approved :: MIT License"
 NAME = "clevercsv"
 REQUIRES_PYTHON = ">=3.6.0"
 URL = "https://github.com/alan-turing-institute/CleverCSV"
