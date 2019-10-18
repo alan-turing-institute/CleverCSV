@@ -104,7 +104,7 @@ class RunTests(Step):
 class BumpVersionPackage(Step):
     def action(self, context):
         self.instruct(
-            f"Update __version__.py with version: {context['version']}"
+            f"Update __version__.py with new version"
         )
         self.print_run(f"vi {context['pkgname']}/__version__.py")
 
