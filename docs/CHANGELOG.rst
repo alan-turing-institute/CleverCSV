@@ -2,6 +2,13 @@
 Changelog
 =========
 
+Version 0.4.5
+-------------
+
+
+* Update CleverCSV to match updated clikit dependency
+* Fix dependency versions for clikit and cleo
+
 Version 0.4.4
 -------------
 

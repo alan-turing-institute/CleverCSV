@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.4.5
+
+* Update CleverCSV to match updated clikit dependency
+* Fix dependency versions for clikit and cleo
+
 ## Version 0.4.4
 
 * Update ``standardize`` command to use CRLF line endings on all platforms.
