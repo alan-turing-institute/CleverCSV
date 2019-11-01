@@ -28,7 +28,7 @@ install: ## Install for the current user using the default python command
 	python setup.py install --user
 
 test: venv ## Run unit tests
-	source $(VENV_DIR)/bin/activate ; green -v ./tests/test_unit
+	source $(VENV_DIR)/bin/activate && green -v ./tests/test_unit
 
 
 integration: install ## Run integration tests with nose
@@ -76,5 +76,5 @@ venv: $(VENV_DIR)/bin/activate
 
 $(VENV_DIR)/bin/activate:
 	test -d $(VENV_DIR) || virtualenv $(VENV_DIR)
-	source $(VENV_DIR)/bin/activate ; pip install -q -e .[dev]
+	source $(VENV_DIR)/bin/activate && pip install -q -e .[dev]
 	touch $(VENV_DIR)/bin/activate

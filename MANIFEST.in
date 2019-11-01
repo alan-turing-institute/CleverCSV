@@ -10,5 +10,6 @@ prune tests/test_integration
 exclude Makefile
 exclude .gitignore
 exclude .travis.yml
+exclude make_release.py
 prune notes
 prune auxiliary
