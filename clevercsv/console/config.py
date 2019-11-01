@@ -11,7 +11,8 @@ from cleo.config import ApplicationConfig
 
 from clikit.api.args.format.argument import Argument
 from clikit.api.args.format.option import Option
-from clikit.api.event import ConsoleEvents
+from clikit.api.event import PRE_HANDLE
+from clikit.api.event import PRE_RESOLVE
 from clikit.api.io import Input
 from clikit.api.io import Output
 from clikit.api.io.flags import VERBOSE
@@ -27,10 +28,10 @@ class Config(ApplicationConfig):
     def configure(self):
         self.set_io_factory(self.create_io)
         self.add_event_listener(
-            ConsoleEvents.PRE_RESOLVE.value, self.resolve_help_command
+            PRE_RESOLVE, self.resolve_help_command
         )
         self.add_event_listener(
-            ConsoleEvents.PRE_HANDLE.value, self.print_version
+            PRE_HANDLE, self.print_version
         )
 
         self.add_option(

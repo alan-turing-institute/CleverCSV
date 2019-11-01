@@ -24,8 +24,8 @@ VERSION = None
 # What packages are required for this module to be executed?
 REQUIRED = [
     "chardet>=3.0",
-    "cleo>=0.7.5",
-    "clikit>=0.3.1",
+    "cleo==0.7.6",
+    "clikit==0.4.0",
     "pandas>=0.24.1",
     "regex>=2018.11",
     "tabview>=1.4",
