@@ -14,6 +14,7 @@ Date: 2019-07-23
 
 import colorama
 import os
+import webbrowser
 
 
 def colored(msg, color=None, style=None):
@@ -103,9 +104,7 @@ class RunTests(Step):
 
 class BumpVersionPackage(Step):
     def action(self, context):
-        self.instruct(
-            f"Update __version__.py with new version"
-        )
+        self.instruct(f"Update __version__.py with new version")
         self.print_run(f"vi {context['pkgname']}/__version__.py")
 
     def post(self, context):
@@ -192,19 +191,25 @@ class PushToGitHub(Step):
 
 class WaitForTravis(Step):
     def action(self, context):
+        webbrowser.open(
+            "https://travis-ci.org/alan-turing-institute/CleverCSV"
+        )
         self.instruct(
             "Wait for Travis to complete and verify that its successful"
         )
 
+
 class WaitForAppVeyor(Step):
     def action(self, context):
+        webbrowser.open("https://ci.appveyor.com/project/GjjvdBurg/clevercsv")
         self.instruct(
-                "Wait for AppVeyor to complete and verify that its successful"
-                )
+            "Wait for AppVeyor to complete and verify that its successful"
+        )
 
 
 class WaitForRTD(Step):
     def action(self, context):
+        webbrowser.open('https://readthedocs.org/projects/clevercsv/builds/')
         self.instruct(
             "Wait for ReadTheDocs to complete and verify that its successful"
         )
