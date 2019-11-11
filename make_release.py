@@ -125,17 +125,6 @@ class BumpVersionPackage(Step):
             exec(fp.read(), about)
         return about["__version__"]
 
-    def post(self, context):
-        wait_for_enter()
-        context["version"] = self._get_version(context)
-
-    def _get_version(self, context):
-        # Get the version from the version file
-        about = {}
-        with open(f"{context['pkgname'].lower()}/__version__.py", "r") as fp:
-            exec(fp.read(), about)
-        return about["__version__"]
-
 
 class MakeClean(Step):
     def action(self, context):
