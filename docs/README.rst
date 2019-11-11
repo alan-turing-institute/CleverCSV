@@ -5,7 +5,12 @@ CleverCSV: A Clever CSV Package
 
 .. image:: https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master
    :target: https://travis-ci.org/alan-turing-institute/CleverCSV
-   :alt: Build Status
+   :alt: Travis Build Status
+
+
+.. image:: https://ci.appveyor.com/api/projects/status/4pa1bbos12ty1i0k/branch/master?svg=true
+   :target: https://ci.appveyor.com/project/GjjvdBurg/clevercsv/branch/master
+   :alt: AppVeyor Build Status
 
 
 .. image:: https://badge.fury.io/py/clevercsv.svg
@@ -75,11 +80,12 @@ can use:
 
    @article{van2019wrangling,
            title = {Wrangling Messy {CSV} Files by Detecting Row and Type Patterns},
-           author = {{van den Burg}, G. J. J. and Nazabal, A. and Sutton, C.},
+           author = {{van den Burg}, G. J. J. and Naz{\'a}bal, A. and Sutton, C.},
            journal = {Data Mining and Knowledge Discovery},
            year = {2019},
-           month = {Jul},
-           day = {26},
+           volume = {33},
+           number = {6},
+           pages = {1799--1820},
            issn = {1573-756X},
            doi = {10.1007/s10618-019-00646-y},
    }

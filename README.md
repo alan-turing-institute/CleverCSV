@@ -1,6 +1,7 @@
 # CleverCSV: A Clever CSV Package
 
-[![Build Status](https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master)](https://travis-ci.org/alan-turing-institute/CleverCSV)
+[![Travis Build Status](https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master)](https://travis-ci.org/alan-turing-institute/CleverCSV)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/4pa1bbos12ty1i0k/branch/master?svg=true)](https://ci.appveyor.com/project/GjjvdBurg/clevercsv/branch/master)
 [![PyPI version](https://badge.fury.io/py/clevercsv.svg)](https://pypi.org/project/clevercsv/)
 [![Documentation Status](https://readthedocs.org/projects/clevercsv/badge/?version=latest)](https://clevercsv.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb)
@@ -53,11 +54,12 @@ can use:
 ```bib
 @article{van2019wrangling,
         title = {Wrangling Messy {CSV} Files by Detecting Row and Type Patterns},
-        author = {{van den Burg}, G. J. J. and Nazabal, A. and Sutton, C.},
+        author = {{van den Burg}, G. J. J. and Naz{\'a}bal, A. and Sutton, C.},
         journal = {Data Mining and Knowledge Discovery},
         year = {2019},
-        month = {Jul},
-        day = {26},
+        volume = {33},
+        number = {6},
+        pages = {1799--1820},
         issn = {1573-756X},
         doi = {10.1007/s10618-019-00646-y},
 }

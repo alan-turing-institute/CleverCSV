@@ -113,3 +113,33 @@ class WrappersTestCase(unittest.TestCase):
         with self.subTest(name="raises2"):
             with self.assertRaises(NoDetectionResult):
                 self._read_test_rows(rows, exp)
+
+    def _write_test(self, table, dialect="excel", transpose=False):
+        tmpfd, tmpfname = tempfile.mkstemp()
+        wrappers.write_table(
+            table, tmpfname, dialect=dialect, transpose=transpose
+        )
+        with open(tmpfname, "r") as fp:
+            return fp.read()
+
+    def test_write(self):
+        table = [["A", "B,C", "D"], [1, 2, 3], [4, 5, 6]]
+        exp = 'A,"B,C",D\n1,2,3\n4,5,6\n'
+        with self.subTest(name="default"):
+            res = self._write_test(table)
+            self.assertEqual(exp, res)
+
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        exp = "A;B,C;D\n1;2;3\n4;5;6\n"
+        with self.subTest(name="dialect"):
+            res = self._write_test(table, dialect=dialect)
+            self.assertEqual(exp, res)
+
+        exp = "A;1;4\nB,C;2;5\nD;3;6\n"
+        with self.subTest(name="transposed"):
+            res = self._write_test(table, dialect=dialect, transpose=True)
+            self.assertEqual(exp, res)
+
+        table[2].append(8)
+        with self.assertRaises(ValueError):
+            self._write_test(table)

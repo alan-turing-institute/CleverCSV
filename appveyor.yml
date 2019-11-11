@@ -1,18 +1,16 @@
-branches:
-  only:
-    - appveyor
-
 platform:
   - x64
 
 environment:
   global:
     # CleverCSV requires Python 3.6+
-    CIBW_BUILD: cp36-* cp37-*
+    CIBW_SKIP: cp27-* cp33-* cp34-* cp35-*
     # We want to test the wheels that we build
     CIBW_TEST_COMMAND: "python -m unittest discover -f -s {project}/tests/test_unit/"
     # We use a API token for PyPI
     TWINE_USERNAME: __token__
+    TWINE_PASSWORD:
+      secure: "VLzcLyawEe1o12Ia10GLeWzyRP+SZKRO1EwhvfxKQuanRqffyZWDiyhlf/40DBOZKmy1QSzIFEn7roIK4/sqR8hs1O0iZ+wvD/gJpHA4wAzIMvMkRFRtuYeKfYiU3eFhHOLOlYF3HlaohW9XJhvb4Cie9yChcrSWOeef/TNjNat8S1CfQHtE5xGHya3TJ4O/PE4ZcMG3yH9tMYUwafAXguOy1vJlHX9fsw62vCUyOdHJ0QERbZBAWGswcmNQN1MuDEDt2MMUVbEV2mjH3lET0g=="
 
   matrix:
     # Version of Python that we want to use for testing our package and 
@@ -48,7 +46,9 @@ after_build:
   - >
     IF NOT "%GIT_TAG%" == ""
     (
+    echo %GIT_TAG%
+    &&
     pip install twine
     &&
-    python -m twine upload --skip-existing --verbose --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
+    python -m twine upload --skip-existing --verbose wheelhouse/*.whl
     )

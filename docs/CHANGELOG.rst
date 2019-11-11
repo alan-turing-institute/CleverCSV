@@ -2,6 +2,28 @@
 Changelog
 =========
 
+Version 0.4.6
+-------------
+
+
+* Add a wrapper function that writes a table to a CSV file.
+
+Version 0.4.5
+-------------
+
+
+* Update CleverCSV to match updated clikit dependency
+* Fix dependency versions for clikit and cleo
+
+Version 0.4.4
+-------------
+
+
+* Update ``standardize`` command to use CRLF line endings on all platforms.
+* Add work around for Tabview being unavailable on Windows.
+* Remove packaging and dependency management with Poetry.
+* Add support for building platform wheels on Travis and AppVeyor.
+
 Version 0.4.3
 -------------
 

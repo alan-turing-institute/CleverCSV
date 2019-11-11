@@ -14,6 +14,14 @@ Date: 2019-07-23
 
 import colorama
 import os
+import webbrowser
+
+URLS = {
+        "RTD": "https://readthedocs.org/projects/clevercsv/builds/",
+        "AppVeyor": "https://ci.appveyor.com/project/GjjvdBurg/clevercsv",
+        "Travis": "https://travis-ci.org/alan-turing-institute/CleverCSV"
+        }
+
 
 
 def colored(msg, color=None, style=None):
@@ -45,9 +53,9 @@ def wait_for_enter():
 
 
 def get_package_name():
-    with open("./pyproject.toml", "r") as fp:
+    with open("./setup.py", "r") as fp:
         nameline = next(
-            (l.strip() for l in fp if l.startswith("name = ")), None
+            (l.strip() for l in fp if l.startswith("NAME = ")), None
         )
         return nameline.split("=")[-1].strip().strip('"')
 
@@ -103,10 +111,19 @@ class RunTests(Step):
 
 class BumpVersionPackage(Step):
     def action(self, context):
-        self.instruct(
-            f"Update __version__.py with version: {context['version']}"
-        )
+        self.instruct(f"Update __version__.py with new version")
         self.print_run(f"vi {context['pkgname']}/__version__.py")
+
+    def post(self, context):
+        wait_for_enter()
+        context["version"] = self._get_version(context)
+
+    def _get_version(self, context):
+        # Get the version from the version file
+        about = {}
+        with open(f"{context['pkgname'].lower()}/__version__.py", "r") as fp:
+            exec(fp.read(), about)
+        return about["__version__"]
 
     def post(self, context):
         wait_for_enter()
@@ -192,13 +209,25 @@ class PushToGitHub(Step):
 
 class WaitForTravis(Step):
     def action(self, context):
+        webbrowser.open(
+                URLS['Travis']
+        )
         self.instruct(
             "Wait for Travis to complete and verify that its successful"
         )
 
 
+class WaitForAppVeyor(Step):
+    def action(self, context):
+        webbrowser.open(URLS['AppVeyor'])
+        self.instruct(
+            "Wait for AppVeyor to complete and verify that its successful"
+        )
+
+
 class WaitForRTD(Step):
     def action(self, context):
+        webbrowser.open(URLS['RTD'])
         self.instruct(
             "Wait for ReadTheDocs to complete and verify that its successful"
         )
@@ -209,13 +238,15 @@ def main():
     procedure = [
         GitToMaster(),
         GitAdd(),
+        MakeClean(),
+        RunTests(),
         PushToGitHub(),
         WaitForTravis(),
+        WaitForAppVeyor(),
         WaitForRTD(),
         BumpVersionPackage(),
         UpdateChangelog(),
         MakeClean(),
-        RunTests(),
         MakeDocs(),
         MakeDist(),
         PushToTestPyPI(),
