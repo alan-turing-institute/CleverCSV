@@ -62,7 +62,7 @@ install:
 
   # Remove compiled files (these conflict with cibuildwheel somehow)
   - if [ "${TRAVIS_OS_NAME:-}" == "linux" ]; then
-      find . -type f -iname '*.so' -print -delete
+      find . -type f -iname '*.so' -print -delete;
     fi
 
 
