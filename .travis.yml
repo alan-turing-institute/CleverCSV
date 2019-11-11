@@ -14,11 +14,15 @@ matrix:
       - docker
       env:
         - CC="gcc"
+        - PYTHON="python3"
+        - PIP="pip3"
 
     - os: osx
       language: generic
       env:
         - CC="gcc"
+        - PYTHON="python3"
+        - PIP="pip3"
 
     - os: windows
       language: shell
@@ -26,6 +30,8 @@ matrix:
         - choco install python3 --version 3.6.8 --no-progress -y
       env:
         - PATH=/c/Python36:/c/Python36/Scripts:$PATH
+        - PYTHON="python"
+        - PIP="pip"
 
 
 env:
@@ -39,11 +45,6 @@ env:
 
     # We want to test the wheels that we build
     - CIBW_TEST_COMMAND="python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
-
-    # Use environment variable to make sure we get the right vesion of python 
-    # and pip
-    - PYTHON=python3
-    - PIP=pip3
 
 
 install:
