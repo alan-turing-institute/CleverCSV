@@ -17,11 +17,10 @@ import os
 import webbrowser
 
 URLS = {
-        "RTD": "https://readthedocs.org/projects/clevercsv/builds/",
-        "AppVeyor": "https://ci.appveyor.com/project/GjjvdBurg/clevercsv",
-        "Travis": "https://travis-ci.org/alan-turing-institute/CleverCSV"
-        }
-
+    "RTD": "https://readthedocs.org/projects/clevercsv/builds/",
+    "AppVeyor": "https://ci.appveyor.com/project/GjjvdBurg/clevercsv",
+    "Travis": "https://travis-ci.org/alan-turing-institute/CleverCSV",
+}
 
 
 def colored(msg, color=None, style=None):
@@ -125,17 +124,6 @@ class BumpVersionPackage(Step):
             exec(fp.read(), about)
         return about["__version__"]
 
-    def post(self, context):
-        wait_for_enter()
-        context["version"] = self._get_version(context)
-
-    def _get_version(self, context):
-        # Get the version from the version file
-        about = {}
-        with open(f"{context['pkgname'].lower()}/__version__.py", "r") as fp:
-            exec(fp.read(), about)
-        return about["__version__"]
-
 
 class MakeClean(Step):
     def action(self, context):
@@ -209,9 +197,7 @@ class PushToGitHub(Step):
 
 class WaitForTravis(Step):
     def action(self, context):
-        webbrowser.open(
-                URLS['Travis']
-        )
+        webbrowser.open(URLS["Travis"])
         self.instruct(
             "Wait for Travis to complete and verify that its successful"
         )
@@ -219,7 +205,7 @@ class WaitForTravis(Step):
 
 class WaitForAppVeyor(Step):
     def action(self, context):
-        webbrowser.open(URLS['AppVeyor'])
+        webbrowser.open(URLS["AppVeyor"])
         self.instruct(
             "Wait for AppVeyor to complete and verify that its successful"
         )
@@ -227,7 +213,7 @@ class WaitForAppVeyor(Step):
 
 class WaitForRTD(Step):
     def action(self, context):
-        webbrowser.open(URLS['RTD'])
+        webbrowser.open(URLS["RTD"])
         self.instruct(
             "Wait for ReadTheDocs to complete and verify that its successful"
         )
