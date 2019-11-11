@@ -18,7 +18,6 @@ import webbrowser
 
 URLS = {
     "RTD": "https://readthedocs.org/projects/clevercsv/builds/",
-    "AppVeyor": "https://ci.appveyor.com/project/GjjvdBurg/clevercsv",
     "Travis": "https://travis-ci.org/alan-turing-institute/CleverCSV",
 }
 
@@ -203,14 +202,6 @@ class WaitForTravis(Step):
         )
 
 
-class WaitForAppVeyor(Step):
-    def action(self, context):
-        webbrowser.open(URLS["AppVeyor"])
-        self.instruct(
-            "Wait for AppVeyor to complete and verify that its successful"
-        )
-
-
 class WaitForRTD(Step):
     def action(self, context):
         webbrowser.open(URLS["RTD"])
@@ -228,7 +219,6 @@ def main():
         RunTests(),
         PushToGitHub(),
         WaitForTravis(),
-        WaitForAppVeyor(),
         WaitForRTD(),
         BumpVersionPackage(),
         UpdateChangelog(),
