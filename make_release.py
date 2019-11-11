@@ -227,6 +227,8 @@ def main():
     procedure = [
         GitToMaster(),
         GitAdd(),
+        MakeClean(),
+        RunTests(),
         PushToGitHub(),
         WaitForTravis(),
         WaitForAppVeyor(),
@@ -234,7 +236,6 @@ def main():
         BumpVersionPackage(),
         UpdateChangelog(),
         MakeClean(),
-        RunTests(),
         MakeDocs(),
         MakeDist(),
         PushToTestPyPI(),
