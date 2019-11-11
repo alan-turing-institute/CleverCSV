@@ -12,8 +12,20 @@ matrix:
       python: "3.7"
       services:
       - docker
+      env:
+        - CC="gcc"
 
     - os: osx
+      language: generic
+      env:
+        - CC="gcc"
+
+    - os: windows
+      language: shell
+      before_install:
+        - choco install python3 --version 3.6.8 --no-progress -y
+      env:
+        - PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
 
 env:
@@ -27,9 +39,6 @@ env:
 
     # We want to test the wheels that we build
     - CIBW_TEST_COMMAND="python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
-
-    # Ensure C compiler is set
-    - CC="gcc"
 
     # Use environment variable to make sure we get the right vesion of python 
     # and pip
@@ -51,12 +60,14 @@ install:
   - $PYTHON -m unittest discover -v -f -s ./tests/test_unit
 
   # Remove compiled files (these conflict with cibuildwheel somehow)
-  - find . -type f -iname '*.so' -print -delete
+  - if [ "${TRAVIS_OS_NAME:-}" == "linux" ]; then
+      find . -type f -iname '*.so' -print -delete
+    fi
 
 
 script:
   # Use our patched version of cibuildwheel
-  - $PIP install -e git+git://github.com/GjjvdBurg/cibuildwheel.git@0c33a585791cf09e56240e7bb7cca21866e8885c#egg=cibuildwheel
+  - $PIP install cibuildwheel==1.0.0
 
   # Run cibuildwheel
   - cibuildwheel --output-dir wheelhouse
