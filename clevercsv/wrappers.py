@@ -203,6 +203,6 @@ def write_table(table, filename, dialect="excel", transpose=False):
     if len(set(map(len, table))) > 1:
         raise ValueError("Table doesn't have constant row length.")
 
-    with open(filename, "w") as fp:
+    with open(filename, "w", newline='') as fp:
         w = writer(fp, dialect=dialect)
         w.writerows(table)
