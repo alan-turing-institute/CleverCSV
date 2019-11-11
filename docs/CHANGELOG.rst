@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 0.4.7
+-------------
+
+
+* Bugfix for ``write_table`` wrapper on Windows.
+* Move building Windows platform wheels to Travis.
+* Use ``cibuildwheel`` version 1.0.0 for building wheels.
+
 Version 0.4.6
 -------------
 
