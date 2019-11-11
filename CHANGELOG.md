@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.4.6
+
+* Add a wrapper function that writes a table to a CSV file.
+
 ## Version 0.4.5
 
 * Update CleverCSV to match updated clikit dependency

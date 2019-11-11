@@ -16,6 +16,13 @@ import colorama
 import os
 import webbrowser
 
+URLS = {
+        "RTD": "https://readthedocs.org/projects/clevercsv/builds/",
+        "AppVeyor": "https://ci.appveyor.com/project/GjjvdBurg/clevercsv",
+        "Travis": "https://travis-ci.org/alan-turing-institute/CleverCSV"
+        }
+
+
 
 def colored(msg, color=None, style=None):
     colors = {
@@ -192,7 +199,7 @@ class PushToGitHub(Step):
 class WaitForTravis(Step):
     def action(self, context):
         webbrowser.open(
-            "https://travis-ci.org/alan-turing-institute/CleverCSV"
+                URLS['Travis']
         )
         self.instruct(
             "Wait for Travis to complete and verify that its successful"
@@ -201,7 +208,7 @@ class WaitForTravis(Step):
 
 class WaitForAppVeyor(Step):
     def action(self, context):
-        webbrowser.open("https://ci.appveyor.com/project/GjjvdBurg/clevercsv")
+        webbrowser.open(URLS['AppVeyor'])
         self.instruct(
             "Wait for AppVeyor to complete and verify that its successful"
         )
@@ -209,7 +216,7 @@ class WaitForAppVeyor(Step):
 
 class WaitForRTD(Step):
     def action(self, context):
-        webbrowser.open('https://readthedocs.org/projects/clevercsv/builds/')
+        webbrowser.open(URLS['RTD'])
         self.instruct(
             "Wait for ReadTheDocs to complete and verify that its successful"
         )
@@ -220,6 +227,8 @@ def main():
     procedure = [
         GitToMaster(),
         GitAdd(),
+        MakeClean(),
+        RunTests(),
         PushToGitHub(),
         WaitForTravis(),
         WaitForAppVeyor(),
@@ -227,7 +236,6 @@ def main():
         BumpVersionPackage(),
         UpdateChangelog(),
         MakeClean(),
-        RunTests(),
         MakeDocs(),
         MakeDist(),
         PushToTestPyPI(),
