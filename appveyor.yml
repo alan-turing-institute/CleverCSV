@@ -1,7 +1,3 @@
-branches:
-  only:
-    - master
-
 platform:
   - x64
 
