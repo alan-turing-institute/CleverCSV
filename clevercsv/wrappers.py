@@ -18,6 +18,7 @@ from .dict_read_write import DictReader
 from .exceptions import NoDetectionResult
 from .read import reader
 from .utils import get_encoding
+from .write import writer
 
 
 def read_as_dicts(filename, dialect=None, verbose=False):
@@ -167,3 +168,41 @@ def detect_dialect(
         data = fp.read(num_chars) if num_chars else fp.read()
         dialect = Detector().detect(data, verbose=verbose, method=method)
     return dialect
+
+
+def write_table(table, filename, dialect="excel", transpose=False):
+    """Write a table (a list of lists) to a file
+
+    This is a convenience function for writing a table to a CSV file.
+
+    Parameters
+    ----------
+    table : list
+        A table as a list of lists. The table must have the same number of 
+        cells in each row (taking the :attr:`transpose` flag into account).
+
+    filename : str
+        The filename of the CSV file to write the table to.
+
+    dialect : SimpleDialect or csv.Dialect
+        The dialect to use.
+
+    transpose : bool
+        Transpose the table before writing.
+
+    Raises
+    ------
+    ValueError:
+            When the length of the rows is not constant.
+
+    """
+
+    if transpose:
+        table = list(map(list, zip(*table)))
+
+    if len(set(map(len, table))) > 1:
+        raise ValueError("Table doesn't have constant row length.")
+
+    with open(filename, "w") as fp:
+        w = writer(fp, dialect=dialect)
+        w.writerows(table)
