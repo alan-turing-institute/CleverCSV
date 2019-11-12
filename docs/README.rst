@@ -8,11 +8,6 @@ CleverCSV: A Clever CSV Package
    :alt: Travis Build Status
 
 
-.. image:: https://ci.appveyor.com/api/projects/status/4pa1bbos12ty1i0k/branch/master?svg=true
-   :target: https://ci.appveyor.com/project/GjjvdBurg/clevercsv/branch/master
-   :alt: AppVeyor Build Status
-
-
 .. image:: https://badge.fury.io/py/clevercsv.svg
    :target: https://pypi.org/project/clevercsv/
    :alt: PyPI version
