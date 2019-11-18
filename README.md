@@ -5,8 +5,8 @@
 [![Documentation Status](https://readthedocs.org/projects/clevercsv/badge/?version=latest)](https://clevercsv.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb)
 
-*CleverCSV provides a drop-in replacement of the Python* ``csv`` *package with 
-improved dialect detection for messy CSV files. It also provides a handy 
+*CleverCSV provides a drop-in replacement for the Python* ``csv`` *package 
+with improved dialect detection for messy CSV files. It also provides a handy 
 command line tool that can standardize a messy file or generate Python code to 
 import it.*
 
@@ -21,9 +21,9 @@ import it.*
 
 ## Introduction
 
-- CSV files are awesome: they are lightweight, easy to share, human-readable, 
+- CSV files are awesome! They are lightweight, easy to share, human-readable, 
   version-controllable, and supported by many systems and tools!
-- CSV files are terrible: they can have many different formats, multiple 
+- CSV files are terrible! They can have many different formats, multiple 
   tables, headers or no headers, escape characters, and there's no support for 
   data dictionaries.
 
