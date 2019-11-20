@@ -47,6 +47,8 @@ env:
 
 
 install:
+  # Print the Python version
+  - $PYTHON -VV
 
   # Install CleverCSV with the test dependencies (extra_requires)
   - $PIP install -e .[tests]
