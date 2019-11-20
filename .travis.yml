@@ -47,11 +47,6 @@ env:
 
 
 install:
-  # On Mac, ensure we have the latest version of Python (to run cibuildwheel)
-  - if [ "${TRAVIS_OS_NAME:-}" == "osx" ]; then
-      brew update;
-      brew upgrade python;
-    fi
 
   # Install CleverCSV with the test dependencies (extra_requires)
   - $PIP install -e .[tests]
