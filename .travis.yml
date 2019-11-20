@@ -75,4 +75,4 @@ deploy:
   provider: script
   script: ls -1 wheelhouse && $PIP install twine && $PYTHON -m twine upload --verbose --skip-existing wheelhouse/*
   on:
-    if: (tag =~ /^v\d\.\d\.\d*/) and (branch = master)
+    condition: (tag =~ /^v\d\.\d\.\d$/) and (branch = master)
