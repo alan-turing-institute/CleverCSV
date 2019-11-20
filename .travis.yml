@@ -75,4 +75,5 @@ deploy:
   provider: script
   script: ls -1 wheelhouse && $PIP install twine && $PYTHON -m twine upload --verbose --skip-existing wheelhouse/*
   on:
-    condition: (tag =~ /^v\d\.\d\.\d$/) and (branch = master)
+    branch: master
+    condition: $TRAVIS_TAG =~ ^v[0-9]\.[0-9]\.[0-9]$
