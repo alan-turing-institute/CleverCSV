@@ -18,7 +18,7 @@ jobs:
         - PIP="pip3"
 
     - os: osx
-      language: generic
+      language: shell
       env:
         - CC="gcc"
         - PYTHON="python3"
