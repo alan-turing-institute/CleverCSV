@@ -66,16 +66,9 @@ install:
 
 
 script:
-  script: 
-    # Install cibuildwheel
-    - $PIP install cibuildwheel==1.0.0
-    # Run cibuildwheel
-    - cibuildwheel --output-dir wheelhouse
-    # List the results
-    - ls wheelhouse
-  on:
-    # Only run on pre-release versions
-    if: (tag =~ /^v\d\.\d\.\d.*/) and (branch = master)
+  - if [ ! -z "${TRAVIS_TAG:-}" ]; then
+      $PIP install cibuildwheel==1.0.0 && cibuildwheel --output-dir wheelhouse && ls -1 wheelhouse;
+    fi
 
 deploy:
   skip_cleanup: true
