@@ -33,7 +33,6 @@ matrix:
         - PYTHON="python"
         - PIP="pip"
 
-
 env:
   global:
     # Twine username
@@ -67,19 +66,20 @@ install:
 
 
 script:
-  # Use our patched version of cibuildwheel
-  - $PIP install cibuildwheel==1.0.0
-
-  # Run cibuildwheel
-  - cibuildwheel --output-dir wheelhouse
-
-  # List the results
-  - ls wheelhouse
+  script: 
+    # Install cibuildwheel
+    - $PIP install cibuildwheel==1.0.0
+    # Run cibuildwheel
+    - cibuildwheel --output-dir wheelhouse
+    # List the results
+    - ls wheelhouse
+  on:
+    # Only run on pre-release versions
+    if: (tag =~ /^v\d\.\d\.\d.*/) and (branch = master)
 
 deploy:
   skip_cleanup: true
   provider: script
   script: ls -1 wheelhouse && $PIP install twine && $PYTHON -m twine upload --verbose --skip-existing wheelhouse/*
   on:
-    branch: master
-    tag: true
+    if: (tag =~ /^v\d\.\d\.\d*/) and (branch = master)
