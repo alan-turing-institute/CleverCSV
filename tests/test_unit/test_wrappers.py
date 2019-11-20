@@ -125,6 +125,7 @@ class WrappersTestCase(unittest.TestCase):
         try:
             self.assertEqual(data, expected)
         finally:
+            os.close(tmpfd)
             os.unlink(tmpfname)
 
     def test_write(self):
