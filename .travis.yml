@@ -4,7 +4,7 @@
 # The matrix defines the platform on which we build the wheels and run the 
 # unit tests. Since we use manylinux for the linux wheels, we only need one 
 # linux version.
-matrix:
+jobs:
   include:
     - language: python
       dist: xenial
@@ -18,7 +18,7 @@ matrix:
         - PIP="pip3"
 
     - os: osx
-      language: generic
+      language: shell
       env:
         - CC="gcc"
         - PYTHON="python3"
@@ -32,7 +32,6 @@ matrix:
         - PATH=/c/Python36:/c/Python36/Scripts:$PATH
         - PYTHON="python"
         - PIP="pip"
-
 
 env:
   global:
@@ -48,11 +47,8 @@ env:
 
 
 install:
-  # On Mac, ensure we have the latest version of Python (to run cibuildwheel)
-  - if [ "${TRAVIS_OS_NAME:-}" == "osx" ]; then
-      brew update;
-      brew upgrade python;
-    fi
+  # Print the Python version
+  - $PYTHON -VV
 
   # Install CleverCSV with the test dependencies (extra_requires)
   - $PIP install -e .[tests]
@@ -67,14 +63,11 @@ install:
 
 
 script:
-  # Use our patched version of cibuildwheel
-  - $PIP install cibuildwheel==1.0.0
-
-  # Run cibuildwheel
-  - cibuildwheel --output-dir wheelhouse
-
-  # List the results
-  - ls wheelhouse
+  - if [[ "${TRAVIS_TAG:-}" =~ ^v[0-9]\.[0-9]\.[0-9].*$ ]]; then
+      $PIP install cibuildwheel==1.0.0 && cibuildwheel --output-dir wheelhouse && ls -1 wheelhouse;
+    else
+      echo "No valid git tag present so not running cibuildwheel.";
+    fi
 
 deploy:
   skip_cleanup: true
@@ -82,4 +75,4 @@ deploy:
   script: ls -1 wheelhouse && $PIP install twine && $PYTHON -m twine upload --verbose --skip-existing wheelhouse/*
   on:
     branch: master
-    tag: true
+    condition: $TRAVIS_TAG =~ ^v[0-9]\.[0-9]\.[0-9]$
