@@ -178,6 +178,12 @@ class GitTagVersion(Step):
         self.do_cmd(f"git tag v{context['version']}")
 
 
+class GitTagPreRelease(Step):
+    def action(self, context):
+        self.instruct("Tag version as a pre-release (increment as needed)")
+        self.print_run("git tag v{context['version']}-rc.1")
+
+
 class GitAdd(Step):
     def action(self, context):
         self.instruct("Add everything to git and commit")
@@ -216,11 +222,15 @@ def main():
         GitToMaster(),
         GitAdd(),
         MakeClean(),
+        MakeDocs(),
         RunTests(),
-        PushToGitHub(),
+        PushToGitHub(),  # trigger Travis to run tests on all platforms
         WaitForTravis(),
         WaitForRTD(),
         BumpVersionPackage(),
+        GitTagPreRelease(),
+        PushToGitHub(),  # trigger Travis to run tests using cibuildwheel
+        WaitForTravis(),
         UpdateChangelog(),
         MakeClean(),
         MakeDocs(),
@@ -232,7 +242,8 @@ def main():
         GitAdd(),
         PushToPyPI(),
         GitTagVersion(),
-        PushToGitHub(),
+        PushToGitHub(),  # triggers Travis to build with cibw and push to PyPI
+        WaitForTravis(),
     ]
     context = {}
     context["pkgname"] = get_package_name()
