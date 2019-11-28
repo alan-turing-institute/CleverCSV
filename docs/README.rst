@@ -1,3 +1,6 @@
+.. role:: raw-html-m2r(raw)
+   :format: html
+
 
 CleverCSV: A Clever CSV Package
 ===============================
@@ -37,6 +40,7 @@ import it.*
 * `Paper (PDF) <https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf>`_
 * `Paper (HTML) <https://rdcu.be/bLVur>`_
 * `Reproducible Research Repo <https://github.com/alan-turing-institute/CSV_Wrangling/>`_
+* `Blog post on messy CSV files <https://towardsdatascience.com/handling-messy-csv-files-2ef829aa441d>`_\ :raw-html-m2r:`<sup>NEW!</sup>`
 
 Introduction
 ------------

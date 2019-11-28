@@ -18,6 +18,7 @@ import it.*
 - [Paper (PDF)](https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf)
 - [Paper (HTML)](https://rdcu.be/bLVur)
 - [Reproducible Research Repo](https://github.com/alan-turing-institute/CSV_Wrangling/)
+- [Blog post on messy CSV files](https://towardsdatascience.com/handling-messy-csv-files-2ef829aa441d)<sup>NEW!</sup>
 
 ## Introduction
 
