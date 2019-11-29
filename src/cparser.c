@@ -71,6 +71,7 @@ typedef struct {
 	Py_UCS4 escapechar;
 	int doublequote;
 	int strict;
+	int return_quoted;
 
 	ParserState state;
 } ParserObj;
@@ -179,6 +180,8 @@ static int _quotecond(PyObject *field, Py_ssize_t field_len, Py_UCS4 q)
 
 static int parse_save_field(ParserObj *self, int trailing)
 {
+	int is_quoted = 0;
+
 	PyObject *field = PyUnicode_FromKindAndData(PyUnicode_4BYTE_KIND,
 			(void *) self->field, self->field_len);
 	if (field == NULL) {
@@ -188,19 +191,42 @@ static int parse_save_field(ParserObj *self, int trailing)
 	// strip quotes if quoted string
 	if (_quotecond(field, self->field_len, self->quotechar)) {
 		field = _strstrip(field, 1, 1);
+		is_quoted = 1;
 	}
 
 	// strip partial quotes if trailing at end of file
 	if (trailing && _strstartswith(field, self->quotechar)) {
 		field = _strstrip(field, 1, 0);
+		is_quoted = 1;
 	}
 
 	self->field_len = 0;
-	if (PyList_Append(self->fields, field) < 0) {
+	if (self->return_quoted > 0) {
+		PyObject *tuple = PyTuple_New(2);
+		if (PyTuple_SetItem(tuple, 0, field) < 0) {
+			Py_DECREF(tuple);
+			Py_DECREF(field);
+			return -1;
+		}
+		PyObject *tf = is_quoted ? Py_True : Py_False;
+		Py_INCREF(tf);
+		if (PyTuple_SetItem(tuple, 1, tf) < 0) {
+			Py_DECREF(tuple);
+			Py_DECREF(tf);
+			return -1;
+		}
+		if (PyList_Append(self->fields, tuple) < 0) {
+			Py_DECREF(tuple);
+			return -1;
+		}
+		Py_DECREF(tuple);
+	} else {
+		if (PyList_Append(self->fields, field) < 0) {
+			Py_DECREF(field);
+			return -1;
+		}
 		Py_DECREF(field);
-		return -1;
 	}
-	Py_DECREF(field);
 
 	return 0;
 }
@@ -576,6 +602,7 @@ static PyObject *cparser_parser(PyObject *module, PyObject *args, PyObject *keyw
 		 *escapechar = NULL,
 		 *field_limit = NULL,
 		 *strict = NULL,
+		 *return_quoted = NULL,
 		 *iterator = NULL;
 
 	if (!self)
@@ -587,6 +614,7 @@ static PyObject *cparser_parser(PyObject *module, PyObject *args, PyObject *keyw
 	self->field = NULL;
 	self->field_size = 0;
 	self->doublequote = 0;
+	self->return_quoted = 0;
 
 	if (parse_reset(self) < 0) {
 		Py_DECREF(self);
@@ -600,12 +628,13 @@ static PyObject *cparser_parser(PyObject *module, PyObject *args, PyObject *keyw
 	       	"escapechar",
 	       	"field_limit",
 	       	"strict",
+		"return_quoted",
 	       	NULL
 	};
 
-	if (!PyArg_ParseTupleAndKeywords(args, keyword_args, "O|$OOOOO", kwlist,
+	if (!PyArg_ParseTupleAndKeywords(args, keyword_args, "O|$OOOOOO", kwlist,
 				&iterator, &delimiter, &quotechar, &escapechar, 
-				&field_limit, &strict)) {
+				&field_limit, &strict, &return_quoted)) {
 		Py_DECREF(self);
 		return NULL;
 	}
@@ -615,6 +644,7 @@ static PyObject *cparser_parser(PyObject *module, PyObject *args, PyObject *keyw
 	Py_XINCREF(escapechar);
 	Py_XINCREF(field_limit);
 	Py_XINCREF(strict);
+	Py_XINCREF(return_quoted);
 
 #define ATTRSET(meth, name, target, src, dflt) \
 	if (meth(name, target, src, dflt)) \
@@ -625,6 +655,7 @@ static PyObject *cparser_parser(PyObject *module, PyObject *args, PyObject *keyw
 	ATTRSET(_set_char, "escapechar", &self->escapechar, escapechar, 0);
 	ATTRSET(_set_long, "field_limit", &self->field_limit, field_limit, 128 * 1024);
 	ATTRSET(_set_bool, "strict", &self->strict, strict, 0);
+	ATTRSET(_set_bool, "return_quoted", &self->return_quoted, return_quoted, 0);
 
 	self->input_iter = PyObject_GetIter(iterator);
 	if (self->input_iter == NULL) {
@@ -645,6 +676,7 @@ err:
 	Py_XDECREF(escapechar);
 	Py_XDECREF(field_limit);
 	Py_XDECREF(strict);
+	Py_XDECREF(return_quoted);
 
 	return ret;
 }

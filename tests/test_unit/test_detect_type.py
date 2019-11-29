@@ -278,6 +278,42 @@ class TypeDetectorTestCase(unittest.TestCase):
             with self.subTest(url=url):
                 self.assertFalse(self.td.is_url(url))
 
+    # Unicode_alphanum
+
+    def test_unicode_alphanum(self):
+        # These tests are by no means inclusive and ought to be extended in the 
+        # future.
+
+        yes_alphanum = ["this is a cell", "1231 pounds"]
+        for unicode_alphanum in yes_alphanum:
+            with self.subTest(unicode_alphanum=unicode_alphanum):
+                self.assertTrue(self.td.is_unicode_alphanum(unicode_alphanum))
+                self.assertTrue(
+                    self.td.is_unicode_alphanum(
+                        unicode_alphanum, is_quoted=True
+                    )
+                )
+
+        no_alphanum = ["https://www.gertjan.dev"]
+        for unicode_alpanum in no_alphanum:
+            with self.subTest(unicode_alpanum=unicode_alpanum):
+                self.assertFalse(self.td.is_unicode_alphanum(unicode_alpanum))
+                self.assertFalse(
+                    self.td.is_unicode_alphanum(
+                        unicode_alpanum, is_quoted=True
+                    )
+                )
+
+        only_quoted = ["this string, with a comma"]
+        for unicode_alpanum in only_quoted:
+            with self.subTest(unicode_alpanum=unicode_alpanum):
+                self.assertFalse(self.td.is_unicode_alphanum(unicode_alpanum,))
+                self.assertTrue(
+                    self.td.is_unicode_alphanum(
+                        unicode_alpanum, is_quoted=True
+                    )
+                )
+
     # Unix path
 
     def test_unix_path(self):
