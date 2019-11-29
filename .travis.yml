@@ -72,7 +72,6 @@ script:
 deploy:
   skip_cleanup: true
   provider: script
-  script: ls -1 wheelhouse && $PIP install twine && $PYTHON -m twine upload --verbose --skip-existing wheelhouse/*
+  script: if [[ "${TRAVIS_TAG:-}" =~ ^v[0-9]\.[0-9]\.[0-9]$ ]]; then ls -1 wheelhouse && PIP install twine && $PYTHON -m twine upload --verbose --skip-existing wheelhouse/* ; fi
   on:
     branch: master
-    condition: $TRAVIS_TAG =~ ^v[0-9]\.[0-9]\.[0-9]$
