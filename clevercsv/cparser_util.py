@@ -43,6 +43,7 @@ def parse_data(
     quotechar=None,
     escapechar=None,
     strict=None,
+    return_quoted=False,
 ):
     """Parse the data given a dialect using the C parser
 
@@ -101,6 +102,7 @@ def parse_data(
         escapechar=escapechar_,
         field_limit=field_size_limit(),
         strict=strict_,
+        return_quoted=return_quoted,
     )
     try:
         for row in parser:

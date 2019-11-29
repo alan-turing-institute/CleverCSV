@@ -352,6 +352,38 @@ class ParserTestCase(unittest.TestCase):
             'a,"ab"c,d', [["a", '"ab"c', "d"]], delimiter=",", quotechar='"'
         )
 
+    """
+    Return quoted
+    """
+
+    def test_parse_return_quoted_1(self):
+        self._parse_test(
+            "a,b,c",
+            [[("a", False), ("b", False), ("c", False)]],
+            delimiter=",",
+            quotechar="",
+            return_quoted=True,
+        )
+
+    def test_parse_return_quoted_2(self):
+        self._parse_test(
+            'a,"b,c",d',
+            [[("a", False), ("b,c", True), ("d", False)]],
+            delimiter=",",
+            quotechar='"',
+            return_quoted=True,
+        )
+
+    def test_parse_return_quoted_3(self):
+        self._parse_test(
+            'a,b,"c,d',
+            [[("a", False), ("b", False), ("c,d", True)]],
+            delimiter=",",
+            quotechar='"',
+            return_quoted=True,
+        )
+
+
 
 if __name__ == "__main__":
     unittest.main()

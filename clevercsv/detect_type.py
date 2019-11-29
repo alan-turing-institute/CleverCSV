@@ -14,8 +14,9 @@ from .cparser_util import parse_string
 DEFAULT_EPS_TYPE = 1e-10
 
 # Used this site: https://unicode-search.net/unicode-namesearch.pl
+# Specials allowed in unicode_alphanum regex if is_quoted = False
 SPECIALS_ALLOWED = [
-    '_',
+    "_",
     # Periods
     "\u002e",
     "\u06d4",
@@ -69,6 +70,17 @@ SPECIALS_ALLOWED = [
     chr(125278),  # adlam initial exclamation mark
 ]
 
+# Additional specials allowed in unicode_alphanum_quoted regex
+QUOTED_SPECIALS_ALLOWED = [
+    ",",
+    "\u060C",
+    "\u1363",
+    "\u1802",
+    "\u1808",
+    "\uFF0C",
+    "\uFE50",
+]
+
 PATTERNS = {
     "number_1": "^(?=[+-\.\d])[+-]?(?:0|[1-9]\d*)?(((?P<dot>((?<=\d)\.|\.(?=\d)))?(?(dot)(?P<yes_dot>\d*(\d*[eE][+-]?\d+)?)|(?P<no_dot>((?<=\d)[eE][+-]?\d+)?)))|((?P<comma>,)?(?(comma)(?P<yes_comma>\d+(\d+[eE][+-]?\d+)?)|(?P<no_comma>((?<=\d)[eE][+-]?\d+)?))))$",
     "number_2": "[+-]?(?:[1-9]|[1-9]\d{0,2})(?:\,\d{3})+\.\d*",
@@ -80,6 +92,15 @@ PATTERNS = {
     + regex.escape("".join(SPECIALS_ALLOWED))
     + "]*|\p{L}?[\p{N}\p{L}\ "
     + regex.escape("".join(SPECIALS_ALLOWED))
+    + "]+)",
+    "unicode_alphanum_quoted": "(\p{N}?\p{L}+[\p{N}\p{L}\ "
+    + regex.escape(
+        "".join(SPECIALS_ALLOWED) + "".join(QUOTED_SPECIALS_ALLOWED)
+    )
+    + "]*|\p{L}?[\p{N}\p{L}\ "
+    + regex.escape(
+        "".join(SPECIALS_ALLOWED) + "".join(QUOTED_SPECIALS_ALLOWED)
+    )
     + "]+)",
     "time_hhmmss": "(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])",
     "time_hhmm": "(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])",
@@ -102,10 +123,10 @@ class TypeDetector(object):
         for key, value in self.patterns.items():
             self.patterns[key] = regex.compile(value)
 
-    def is_known_type(self, cell):
-        return not self.detect_type(cell) is None
+    def is_known_type(self, cell, is_quoted=False):
+        return not self.detect_type(cell, is_quoted=is_quoted) is None
 
-    def detect_type(self, cell):
+    def detect_type(self, cell, is_quoted=False):
         type_tests = [
             ("empty", self.is_empty),
             ("url", self.is_url),
@@ -122,7 +143,7 @@ class TypeDetector(object):
             ("datetime", self.is_datetime),
         ]
         for name, func in type_tests:
-            if func(cell):
+            if func(cell, is_quoted=is_quoted):
                 return name
         return None
 
@@ -133,7 +154,7 @@ class TypeDetector(object):
         match = pat.fullmatch(cell)
         return match is not None
 
-    def is_number(self, cell):
+    def is_number(self, cell, **kwargs):
         if cell == "":
             return False
         if self._run_regex(cell, "number_1"):
@@ -144,19 +165,21 @@ class TypeDetector(object):
             return True
         return False
 
-    def is_ipv4(self, cell):
+    def is_ipv4(self, cell, **kwargs):
         return self._run_regex(cell, "ipv4")
 
-    def is_url(self, cell):
+    def is_url(self, cell, **kwargs):
         return self._run_regex(cell, "url")
 
-    def is_email(self, cell):
+    def is_email(self, cell, **kwargs):
         return self._run_regex(cell, "email")
 
-    def is_unicode_alphanum(self, cell):
+    def is_unicode_alphanum(self, cell, is_quoted=False, **kwargs):
+        if is_quoted:
+            return self._run_regex(cell, "unicode_alphanum_quoted")
         return self._run_regex(cell, "unicode_alphanum")
 
-    def is_date(self, cell):
+    def is_date(self, cell, **kwargs):
         # This function assumes the cell is not a number.
         if not cell:
             return False
@@ -164,7 +187,7 @@ class TypeDetector(object):
             return False
         return self._run_regex(cell, "date")
 
-    def is_time(self, cell):
+    def is_time(self, cell, **kwargs):
         if not cell:
             return False
         if not cell[0].isdigit():
@@ -175,17 +198,17 @@ class TypeDetector(object):
             or self._run_regex(cell, "time_hhmmss")
         )
 
-    def is_empty(self, cell):
+    def is_empty(self, cell, **kwargs):
         if self.strip_whitespace:
             cell = cell.strip(" ")
         return cell == ""
 
-    def is_percentage(self, cell):
+    def is_percentage(self, cell, **kwargs):
         if self.strip_whitespace:
             cell = cell.strip(" ")
         return cell.endswith("%") and self.is_number(cell.rstrip("%"))
 
-    def is_currency(self, cell):
+    def is_currency(self, cell, **kwargs):
         if self.strip_whitespace:
             cell = cell.strip(" ")
         pat = self.patterns.get("currency", None)
@@ -197,7 +220,7 @@ class TypeDetector(object):
             return False
         return True
 
-    def is_datetime(self, cell):
+    def is_datetime(self, cell, **kwargs):
         # Takes care of cells with '[date] [time]' and '[date]T[time]' (iso)
         if not cell:
             return False
@@ -245,7 +268,7 @@ class TypeDetector(object):
                     return True
         return False
 
-    def is_nan(self, cell):
+    def is_nan(self, cell, **kwargs):
         if self.strip_whitespace:
             cell = cell.strip(" ")
         # other forms (na and nan) are caught by unicode_alphanum
@@ -253,7 +276,7 @@ class TypeDetector(object):
             return True
         return False
 
-    def is_unix_path(self, cell):
+    def is_unix_path(self, cell, **kwargs):
         if self.strip_whitespace:
             cell = cell.strip(" ")
         return self._run_regex(cell, "unix_path")
@@ -288,10 +311,10 @@ def type_score(data, dialect, eps=DEFAULT_EPS_TYPE):
     total = 0
     known = 0
     td = TypeDetector()
-    for row in parse_string(data, dialect):
-        for cell in row:
+    for row in parse_string(data, dialect, return_quoted=True):
+        for cell, is_quoted in row:
             total += 1
-            known += td.is_known_type(cell)
+            known += td.is_known_type(cell, is_quoted=is_quoted)
     if total == 0:
         return eps
     return max(eps, known / total)
