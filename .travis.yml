@@ -72,6 +72,6 @@ script:
 deploy:
   skip_cleanup: true
   provider: script
-  script: if [[ "${TRAVIS_TAG:-}" =~ ^v[0-9]\.[0-9]\.[0-9]$ ]]; then ls -1 wheelhouse && PIP install twine && $PYTHON -m twine upload --verbose --skip-existing wheelhouse/* ; else echo "Not deploying, no appropriate git tag." ; fi
+  script: if [[ "${TRAVIS_TAG:-}" =~ ^v[0-9]\.[0-9]\.[0-9]$ ]]; then ls -1 wheelhouse && $PIP install twine && $PYTHON -m twine upload --verbose --skip-existing wheelhouse/* ; else echo "Not deploying, no appropriate git tag." ; fi
   on:
     branch: master
