@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.5.0
+
+* Improve type detection for quoted alphanumeric cells (#4)
+* Pass ``strict`` dialect property to parser.
+
 ## Version 0.4.7
 
 * Bugfix for ``write_table`` wrapper on Windows.
