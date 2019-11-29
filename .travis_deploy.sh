@@ -1,6 +1,11 @@
 #!/bin/bash
 #
-# Simple travis deploy script
+# Simple travis deploy script.
+#
+# This was added because for some reason the inline bash command failed on 
+# Windows. See: 
+# https://travis-ci.org/alan-turing-institute/CleverCSV/jobs/618669819
+#
 
 set -e
 set -x
