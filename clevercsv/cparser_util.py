@@ -37,7 +37,12 @@ def field_size_limit(*args, **kwargs):
 
 
 def parse_data(
-    data, dialect=None, delimiter=None, quotechar=None, escapechar=None
+    data,
+    dialect=None,
+    delimiter=None,
+    quotechar=None,
+    escapechar=None,
+    strict=None,
 ):
     """Parse the data given a dialect using the C parser
 
@@ -62,6 +67,14 @@ def parse_data(
         The escape character to use. If not None, overwrites the escape 
         character in the dialect.
 
+    strict : bool
+        Enable strict mode or not. If not None, overwrites the strict mode set 
+        in the dialect.
+
+    return_quoted : bool
+        For each cell, return a tuple "(field, is_quoted)" where the second 
+        element indicates whether the cell was a quoted cell or not.
+
     Yields
     ------
     rows : list
@@ -79,6 +92,7 @@ def parse_data(
     delimiter_ = delimiter if not delimiter is None else dialect.delimiter
     quotechar_ = quotechar if not quotechar is None else dialect.quotechar
     escapechar_ = escapechar if not escapechar is None else dialect.escapechar
+    strict_ = strict if not strict is None else dialect.strict
 
     parser = Parser(
         data,
@@ -86,6 +100,7 @@ def parse_data(
         quotechar=quotechar_,
         escapechar=escapechar_,
         field_limit=field_size_limit(),
+        strict=strict_,
     )
     try:
         for row in parser:
