@@ -181,7 +181,7 @@ class GitTagVersion(Step):
 class GitTagPreRelease(Step):
     def action(self, context):
         self.instruct("Tag version as a pre-release (increment as needed)")
-        self.print_run("git tag v{context['version']}-rc.1")
+        self.print_run(f"git tag v{context['version']}-rc.1")
 
 
 class GitAdd(Step):
@@ -228,6 +228,7 @@ def main():
         WaitForTravis(),
         WaitForRTD(),
         BumpVersionPackage(),
+        GitAdd(),
         GitTagPreRelease(),
         PushToGitHub(),  # trigger Travis to run tests using cibuildwheel
         WaitForTravis(),
