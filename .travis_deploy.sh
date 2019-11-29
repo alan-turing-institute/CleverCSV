@@ -14,6 +14,12 @@ TRAVIS_TAG="$1"
 PIP="$2"
 PYTHON="$3"
 
+if [[ "${TRAVIS_EVENT_TYPE}" == "pull_request" ]]
+then
+	echo "Not deploying on pull request build."
+	exit 0;
+fi
+
 if [[ "${TRAVIS_TAG:-}" =~ ^v[0-9]\.[0-9]\.[0-9]$ ]]
 then
 	ls -1 wheelhouse
