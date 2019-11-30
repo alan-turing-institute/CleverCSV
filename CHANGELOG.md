@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.5.1
+
+* Bump version to fix wheel building
+
 ## Version 0.5.0
 
 * Improve type detection for quoted alphanumeric cells (#4)
