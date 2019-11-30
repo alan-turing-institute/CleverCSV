@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.5.2
+
+* Bump version to fix wheel building
+
 ## Version 0.5.1
 
 * Bump version to fix wheel building
