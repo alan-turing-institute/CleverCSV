@@ -73,3 +73,5 @@ deploy:
   skip_cleanup: true
   provider: script
   script: bash .travis_deploy.sh "${TRAVIS_TAG}" "${PIP}" "${PYTHON}"
+  on:
+    tags: true
