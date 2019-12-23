@@ -69,11 +69,7 @@ def consistency_scores(data, dialects, skip=True, logger=print):
     for dialect in sorted(dialects):
         P = pattern_score(data, dialect)
         if P < Qmax and skip:
-            scores[dialect] = {
-                "pattern": P,
-                "type": float("nan"),
-                "Q": float("nan"),
-            }
+            scores[dialect] = {"pattern": P, "type": None, "Q": None}
             logger("%15r:\tP = %15.6f\tskip." % (dialect, P))
             continue
         T = type_score(data, dialect)
@@ -87,10 +83,10 @@ def consistency_scores(data, dialects, skip=True, logger=print):
 
 
 def get_best_set(scores):
-    H = set()
-    Qmax = max((score["Q"] for score in scores.values()))
-    H = set([d for d, score in scores.items() if score["Q"] == Qmax])
-    return H
+    Qscores = [score["Q"] for score in scores.values()]
+    Qscores = filter(lambda q: not q is None, Qscores)
+    Qmax = max(Qscores)
+    return set([d for d, score in scores.items() if score["Q"] == Qmax])
 
 
 def break_ties(data, dialects):
