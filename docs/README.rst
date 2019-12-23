@@ -50,9 +50,9 @@ Introduction
   version-controllable, and supported by many systems and tools!
 * CSV files are terrible! They can have many different formats, multiple 
   tables, headers or no headers, escape characters, and there's no support for 
-  data dictionaries.
+  recording metadata!
 
-CleverCSV is a Python package that aims to solve many of the pain points of 
+CleverCSV is a Python package that aims to solve some of the pain points of 
 CSV files, while maintaining many of the good things. The package 
 automatically detects (with high accuracy) the format (\ *dialect*\ ) of CSV 
 files, thus making it easier to simply point to a CSV file and load it, 
@@ -289,7 +289,9 @@ If you want to encourage development of CleverCSV, the best thing to do now is
 to *spread the word!*
 
 If you encounter an issue in CleverCSV, please open an issue or submit a pull 
-request!
+request. Don't hesitate, you're helping to make this project better! If 
+GitHub's not your thing but you still want to contact us, you can send an 
+email to gertjanvandenburg at gmail dot com instead.
 
 Notes
 -----
