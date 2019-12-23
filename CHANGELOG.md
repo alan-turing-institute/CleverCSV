@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.5.3
+
+* Fix using nan as default value when skipping a dialect ([issue 
+  #5](https://github.com/alan-turing-institute/CleverCSV/issues/5))
+
 ## Version 0.5.2
 
 * Bump version to fix wheel building
