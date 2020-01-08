@@ -142,7 +142,7 @@ the Python CSV module:
 
 .. code-block:: python
 
-   # importing this way makes it easy to port existing code to CleverCsv
+   # importing this way makes it easy to port existing code to CleverCSV!
    import clevercsv as csv
 
    with open("data.csv", "r", newline="") as fp:

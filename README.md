@@ -113,7 +113,7 @@ Of course, you can also use the traditional way of loading a CSV file, as in
 the Python CSV module:
 
 ```python
-# importing this way makes it easy to port existing code to CleverCsv
+# importing this way makes it easy to port existing code to CleverCSV!
 import clevercsv as csv
 
 with open("data.csv", "r", newline="") as fp:
