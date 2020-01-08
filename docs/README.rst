@@ -21,6 +21,11 @@ CleverCSV: A Clever CSV Package
    :alt: Documentation Status
 
 
+.. image:: https://pepy.tech/badge/clevercsv
+   :target: https://pepy.tech/project/clevercsv
+   :alt: Downloads
+
+
 .. image:: https://mybinder.org/badge_logo.svg
    :target: https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb
    :alt: Binder
