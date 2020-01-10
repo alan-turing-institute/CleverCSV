@@ -1,10 +1,22 @@
-# CleverCSV: A Clever CSV Package
-
-[![Travis Build Status](https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master)](https://travis-ci.org/alan-turing-institute/CleverCSV)
-[![PyPI version](https://badge.fury.io/py/clevercsv.svg)](https://pypi.org/project/clevercsv/)
-[![Documentation Status](https://readthedocs.org/projects/clevercsv/badge/?version=latest)](https://clevercsv.readthedocs.io/en/latest/?badge=latest)
-[![Downloads](https://pepy.tech/badge/clevercsv)](https://pepy.tech/project/clevercsv)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb)
+<p align="center">
+        <img height="200" src="https://raw.githubusercontent.com/alan-turing-institute/CleverCSV/eea72549195e37bd4347d87fd82bc98be2f1383d/.logo.png">
+        <br>
+        <a href="https://travis-ci.org/alan-turing-institute/CleverCSV">
+                <img src="https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master" alt="Travis Build Status">
+        </a>
+        <a href="https://pypi.org/project/clevercsv/">
+                <img src="https://badge.fury.io/py/clevercsv.svg" alt="PyPI version">
+        </a>
+        <a href="https://clevercsv.readthedocs.io/en/latest/?badge=latest">
+                <img src="https://readthedocs.org/projects/clevercsv/badge/?version=latest" alt="Documentation Status">
+        </a>
+        <a href="https://pepy.tech/project/clevercsv">
+                <img src="https://pepy.tech/badge/clevercsv" alt="Downloads">
+        </a>
+        <a href="https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb">
+                <img src="https://mybinder.org/badge_logo.svg" alt="Binder">
+        </a>
+</p>
 
 *CleverCSV provides a drop-in replacement for the Python* ``csv`` *package 
 with improved dialect detection for messy CSV files. It also provides a handy 

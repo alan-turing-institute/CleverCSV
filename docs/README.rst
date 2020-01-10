@@ -2,33 +2,28 @@
    :format: html
 
 
-CleverCSV: A Clever CSV Package
-===============================
 
+.. raw:: html
 
-.. image:: https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master
-   :target: https://travis-ci.org/alan-turing-institute/CleverCSV
-   :alt: Travis Build Status
-
-
-.. image:: https://badge.fury.io/py/clevercsv.svg
-   :target: https://pypi.org/project/clevercsv/
-   :alt: PyPI version
-
-
-.. image:: https://readthedocs.org/projects/clevercsv/badge/?version=latest
-   :target: https://clevercsv.readthedocs.io/en/latest/?badge=latest
-   :alt: Documentation Status
-
-
-.. image:: https://pepy.tech/badge/clevercsv
-   :target: https://pepy.tech/project/clevercsv
-   :alt: Downloads
-
-
-.. image:: https://mybinder.org/badge_logo.svg
-   :target: https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb
-   :alt: Binder
+   <p align="center">
+           <img height="200" src="https://raw.githubusercontent.com/alan-turing-institute/CleverCSV/eea72549195e37bd4347d87fd82bc98be2f1383d/.logo.png">
+           <br>
+           <a href="https://travis-ci.org/alan-turing-institute/CleverCSV">
+                   <img src="https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master" alt="Travis Build Status">
+           </a>
+           <a href="https://pypi.org/project/clevercsv/">
+                   <img src="https://badge.fury.io/py/clevercsv.svg" alt="PyPI version">
+           </a>
+           <a href="https://clevercsv.readthedocs.io/en/latest/?badge=latest">
+                   <img src="https://readthedocs.org/projects/clevercsv/badge/?version=latest" alt="Documentation Status">
+           </a>
+           <a href="https://pepy.tech/project/clevercsv">
+                   <img src="https://pepy.tech/badge/clevercsv" alt="Downloads">
+           </a>
+           <a href="https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb">
+                   <img src="https://mybinder.org/badge_logo.svg" alt="Binder">
+           </a>
+   </p>
 
 
 *CleverCSV provides a drop-in replacement for the Python* ``csv`` *package 
