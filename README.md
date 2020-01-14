@@ -1,5 +1,5 @@
 <p align="center">
-        <img height="200" src="https://raw.githubusercontent.com/alan-turing-institute/CleverCSV/eea72549195e37bd4347d87fd82bc98be2f1383d/.logo.png">
+        <img width="60%" src="https://raw.githubusercontent.com/alan-turing-institute/CleverCSV/eea72549195e37bd4347d87fd82bc98be2f1383d/.logo.png">
         <br>
         <a href="https://travis-ci.org/alan-turing-institute/CleverCSV">
                 <img src="https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master" alt="Travis Build Status">
@@ -28,8 +28,8 @@ import it.*
 - [CleverCSV on Github](https://github.com/alan-turing-institute/CleverCSV)
 - [CleverCSV on PyPI](https://pypi.org/project/clevercsv/)
 - [Demo of CleverCSV on Binder (interactive!)](https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb)
-- [Paper (PDF)](https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf)
-- [Paper (HTML)](https://rdcu.be/bLVur)
+- [Research Paper on CSV dialect detection 
+  (PDF)](https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf) 
 - [Reproducible Research Repo](https://github.com/alan-turing-institute/CSV_Wrangling/)
 - [Blog post on messy CSV files](https://towardsdatascience.com/handling-messy-csv-files-2ef829aa441d)<sup>NEW!</sup>
 
