@@ -17,28 +17,26 @@ from clevercsv.dialect import SimpleDialect
 
 class WriterTestCase(unittest.TestCase):
     def writerAssertEqual(self, input, expected_result):
-        with tempfile.TemporaryFile("w+", newline="") as fileobj:
-            writer = clevercsv.writer(fileobj, dialect=self.dialect)
+        with tempfile.TemporaryFile("w+", newline="", prefix="ccsv_") as fp:
+            writer = clevercsv.writer(fp, dialect=self.dialect)
             writer.writerows(input)
-            fileobj.seek(0)
-            self.assertEqual(fileobj.read(), expected_result)
+            fp.seek(0)
+            self.assertEqual(fp.read(), expected_result)
 
     def _write_test(self, fields, expect, **kwargs):
-        with tempfile.TemporaryFile("w+", newline="") as fileobj:
-            writer = clevercsv.writer(fileobj, **kwargs)
+        with tempfile.TemporaryFile("w+", newline="", prefix="ccsv_") as fp:
+            writer = clevercsv.writer(fp, **kwargs)
             writer.writerow(fields)
-            fileobj.seek(0)
-            self.assertEqual(
-                fileobj.read(), expect + writer.dialect.lineterminator
-            )
+            fp.seek(0)
+            self.assertEqual(fp.read(), expect + writer.dialect.lineterminator)
 
     def _write_error_test(self, exc, fields, **kwargs):
-        with tempfile.TemporaryFile("w+", newline="") as fileobj:
-            writer = clevercsv.writer(fileobj, **kwargs)
+        with tempfile.TemporaryFile("w+", newline="", prefix="ccsv_") as fp:
+            writer = clevercsv.writer(fp, **kwargs)
             with self.assertRaises(exc):
                 writer.writerow(fields)
-            fileobj.seek(0)
-            self.assertEqual(fileobj.read(), "")
+            fp.seek(0)
+            self.assertEqual(fp.read(), "")
 
     def test_write_arg_valid(self):
         self._write_error_test(clevercsv.Error, None)

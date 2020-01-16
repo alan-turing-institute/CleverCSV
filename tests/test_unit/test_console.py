@@ -20,7 +20,7 @@ from clevercsv.write import writer
 
 class ConsoleTestCase(unittest.TestCase):
     def _build_file(self, table, dialect, encoding=None):
-        tmpfd, tmpfname = tempfile.mkstemp(suffix=".csv")
+        tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv",)
         tmpid = os.fdopen(tmpfd, "w", newline=None, encoding=encoding)
         w = writer(tmpid, dialect=dialect)
         w.writerows(table)
@@ -283,7 +283,7 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         tmpfname = self._build_file(table, dialect)
 
-        tmpfd, tmpoutname = tempfile.mkstemp(suffix=".csv")
+        tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         os.close(tmpfd)
 
         application = build_application()
@@ -294,7 +294,7 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         # Excel format (i.e. RFC4180) *requires* CRLF
         crlf = "\r\n"
         exp = crlf.join(["A,B,C", "1,2,3", "4,5,6", ""])
-        with open(tmpoutname, "r", newline='') as fp:
+        with open(tmpoutname, "r", newline="") as fp:
             output = fp.read()
 
         try:
@@ -308,7 +308,7 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         tmpfname = self._build_file(table, dialect)
 
-        tmpfd, tmpoutname = tempfile.mkstemp(suffix=".csv")
+        tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         os.close(tmpfd)
 
         application = build_application()

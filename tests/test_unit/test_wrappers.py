@@ -19,7 +19,7 @@ from clevercsv.exceptions import NoDetectionResult
 
 class WrappersTestCase(unittest.TestCase):
     def _df_test(self, table, dialect):
-        tmpfd, tmpfname = tempfile.mkstemp()
+        tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         tmpid = os.fdopen(tmpfd, "w")
         w = writer(tmpid, dialect=dialect)
         w.writerows(table)
@@ -34,7 +34,7 @@ class WrappersTestCase(unittest.TestCase):
             os.unlink(tmpfname)
 
     def _read_test(self, table, dialect):
-        tmpfd, tmpfname = tempfile.mkstemp()
+        tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         tmpid = os.fdopen(tmpfd, "w")
         w = writer(tmpid, dialect=dialect)
         w.writerows(table)
@@ -48,7 +48,7 @@ class WrappersTestCase(unittest.TestCase):
 
     def _read_test_rows(self, rows, expected):
         contents = "\n".join(rows)
-        tmpfd, tmpfname = tempfile.mkstemp()
+        tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         tmpid = os.fdopen(tmpfd, "w")
         tmpid.write(contents)
         tmpid.close()
@@ -115,7 +115,7 @@ class WrappersTestCase(unittest.TestCase):
                 self._read_test_rows(rows, exp)
 
     def _write_test(self, table, expected, dialect="excel", transpose=False):
-        tmpfd, tmpfname = tempfile.mkstemp()
+        tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         wrappers.write_table(
             table, tmpfname, dialect=dialect, transpose=transpose
         )
@@ -145,4 +145,4 @@ class WrappersTestCase(unittest.TestCase):
 
         table[2].append(8)
         with self.assertRaises(ValueError):
-            self._write_test(table, '')
+            self._write_test(table, "")
