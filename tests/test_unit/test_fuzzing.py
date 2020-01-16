@@ -11,8 +11,7 @@ import unittest
 
 class FuzzingTestCase(unittest.TestCase):
     def test_sniffer_fuzzing(self):
-        strings = ['"""', "```", "\"'", "'@'", "'\"", "'''",
-"O##P~`"]
+        strings = ['"""', "```", "\"'", "'@'", "'\"", "'''", "O##P~`"]
         for string in strings:
             with self.subTest(string=string):
                 try:
