@@ -161,12 +161,14 @@ static PyObject *_strstrip(PyObject *str, int strip_front, int strip_back)
 
 static int _strstartswith(PyObject *str, Py_UCS4 c)
 {
-	return PyUnicode_ReadChar(str, 0) == c;
+	Py_ssize_t len = PyUnicode_GetLength(str);
+	return (len > 0) && PyUnicode_ReadChar(str, 0) == c;
 }
 
 static int _strendswith(PyObject *str, Py_UCS4 c)
 {
-	return PyUnicode_ReadChar(str, PyUnicode_GetLength(str) - 1) == c;
+	Py_ssize_t len = PyUnicode_GetLength(str);
+	return (len > 0) && PyUnicode_ReadChar(str, len - 1) == c;
 }
 
 static int _quotecond(PyObject *field, Py_ssize_t field_len, Py_UCS4 q)
