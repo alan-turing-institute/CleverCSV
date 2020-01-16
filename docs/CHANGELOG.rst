@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 0.5.4
+-------------
+
+
+* Fix bugs discovered from fuzz testing (\ `issue 
+  #7 <https://github.com/alan-turing-institute/CleverCSV/issues/7>`_\ )
+* Minor changes to readme and code quality
+
 Version 0.5.3
 -------------
 

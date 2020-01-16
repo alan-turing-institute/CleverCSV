@@ -121,6 +121,8 @@ easier. We currently have the following helper functions:
 * [csv2df](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.csv2df): 
   detects the dialect and encoding of the file and then uses Pandas to read 
   the CSV into a DataFrame.
+* [write_table](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.write_table): 
+  write a table (a list of lists) to a file using the RFC-4180 dialect.
 
 Of course, you can also use the traditional way of loading a CSV file, as in 
 the Python CSV module:

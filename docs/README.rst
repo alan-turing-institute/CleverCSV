@@ -6,7 +6,7 @@
 .. raw:: html
 
    <p align="center">
-           <img height="200" src="https://raw.githubusercontent.com/alan-turing-institute/CleverCSV/eea72549195e37bd4347d87fd82bc98be2f1383d/.logo.png">
+           <img width="60%" src="https://raw.githubusercontent.com/alan-turing-institute/CleverCSV/eea72549195e37bd4347d87fd82bc98be2f1383d/.logo.png">
            <br>
            <a href="https://travis-ci.org/alan-turing-institute/CleverCSV">
                    <img src="https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master" alt="Travis Build Status">
@@ -37,8 +37,8 @@ import it.*
 * `CleverCSV on Github <https://github.com/alan-turing-institute/CleverCSV>`_
 * `CleverCSV on PyPI <https://pypi.org/project/clevercsv/>`_
 * `Demo of CleverCSV on Binder (interactive!) <https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb>`_
-* `Paper (PDF) <https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf>`_
-* `Paper (HTML) <https://rdcu.be/bLVur>`_
+* `Research Paper on CSV dialect detection 
+  (PDF) <https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf>`_ 
 * `Reproducible Research Repo <https://github.com/alan-turing-institute/CSV_Wrangling/>`_
 * `Blog post on messy CSV files <https://towardsdatascience.com/handling-messy-csv-files-2ef829aa441d>`_\ :raw-html-m2r:`<sup>NEW!</sup>`
 
@@ -136,6 +136,8 @@ easier. We currently have the following helper functions:
 * `csv2df <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.csv2df>`_\ : 
   detects the dialect and encoding of the file and then uses Pandas to read 
   the CSV into a DataFrame.
+* `write_table <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.write_table>`_\ : 
+  write a table (a list of lists) to a file using the RFC-4180 dialect.
 
 Of course, you can also use the traditional way of loading a CSV file, as in 
 the Python CSV module:

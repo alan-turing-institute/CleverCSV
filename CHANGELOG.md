@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.5.4
+
+* Fix bugs discovered from fuzz testing ([issue 
+  #7](https://github.com/alan-turing-institute/CleverCSV/issues/7))
+* Minor changes to readme and code quality
+
 ## Version 0.5.3
 
 * Fix using nan as default value when skipping a dialect ([issue 
