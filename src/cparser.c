@@ -247,17 +247,6 @@ static int parse_grow_buff(ParserObj *self)
 	return 1;
 }
 
-char clean_char(Py_UCS4 c)
-{
-	if (c == '\n')
-		return 'N';
-	if (c == '\r')
-		return 'R';
-	if (c == '\0')
-		return '0';
-	return c;
-}
-
 static int parse_add_char(ParserObj *self, Py_UCS4 c)
 {
 	if (self->field_len >= self->field_limit) {
@@ -736,4 +725,3 @@ PyMODINIT_FUNC PyInit_cparser(void)
 	PyModule_AddObject(module, "Error", _cparserstate(module)->error_obj);
 	return module;
 }
-
