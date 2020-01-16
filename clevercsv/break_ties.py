@@ -228,6 +228,7 @@ def break_ties_three(data, A, B, C):
     this may need to be improved in the future.
 
     """
+
     equal_delim = A.delimiter == B.delimiter == C.delimiter
     equal_escape = A.escapechar == B.escapechar == C.escapechar
 
@@ -256,9 +257,15 @@ def break_ties_three(data, A, B, C):
         rem = [
             (p, d) for p, d in zip([pA, pB, pC], dialects) if not p == p_none
         ]
+        if len(rem) <= 1:
+            # This is a failsafe that was added to handle fuzzed input strings,
+            # such as the "file": "' (so doublequote-singlequote). If a real
+            # CSV file is found that triggers this line, we may be able to
+            # decide how the tie should be broken.
+            return None
         if p_none == rem[0][0]:
             return break_ties_two(data, d_none, rem[0][1])
-        elif p_none == rem[1][0]:
+        elif len(rem) > 1 and p_none == rem[1][0]:
             return break_ties_two(data, d_none, rem[1][1])
     elif equal_delim:
         # difference is in quotechar *and* escapechar
