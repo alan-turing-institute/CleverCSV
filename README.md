@@ -16,6 +16,9 @@
         <a href="https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb">
                 <img src="https://mybinder.org/badge_logo.svg" alt="Binder">
         </a>
+        <a href="https://rdcu.be/bLVur">
+                <img src="https://img.shields.io/badge/DOI-10.1007%2Fs10618--019--00646--y-blue">
+        </a>
 </p>
 
 *CleverCSV provides a drop-in replacement for the Python* ``csv`` *package 
