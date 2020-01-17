@@ -279,5 +279,4 @@ on wrangling messy CSV files by [Gertjan van den Burg](https://gertjan.dev),
 
 License: MIT (see LICENSE file).
 
-Copyright (c) 2019 [The Alan Turing Institute](https://turing.ac.uk).
-
+Copyright (c) 2019-2020 [The Alan Turing Institute](https://turing.ac.uk).
