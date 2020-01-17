@@ -249,29 +249,28 @@ before viewing or saving:
 $ clevercsv view --transpose imdb.csv
 ```
 
-
-## Contributors
-
-Code:
-
-* [Gertjan van den Burg](https://gertjan.dev)
-
-Scientific work:
-
-* [Gertjan van den Burg](https://gertjan.dev)
-* [Alfredo Nazabal](https://scholar.google.com/citations?user=IanHvT4AAAAJ)
-* [Charles Sutton](https://homepages.inf.ed.ac.uk/csutton/)
-
-
 ## Contributing
 
 If you want to encourage development of CleverCSV, the best thing to do now is 
 to *spread the word!*
 
-If you encounter an issue in CleverCSV, please open an issue or submit a pull 
-request. Don't hesitate, you're helping to make this project better! If 
-GitHub's not your thing but you still want to contact us, you can send an 
-email to gertjanvandenburg at gmail dot com instead.
+If you encounter an issue in CleverCSV, please [open an 
+issue](https://help.github.com/en/github/managing-your-work-on-github/creating-an-issue) 
+or [submit a pull 
+request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request). 
+Don't hesitate, you're helping to make this project better! If GitHub's not 
+your thing but you still want to contact us, you can send an email to 
+``gertjanvandenburg at gmail dot com`` instead.
+
+Note that all contributions to the project must adhere to the [Code of 
+Conduct](https://github.com/alan-turing-institute/CleverCSV/blob/master/CODE_OF_CONDUCT.md).
+
+The CleverCSV package was originally written by [Gertjan van den 
+Burg](https://gertjan.dev) and came out of [scientific 
+research](https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf) 
+on wrangling messy CSV files by [Gertjan van den Burg](https://gertjan.dev), 
+[Alfredo Nazabal](https://scholar.google.com/citations?user=IanHvT4AAAAJ), and
+[Charles Sutton](https://homepages.inf.ed.ac.uk/csutton/).
 
 ## Notes
 
