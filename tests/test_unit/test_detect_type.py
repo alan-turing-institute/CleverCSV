@@ -235,6 +235,14 @@ class TypeDetectorTestCase(unittest.TestCase):
             "www.google.com",
             "www.google.com/",
             "www.menominee-nsn.gov/",
+            "http://arxiv.org/abs/arXiv:1908.03213",
+            "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3474301/",
+            "https://dl.acm.org/citation.cfm?id=3025626",
+            "https://openreview.net/forum?id=S1x4ghC9tQ",
+            "https://link.springer.com/article/10.1007/s10618-019-00631-5",
+            "http://proceedings.mlr.press/v48/zhangf16.html",
+            "https://papers.nips.cc/paper/7796-middle-out-decoding",
+            "http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.89.6548",
         ]
         for url in yes_url:
             with self.subTest(url=url):
@@ -281,7 +289,7 @@ class TypeDetectorTestCase(unittest.TestCase):
     # Unicode_alphanum
 
     def test_unicode_alphanum(self):
-        # These tests are by no means inclusive and ought to be extended in the 
+        # These tests are by no means inclusive and ought to be extended in the
         # future.
 
         yes_alphanum = ["this is a cell", "1231 pounds"]
