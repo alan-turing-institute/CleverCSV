@@ -30,12 +30,11 @@ install: ## Install for the current user using the default python command
 test: venv ## Run unit tests
 	source $(VENV_DIR)/bin/activate && green -v ./tests/test_unit
 
+integration: venv ## Run integration tests
+	source $(VENV_DIR)/bin/activate && python ./tests/test_integration/test_dialect_detection.py -v
 
-integration: install ## Run integration tests with nose
-	python ./tests/test_integration/test_dialect_detection.py -v
-
-integration_partial: install ## Run partial integration test with nose
-	python ./tests/test_integration/test_dialect_detection.py -v --partial
+integration_partial: venv ## Run partial integration tests
+	source $(VENV_DIR)/bin/activate && python ./tests/test_integration/test_dialect_detection.py -v --partial
 
 clean: ## Clean build dist and egg directories left after install
 	rm -rf ./dist

@@ -30,7 +30,7 @@ REQUIRED = [
 
 docs_require = ["sphinx", "m2r"]
 test_require = []
-dev_require = ["green", "pythonfuzz"]
+dev_require = ["green", "pythonfuzz", "termcolor"]
 
 # What packages are optional?
 EXTRAS = {
