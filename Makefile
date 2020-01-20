@@ -28,7 +28,7 @@ install: ## Install for the current user using the default python command
 		python setup.py install --user
 
 test: venv ## Run unit tests
-	source $(VENV_DIR)/bin/activate && green -v ./tests/test_unit
+	source $(VENV_DIR)/bin/activate && green -a -vv ./tests/test_unit
 
 integration: venv ## Run integration tests
 	source $(VENV_DIR)/bin/activate && python ./tests/test_integration/test_dialect_detection.py -v
