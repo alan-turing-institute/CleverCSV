@@ -10,6 +10,7 @@ Author: Gertjan van den Burg
 import os
 import pandas as pd
 import tempfile
+import types
 import unittest
 
 from clevercsv import wrappers, writer
@@ -33,16 +34,30 @@ class WrappersTestCase(unittest.TestCase):
         finally:
             os.unlink(tmpfname)
 
-    def _read_test(self, table, dialect):
+    def _write_tmpfile(self, table, dialect):
+        """ Write a table to a temporary file using specified dialect """
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         tmpid = os.fdopen(tmpfd, "w")
         w = writer(tmpid, dialect=dialect)
         w.writerows(table)
         tmpid.close()
+        return tmpfname
 
+    def _read_test(self, table, dialect):
+        tmpfname = self._write_tmpfile(table, dialect)
         exp = [list(map(str, r)) for r in table]
         try:
             self.assertEqual(exp, wrappers.read_csv(tmpfname))
+        finally:
+            os.unlink(tmpfname)
+
+    def _stream_test(self, table, dialect):
+        tmpfname = self._write_tmpfile(table, dialect)
+        exp = [list(map(str, r)) for r in table]
+        try:
+            out = wrappers.stream_csv(tmpfname)
+            self.assertTrue(isinstance(out, types.GeneratorType))
+            self.assertEqual(exp, list(out))
         finally:
             os.unlink(tmpfname)
 
@@ -55,6 +70,20 @@ class WrappersTestCase(unittest.TestCase):
 
         try:
             self.assertEqual(expected, wrappers.read_csv(tmpfname))
+        finally:
+            os.unlink(tmpfname)
+
+    def _stream_test_rows(self, rows, expected):
+        contents = "\n".join(rows)
+        tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
+        tmpid = os.fdopen(tmpfd, "w")
+        tmpid.write(contents)
+        tmpid.close()
+
+        try:
+            out = wrappers.stream_csv(tmpfname)
+            self.assertTrue(isinstance(out, types.GeneratorType))
+            self.assertEqual(expected, list(out))
         finally:
             os.unlink(tmpfname)
 
@@ -113,6 +142,41 @@ class WrappersTestCase(unittest.TestCase):
         with self.subTest(name="raises2"):
             with self.assertRaises(NoDetectionResult):
                 self._read_test_rows(rows, exp)
+
+    def test_stream_csv(self):
+        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        with self.subTest(name="simple"):
+            self._stream_test(table, dialect)
+
+        table = [["A,0", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=",", quotechar="", escapechar="\\")
+        with self.subTest(name="escaped"):
+            self._stream_test(table, dialect)
+
+        table = [["A,0", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=",", quotechar='"', escapechar="")
+        with self.subTest(name="quoted"):
+            self._stream_test(table, dialect)
+
+        table = [['a"A,0"b', "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=",", quotechar='"', escapechar="")
+        with self.subTest(name="double"):
+            self._stream_test(table, dialect)
+
+        rows = ['1,"AA"', '2,"BB"', '3,"CC"']
+        exp = [["1", "AA"], ["2", "BB"], ["3", "CC"]]
+        with self.subTest(name="rowtest"):
+            self._stream_test_rows(rows, exp)
+
+        # This raises a NoDetectionResult due to the spacing after the
+        # delimiter, which confuses the detection algorithm. Support for
+        # detecting 'skipinitialspace' should fix this problem.
+        rows = ['1, "AA"', '2, "BB"', '3, "CC"']
+        exp = [["1", "AA"], ["2", "BB"], ["3", "CC"]]
+        with self.subTest(name="raises2"):
+            with self.assertRaises(NoDetectionResult):
+                self._stream_test_rows(rows, exp)
 
     def _write_test(self, table, expected, dialect="excel", transpose=False):
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")

@@ -120,7 +120,9 @@ easier. We currently have the following helper functions:
   takes a path to a CSV file and returns the detected dialect
 * [read_csv](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.read_csv): 
   automatically detects the dialect and encoding of the file, and returns the 
-  data as a list of rows.
+  data as a list of rows. A version that returns a generator is also 
+  available: 
+  [stream_csv](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.stream_csv)
 * [csv2df](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.csv2df): 
   detects the dialect and encoding of the file and then uses Pandas to read 
   the CSV into a DataFrame.
