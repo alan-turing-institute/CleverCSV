@@ -33,12 +33,13 @@ def read_as_dicts(filename, dialect=None, verbose=False):
 
 
 def read_csv(
-    filename, dialect=None, encoding=None, num_chars=None, verbose=False
+    filename, dialect=None, encoding=None, num_chars=None, verbose=False,
 ):
     """Read a CSV file as a list of lists
 
     This is a convenience function that reads a CSV file and returns the data 
-    as a list of lists (= rows).
+    as a list of lists (= rows). The dialect will be detected automatically, 
+    unless it is provided.
 
     Parameters
     ----------
@@ -75,6 +76,61 @@ def read_csv(
         When the dialect detection fails.
 
     """
+    return list(
+        stream_csv(
+            filename,
+            dialect=dialect,
+            encoding=encoding,
+            num_chars=num_chars,
+            verbose=verbose,
+        )
+    )
+
+
+def stream_csv(
+    filename, dialect=None, encoding=None, num_chars=None, verbose=False,
+):
+    """Read a CSV file as a generator over rows
+
+    This is a convenience function that reads a CSV file and returns the data 
+    as a generator of rows. The dialect will be detected automatically, unless 
+    it is provided.
+
+    Parameters
+    ----------
+    filename: str
+        Path of the CSV file
+
+    dialect: str, SimpleDialect, or csv.Dialect object
+        If the dialect is known, it can be provided here. This function uses 
+        the CleverCSV :class:``reader`` object, which supports various dialect 
+        types (string, SimpleDialect, or csv.Dialect). If None, the dialect 
+        will be detected.
+
+    encoding : str
+        The encoding of the file. If None, it is detected.
+
+    num_chars : int
+        Number of characters to use to detect the dialect. If None, use the 
+        entire file.
+
+        Note that using less than the entire file will speed up detection, but 
+        can reduce the accuracy of the detected dialect.
+
+    verbose: bool
+        Whether or not to show detection progress.
+
+    Returns
+    -------
+    rows: generator
+        Returns file as a generator over rows.
+
+    Raises
+    ------
+    NoDetectionResult
+        When the dialect detection fails.
+
+    """
     if encoding is None:
         encoding = get_encoding(filename)
     with open(filename, "r", newline="", encoding=encoding) as fid:
@@ -85,7 +141,7 @@ def read_csv(
                 raise NoDetectionResult()
             fid.seek(0)
         r = reader(fid, dialect)
-        return list(r)
+        yield from r
 
 
 def csv2df(filename, *args, **kwargs):
@@ -203,6 +259,6 @@ def write_table(table, filename, dialect="excel", transpose=False):
     if len(set(map(len, table))) > 1:
         raise ValueError("Table doesn't have constant row length.")
 
-    with open(filename, "w", newline='') as fp:
+    with open(filename, "w", newline="") as fp:
         w = writer(fp, dialect=dialect)
         w.writerows(table)
