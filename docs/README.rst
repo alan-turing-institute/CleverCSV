@@ -23,6 +23,9 @@
            <a href="https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb">
                    <img src="https://mybinder.org/badge_logo.svg" alt="Binder">
            </a>
+           <a href="https://rdcu.be/bLVur">
+                   <img src="https://img.shields.io/badge/DOI-10.1007%2Fs10618--019--00646--y-blue">
+           </a>
    </p>
 
 
@@ -132,7 +135,9 @@ easier. We currently have the following helper functions:
   takes a path to a CSV file and returns the detected dialect
 * `read_csv <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.read_csv>`_\ : 
   automatically detects the dialect and encoding of the file, and returns the 
-  data as a list of rows.
+  data as a list of rows. A version that returns a generator is also 
+  available: 
+  `stream_csv <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.stream_csv>`_
 * `csv2df <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.csv2df>`_\ : 
   detects the dialect and encoding of the file and then uses Pandas to read 
   the CSV into a DataFrame.
@@ -269,35 +274,33 @@ before viewing or saving:
 
    $ clevercsv view --transpose imdb.csv
 
-Contributors
-------------
-
-Code:
-
-
-* `Gertjan van den Burg <https://gertjan.dev>`_
-
-Scientific work:
-
-
-* `Gertjan van den Burg <https://gertjan.dev>`_
-* `Alfredo Nazabal <https://scholar.google.com/citations?user=IanHvT4AAAAJ>`_
-* `Charles Sutton <https://homepages.inf.ed.ac.uk/csutton/>`_
-
 Contributing
 ------------
 
 If you want to encourage development of CleverCSV, the best thing to do now is 
 to *spread the word!*
 
-If you encounter an issue in CleverCSV, please open an issue or submit a pull 
-request. Don't hesitate, you're helping to make this project better! If 
-GitHub's not your thing but you still want to contact us, you can send an 
-email to gertjanvandenburg at gmail dot com instead.
+If you encounter an issue in CleverCSV, please `open an 
+issue <https://help.github.com/en/github/managing-your-work-on-github/creating-an-issue>`_ 
+or `submit a pull 
+request <https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request>`_. 
+Don't hesitate, you're helping to make this project better! If GitHub's not 
+your thing but you still want to contact us, you can send an email to 
+``gertjanvandenburg at gmail dot com`` instead.
+
+Note that all contributions to the project must adhere to the `Code of 
+Conduct <https://github.com/alan-turing-institute/CleverCSV/blob/master/CODE_OF_CONDUCT.md>`_.
+
+The CleverCSV package was originally written by `Gertjan van den 
+Burg <https://gertjan.dev>`_ and came out of `scientific 
+research <https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf>`_ 
+on wrangling messy CSV files by `Gertjan van den Burg <https://gertjan.dev>`_\ , 
+`Alfredo Nazabal <https://scholar.google.com/citations?user=IanHvT4AAAAJ>`_\ , and
+`Charles Sutton <https://homepages.inf.ed.ac.uk/csutton/>`_.
 
 Notes
 -----
 
 License: MIT (see LICENSE file).
 
-Copyright (c) 2019 `The Alan Turing Institute <https://turing.ac.uk>`_.
+Copyright (c) 2019-2020 `The Alan Turing Institute <https://turing.ac.uk>`_.

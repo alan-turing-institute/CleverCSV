@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 0.5.5
+-------------
+
+
+* Add ``stream_csv`` wrapper that returns a generator over rows
+* Minor update to the URL type detection
+* Documentation updates
+
 Version 0.5.4
 -------------
 
