@@ -151,8 +151,7 @@ class InstallFromTestPyPI(Step):
         self.print_run("cd /tmp/")
         self.print_cmd("rm -rf ./venv")
         self.print_cmd("virtualenv ./venv")
-        self.print_cmd("cd ./venv")
-        self.print_cmd("source bin/activate")
+        self.print_cmd("source ./venv/bin/activate")
         self.print_cmd(
             "pip install --index-url https://test.pypi.org/simple/ "
             + f"--extra-index-url https://pypi.org/simple {context['pkgname']}=={context['version']}"
@@ -187,6 +186,16 @@ class GitTagPreRelease(Step):
 class GitAdd(Step):
     def action(self, context):
         self.instruct("Add everything to git and commit")
+        self.print_run("git gui")
+
+
+class GitAddRelease(Step):
+    def action(self, context):
+        self.instruct("Add Changelog & Readme to git")
+        self.instruct(
+            f"Commit with title: CleverCSV Release {context['version']}"
+        )
+        self.instruct("Embed changelog in body commit message")
         self.print_run("git gui")
 
 
@@ -240,7 +249,7 @@ def main():
         InstallFromTestPyPI(),
         TestCleverCSV(),
         DeactivateVenv(),
-        GitAdd(),
+        GitAddRelease(),
         PushToPyPI(),
         GitTagVersion(),
         PushToGitHub(),  # triggers Travis to build with cibw and push to PyPI
