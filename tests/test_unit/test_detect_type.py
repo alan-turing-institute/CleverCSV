@@ -173,6 +173,18 @@ class TypeDetectorTestCase(unittest.TestCase):
             with self.subTest(date=date):
                 self.assertFalse(self.td.is_date(date))
 
+    # DATETIME
+
+    def test_datetime(self):
+        yes_dt = ["2019-01-12T04:01:23Z"]
+        for dt in yes_dt:
+            with self.subTest(dt=dt):
+                self.assertTrue(self.td.is_datetime(dt))
+        no_date = []
+        for date in no_date:
+            with self.subTest(date=date):
+                self.assertFalse(self.td.is_datetime(dt))
+
     # URLs
 
     def test_url(self):

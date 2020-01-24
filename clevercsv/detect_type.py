@@ -238,7 +238,9 @@ class TypeDetector(object):
             isdate = self.is_date(parts[0])
             if not isdate:
                 return False
-            # [date]T[time]
+            # [date]T[time] or [date]T[time]Z
+            if parts[1].endswith('Z') and self.is_time(parts[1][:-1]):
+                return True
             if self.is_time(parts[1]):
                 return True
             # [date]T[time][+-][time]
