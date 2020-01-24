@@ -21,9 +21,10 @@ from .utils import get_encoding
 from .write import writer
 
 
-def read_as_dicts(filename, dialect=None, verbose=False):
-    enc = get_encoding(filename)
-    with open(filename, "r", newline="", encoding=enc) as fid:
+def read_as_dicts(filename, dialect=None, encoding=None, verbose=False):
+    if encoding is None:
+        encoding = get_encoding(filename)
+    with open(filename, "r", newline="", encoding=encoding) as fid:
         if dialect is None:
             dialect = Detector().detect(fid.read(), verbose=verbose)
             fid.seek(0)
