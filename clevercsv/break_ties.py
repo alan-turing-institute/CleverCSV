@@ -41,6 +41,54 @@ def tie_breaker(data, dialects):
     return None
 
 
+def reduce_pairwise(data, dialects):
+    """Reduce the set of dialects by breaking pairwise ties
+
+    Parameters
+    ----------
+
+    data: str
+        The data of the file as a string
+
+    dialects: list
+        List of SimpleDialect objects
+
+    Returns
+    -------
+    dialects: list
+        List of SimpleDialect objects.
+
+    """
+    equal_delim = len(set([d.delimiter for d in dialects])) == 1
+    if not equal_delim:
+        return None
+
+    # First, identify dialects that result in the same parsing result.
+    equal_dialects = []
+    for a, b in pairwise(dialects):
+        X = list(parse_string(data, a))
+        Y = list(parse_string(data, b))
+        if X == Y:
+            equal_dialects.append((a, b))
+
+    # Try to break the ties in these pairs
+    new_dialects = set()
+    visited = set()
+    for A, B in equal_dialects:
+        ans = break_ties_two(data, A, B)
+        if not ans is None:
+            new_dialects.add(ans)
+        visited.add(A)
+        visited.add(B)
+
+    # and add the dialects that we didn't visit
+    for d in dialects:
+        if not d in visited:
+            new_dialects.add(d)
+
+    return list(new_dialects)
+
+
 def break_ties_two(data, A, B):
     """Break ties between two dialects.
 
@@ -257,11 +305,15 @@ def break_ties_three(data, A, B, C):
         rem = [
             (p, d) for p, d in zip([pA, pB, pC], dialects) if not p == p_none
         ]
+
         if len(rem) <= 1:
-            # This is a failsafe that was added to handle fuzzed input strings,
-            # such as the "file": "' (so doublequote-singlequote). If a real
-            # CSV file is found that triggers this line, we may be able to
-            # decide how the tie should be broken.
+            # This case was reached for the file
+            # 6da5ab459bcc7c3a5ed2e06d65810958.csv from the GitHub corpus of
+            # the CSV paper. When fixing the delimiter to Tab, rem = [].
+            # Try to reduce pairwise
+            new_dialects = reduce_pairwise(data, dialects)
+            if len(new_dialects) == 1:
+                return new_dialects[0]
             return None
         if p_none == rem[0][0]:
             return break_ties_two(data, d_none, rem[0][1])
@@ -325,28 +377,7 @@ def break_ties_four(data, dialects):
     if not equal_delim:
         return None
 
-    # First, identify dialects that result in the same parsing result.
-    equal_dialects = []
-    for a, b in pairwise(dialects):
-        X = list(parse_string(data, a))
-        Y = list(parse_string(data, b))
-        if X == Y:
-            equal_dialects.append((a, b))
-
-    # Try to break the ties in these pairs
-    new_dialects = set()
-    visited = set()
-    for A, B in equal_dialects:
-        ans = break_ties_two(data, A, B)
-        if not ans is None:
-            new_dialects.add(ans)
-        visited.add(A)
-        visited.add(B)
-    for d in dialects:
-        if not d in visited:
-            new_dialects.add(d)
-
-    dialects = list(new_dialects)
+    dialects = reduce_pairwise(data, dialects)
 
     # Defer to other functions if the number of dialects was reduced
     if len(dialects) == 1:
