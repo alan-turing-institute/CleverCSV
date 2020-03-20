@@ -66,5 +66,5 @@ venv: $(VENV_DIR)/bin/activate
 
 $(VENV_DIR)/bin/activate:
 	test -d $(VENV_DIR) || virtualenv $(VENV_DIR)
-	source $(VENV_DIR)/bin/activate && pip install --no-cache-dir -e .[dev]
+	source $(VENV_DIR)/bin/activate && pip install -e .[dev]
 	touch $(VENV_DIR)/bin/activate
