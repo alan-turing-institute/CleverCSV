@@ -41,7 +41,7 @@ class Detector(object):
         log = lambda *a, **kw: print(*a, **kw) if verbose else None
 
         if method == "normal" or method == "auto":
-            log("Running normal form detection ...")
+            log("Running normal form detection ...", flush=True)
             dialect = detect_dialect_normal(
                 sample, delimiters=delimiters, verbose=verbose
             )
@@ -50,7 +50,7 @@ class Detector(object):
                 return dialect
 
         self.method_ = "consistency"
-        log("Running data consistency measure ...")
+        log("Running data consistency measure ...", flush=True)
         return detect_dialect_consistency(
             sample, delimiters=delimiters, verbose=verbose
         )
