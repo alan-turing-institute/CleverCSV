@@ -251,7 +251,7 @@ class Asker(object):
         n_lines = sum((1 for l in io.StringIO(self.data)))
         self.pane.send_keys("gg", enter=False, suppress_history=False)
         self.ask_question(
-            "Where is the header?", "header_idx", max_length=n_lines
+            "Where is the header?", "header_idx", max_length=max(1, n_lines)
         )
         if not self.dialect["header_idx"] is None:
             self.dialect["header_idx"] = int(self.dialect["header_idx"])
