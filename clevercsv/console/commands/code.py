@@ -73,8 +73,9 @@ and copy the generated code to a Python script.
                 "",
             ]
 
-        if not self.option('interact'):
+        if not self.option("interact"):
             self.line("\n".join(thecode))
+            return
 
         console = code.InteractiveConsole()
         for line in thecode:
