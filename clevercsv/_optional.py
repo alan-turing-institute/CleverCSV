@@ -11,8 +11,10 @@ License: See LICENSE file.
 
 """
 
+import distutils.version
 import importlib
 
+# update this when changing setup.py
 VERSIONS = {
     "cleo": "0.7.6",
     "clikit": "0.4.0",
@@ -32,7 +34,7 @@ def import_optional_dependency(name, raise_on_missing=True):
     name : str
         Name of the module to import
 
-    raise_on_missing: bool
+    raise_on_missing : bool
         Whether to raise an error when the package is missing or to simply 
         return None.
 
@@ -60,5 +62,20 @@ def import_optional_dependency(name, raise_on_missing=True):
             raise ImportError(msg) from None
         else:
             return None
+
+    min_version = VERSIONS.get(name)
+    if not min_version:
+        return module
+    version = getattr(module, "__version__", None)
+    if version is None:
+        return
+    if distutils.version.LooseVersion(version) < min_version:
+        msg = (
+            f"CleverCSV requires version '{min_version}' or newer for "
+            "optional dependency '{name}'. Please update the package "
+            "or install CleverCSV with all its optional dependencies "
+            "using: pip install clevercsv[full]"
+        )
+        raise ImportError(msg)
 
     return module
