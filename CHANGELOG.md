@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.6.1
+
+* Add an ``explore`` command to the command line application for CleverCSV. 
+  This command makes it easy to start exploring a CSV file using the Python 
+  interactive shell.
+
 ## Version 0.6.0
 
 * Split the package into a "core" and "full" version. This allows users who 
