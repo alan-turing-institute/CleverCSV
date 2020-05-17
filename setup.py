@@ -28,9 +28,10 @@ REQUIRED = [
 full_require = [
     "pandas>=0.24.1",
     "tabview>=1.4",
-    "cleo==0.7.6",
-    "clikit==0.4.0",
+    "cleo>=0.7.6",
+    "clikit>=0.4.0",
 ]
+
 docs_require = ["sphinx", "m2r"]
 test_require = full_require + []
 dev_require = ["green", "pythonfuzz", "termcolor"]
