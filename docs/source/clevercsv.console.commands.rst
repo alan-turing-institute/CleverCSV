@@ -20,6 +20,14 @@ clevercsv.console.commands.detect module
    :undoc-members:
    :show-inheritance:
 
+clevercsv.console.commands.explore module
+-----------------------------------------
+
+.. automodule:: clevercsv.console.commands.explore
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 clevercsv.console.commands.standardize module
 ---------------------------------------------
 

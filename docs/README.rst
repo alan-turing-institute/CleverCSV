@@ -181,7 +181,7 @@ CleverCSV (see above).*
 
 The ``clevercsv`` command line application has a number of handy features to 
 make working with CSV files easier. For instance, it can be used to view a CSV 
-file on the command line while automatically detecting the dialect.  It can 
+file on the command line while automatically detecting the dialect. It can 
 also generate Python code for importing data from a file with the correct 
 dialect. The full help text is as follows:
 
@@ -200,16 +200,17 @@ dialect. The full help text is as follows:
      -V (--version)  Display the application version.
 
    AVAILABLE COMMANDS
-     code            Generate Python code for importing the CSV file.
+     code            Generate Python code for importing the CSV file
      detect          Detect the dialect of a CSV file
+     explore         Drop into a Python shell with the CSV file loaded
      help            Display the manual of a command
-     standardize     Convert a CSV file to one that conforms to RFC-4180.
+     standardize     Convert a CSV file to one that conforms to RFC-4180
      view            View the CSV file on the command line using TabView
 
-Each of the commands has further options (for instance, the ``code`` command 
-can generate code for importing a Pandas DataFrame). Use
-``clevercsv help <command>`` for more information. Below are some examples for 
-each command:
+Each of the commands has further options (for instance, the ``code`` and 
+``explore`` commands have support for importing the CSV file as a Pandas 
+DataFrame). Use ``clevercsv help <command>`` for more information. Below are 
+some examples for each command:
 
 Code
 ~~~~
@@ -261,6 +262,44 @@ which makes combining it with ``grep`` easier.
    delimiter = ,
    quotechar =
    escapechar = \
+
+Explore
+~~~~~~~
+
+The ``explore`` command is great for a command-line based workflow, or when 
+you quickly want to start working with a CSV file in Python. This command 
+detects the dialect of a CSV file and starts an interactive Python shell with 
+the file already loaded! You can either have the file loaded as a list of 
+lists:
+
+.. code-block:: text
+
+   $ clevercsv explore milk.csv
+   Dropping you into an interactive shell.
+
+   CleverCSV has loaded the data into the variable: rows
+   >>>
+   >>> len(rows)
+   381
+
+or you can load the file as a Pandas dataframe:
+
+.. code-block:: text
+
+   $ clevercsv explore -p imdb.csv
+   Dropping you into an interactive shell.
+
+   CleverCSV has loaded the data into the variable: df
+   >>>
+   >>> df.head()
+                      fn        tid  ... War Western
+   0  titles01/tt0012349  tt0012349  ...   0       0
+   1  titles01/tt0015864  tt0015864  ...   0       0
+   2  titles01/tt0017136  tt0017136  ...   0       0
+   3  titles01/tt0017925  tt0017925  ...   0       0
+   4  titles01/tt0021749  tt0021749  ...   0       0
+
+   [5 rows x 44 columns]
 
 Standardize
 ~~~~~~~~~~~
