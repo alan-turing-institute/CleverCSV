@@ -51,7 +51,7 @@ install:
   - $PYTHON -VV
 
   # Install CleverCSV with the test dependencies (extra_requires)
-  - $PIP install -e .[tests]
+  - $PIP install -e .[full,tests]
 
   # Run the unit tests
   - $PYTHON -m unittest discover -v -f -s ./tests/test_unit

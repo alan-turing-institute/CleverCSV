@@ -89,7 +89,14 @@ GitHub](https://github.com/alan-turing-institute/CleverCSV)!
 
 ## Installation
 
-The package is available on PyPI:
+CleverCSV is available on PyPI. You can install either the full version, which 
+includes the command line interface and all optional dependencies, using
+
+```bash
+$ pip install clevercsv[full]
+```
+
+or you can install a lighter, core version of CleverCSV with
 
 ```bash
 $ pip install clevercsv
@@ -151,9 +158,12 @@ documentation](https://clevercsv.readthedocs.io/en/latest/source/modules.html).
 
 ### Command-Line Tool
 
+*To use the command line tool, make sure that you install the full version of 
+CleverCSV (see above).*
+
 The ``clevercsv`` command line application has a number of handy features to 
 make working with CSV files easier. For instance, it can be used to view a CSV 
-file on the command line while automatically detecting the dialect. It can 
+file on the command line while automatically detecting the dialect.  It can 
 also generate Python code for importing data from a file with the correct 
 dialect. The full help text is as follows:
 

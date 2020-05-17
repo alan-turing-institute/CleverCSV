@@ -2,7 +2,7 @@
 
 try:
     import tabview
-except ModuleNotFoundError:
+except ImportError:
 
     class TabView:
         def view(*args, **kwargs):
