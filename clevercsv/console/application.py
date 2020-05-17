@@ -12,6 +12,7 @@ from .config import Config
 from .commands import (
     CodeCommand,
     DetectCommand,
+    ExploreCommand,
     StandardizeCommand,
     ViewCommand,
 )
@@ -24,4 +25,5 @@ def build_application():
     app.add(DetectCommand())
     app.add(StandardizeCommand())
     app.add(CodeCommand())
+    app.add(ExploreCommand())
     return app
