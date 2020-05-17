@@ -159,7 +159,7 @@ class InstallFromTestPyPI(Step):
         self.print_cmd("source ./venv/bin/activate")
         self.print_cmd(
             "pip install --index-url https://test.pypi.org/simple/ "
-            + f"--extra-index-url https://pypi.org/simple {context['pkgname']}=={context['version']}"
+            + f"--extra-index-url https://pypi.org/simple {context['pkgname']}[full]=={context['version']}"
         )
 
 
