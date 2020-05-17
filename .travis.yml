@@ -45,13 +45,16 @@ env:
     # We want to test the wheels that we build
     - CIBW_TEST_COMMAND="python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
 
+    # We want to install the full package when testing the wheel
+    - CIBW_TEST_EXTRAS="full"
+
 
 install:
   # Print the Python version
   - $PYTHON -VV
 
   # Install CleverCSV with the test dependencies (extra_requires)
-  - $PIP install -e .[tests]
+  - $PIP install -e .[full,tests]
 
   # Run the unit tests
   - $PYTHON -m unittest discover -v -f -s ./tests/test_unit

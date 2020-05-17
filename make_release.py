@@ -12,6 +12,7 @@ Date: 2019-07-23
 
 """
 
+import sys
 import colorama
 import os
 import webbrowser
@@ -56,6 +57,13 @@ def get_package_name():
             (l.strip() for l in fp if l.startswith("NAME = ")), None
         )
         return nameline.split("=")[-1].strip().strip('"')
+
+
+def get_package_version(pkgname):
+    ctx = {}
+    with open(f"{pkgname.lower()}/__version__.py", "r") as fp:
+        exec(fp.read(), ctx)
+    return ctx["__version__"]
 
 
 class Step:
@@ -109,7 +117,7 @@ class RunTests(Step):
 
 class BumpVersionPackage(Step):
     def action(self, context):
-        self.instruct(f"Update __version__.py with new version")
+        self.instruct("Update __version__.py with new version")
         self.print_run(f"vi {context['pkgname']}/__version__.py")
 
     def post(self, context):
@@ -118,10 +126,7 @@ class BumpVersionPackage(Step):
 
     def _get_version(self, context):
         # Get the version from the version file
-        about = {}
-        with open(f"{context['pkgname'].lower()}/__version__.py", "r") as fp:
-            exec(fp.read(), about)
-        return about["__version__"]
+        return get_package_version(context["pkgname"])
 
 
 class MakeClean(Step):
@@ -154,11 +159,11 @@ class InstallFromTestPyPI(Step):
         self.print_cmd("source ./venv/bin/activate")
         self.print_cmd(
             "pip install --index-url https://test.pypi.org/simple/ "
-            + f"--extra-index-url https://pypi.org/simple {context['pkgname']}=={context['version']}"
+            + f"--extra-index-url https://pypi.org/simple {context['pkgname']}[full]=={context['version']}"
         )
 
 
-class TestCleverCSV(Step):
+class TestPackage(Step):
     def action(self, context):
         self.instruct(
             f"Ensure that the following command gives version {context['version']}"
@@ -225,42 +230,51 @@ class WaitForRTD(Step):
         )
 
 
-def main():
+def main(target=None):
     colorama.init()
     procedure = [
-        GitToMaster(),
-        GitAdd(),
-        MakeClean(),
-        MakeDocs(),
-        RunTests(),
-        PushToGitHub(),  # trigger Travis to run tests on all platforms
-        WaitForTravis(),
-        WaitForRTD(),
-        BumpVersionPackage(),
-        GitAdd(),
-        GitTagPreRelease(),
-        PushToGitHub(),  # trigger Travis to run tests using cibuildwheel
-        WaitForTravis(),
-        UpdateChangelog(),
-        MakeClean(),
-        MakeDocs(),
-        MakeDist(),
-        PushToTestPyPI(),
-        InstallFromTestPyPI(),
-        TestCleverCSV(),
-        DeactivateVenv(),
-        GitAddRelease(),
-        PushToPyPI(),
-        GitTagVersion(),
-        PushToGitHub(),  # triggers Travis to build with cibw and push to PyPI
-        WaitForTravis(),
+        ("gittomaster", GitToMaster()),
+        ("gitadd1", GitAdd()),
+        ("clean1", MakeClean()),
+        ("docs1", MakeDocs()),
+        ("runtests", RunTests()),
+        # trigger Travis to run tests on all platforms
+        ("push1", PushToGitHub()),
+        ("travis1", WaitForTravis()),
+        ("waitrtd", WaitForRTD()),
+        ("bumpversion", BumpVersionPackage()),
+        ("gitadd2", GitAdd()),
+        ("gittagpre", GitTagPreRelease()),
+        # trigger Travis to run tests using cibuildwheel
+        ("push2", PushToGitHub()),
+        ("travis2", WaitForTravis()),
+        ("changelog", UpdateChangelog()),
+        ("clean2", MakeClean()),
+        ("docs2", MakeDocs()),
+        ("dist", MakeDist()),
+        ("testpypi", PushToTestPyPI()),
+        ("install", InstallFromTestPyPI()),
+        ("testpkg", TestPackage()),
+        ("deactivate", DeactivateVenv()),
+        ("addrelease", GitAddRelease()),
+        ("pypi", PushToPyPI()),
+        ("tagfinal", GitTagVersion()),
+        # triggers Travis to build with cibw and push to PyPI
+        ("push3", PushToGitHub(),),
+        ("travis3", WaitForTravis()),
     ]
     context = {}
     context["pkgname"] = get_package_name()
-    for step in procedure:
+    context["version"] = get_package_version(context["pkgname"])
+    skip = True if target else False
+    for name, step in procedure:
+        if not name == target and skip:
+            continue
+        skip = False
         step.run(context)
     cprint("\nDone!", color="yellow", style="bright")
 
 
 if __name__ == "__main__":
-    main()
+    target = sys.argv[1] if len(sys.argv) > 1 else None
+    main(target=target)

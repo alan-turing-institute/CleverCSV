@@ -21,19 +21,24 @@ VERSION = None
 # What packages are required for this module to be executed?
 REQUIRED = [
     "chardet>=3.0",
-    "cleo==0.7.6",
-    "clikit==0.4.0",
-    "pandas>=0.24.1",
     "regex>=2018.11",
+]
+
+# When these are changed, update clevercsv/_optional.py accordingly
+full_require = [
+    "pandas>=0.24.1",
     "tabview>=1.4",
+    "cleo>=0.7.6",
+    "clikit>=0.4.0",
 ]
 
 docs_require = ["sphinx", "m2r"]
-test_require = []
-dev_require = ["green", "pythonfuzz", "termcolor"]
+test_require = full_require + []
+dev_require = ["green", "pythonfuzz", "termcolor", "sphinx_rtd_theme"]
 
 # What packages are optional?
 EXTRAS = {
+    "full": full_require,
     "docs": docs_require,
     "tests": test_require,
     "dev": docs_require + test_require + dev_require,

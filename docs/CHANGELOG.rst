@@ -2,6 +2,24 @@
 Changelog
 =========
 
+Version 0.6.0
+-------------
+
+
+* Split the package into a "core" and "full" version. This allows users who 
+  only need the improved dialect detection functionality to download a version 
+  with a smaller footprint. Fixes `issue 
+  #10 <https://github.com/alan-turing-institute/CleverCSV/issues/10>`_\ ]. Thanks 
+  to @seperman.
+
+Version 0.5.6
+-------------
+
+
+* Fix speed of ``unix_path`` regex used in type detection. (\ `issue 
+  #13 <https://github.com/alan-turing-institute/CleverCSV/issues/13>`_\ ). Thanks 
+  to @kaskawu.
+
 Version 0.5.5
 -------------
 

@@ -8,11 +8,9 @@ Author: Gertjan van den Burg
 """
 
 import os
-import pandas as pd
 import warnings
 
-from pandas.errors import ParserWarning
-
+from ._optional import import_optional_dependency
 from .detect import Detector
 from .dict_read_write import DictReader
 from .exceptions import NoDetectionResult
@@ -168,6 +166,7 @@ def csv2df(filename, *args, **kwargs):
     """
     if not (os.path.exists(filename) and os.path.isfile(filename)):
         raise ValueError("Filename must be a regular file")
+    pd = import_optional_dependency("pandas")
     enc = get_encoding(filename)
     with open(filename, "r", newline="", encoding=enc) as fid:
         dialect = Detector().detect(fid.read())
@@ -178,7 +177,7 @@ def csv2df(filename, *args, **kwargs):
         warnings.filterwarnings(
             "ignore",
             message="^Conflicting values for .*",
-            category=ParserWarning,
+            category=pd.errors.ParserWarning,
         )
         df = pd.read_csv(filename, *args, dialect=csv_dialect, **kwargs)
     return df
