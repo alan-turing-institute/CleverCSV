@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import code
+
 from cleo import Command
 
 from clevercsv import __version__
@@ -16,6 +18,7 @@ class CodeCommand(Command):
     code
         { path : The path to the CSV file }
         { --e|encoding= : Set the encoding of the CSV file. }
+        { --i|interact : Drop into a Pyohon interactive shell. }
         { --n|num-chars= : Limit the number of characters to read for
         detection. This will speed up detection but may reduce accuracy. }
         { --p|pandas : Write code that imports to a Pandas DataFrame }
@@ -54,19 +57,37 @@ and copy the generated code to a Python script.
             "import clevercsv",
         ]
         if self.option("pandas"):
-            code = base + [
+            thecode = base + [
                 "",
                 f'df = clevercsv.csv2df("{filename}", delimiter={d}, quotechar={q}, escapechar={e})',
                 "",
             ]
         else:
             enc = "None" if encoding is None else f'"{encoding}"'
-            code = base + [
+            thecode = base + [
                 "",
                 f'with open("{filename}", "r", newline="", encoding={enc}) as fp:',
-                f"    reader = clevercsv.reader(fp, "
+                "    reader = clevercsv.reader(fp, "
                 + f"delimiter={d}, quotechar={q}, escapechar={e})",
                 "    rows = list(reader)",
                 "",
             ]
-        self.line("\n".join(code))
+
+        if not self.option("interact"):
+            self.line("\n".join(thecode))
+            return
+
+        console = code.InteractiveConsole()
+        for line in thecode:
+            retcode = console.push(line)
+        if retcode:
+            self.line(
+                "An error occurred starting the interactive console. "
+                "Printing commands instead:\n"
+            )
+            self.line("\n".join(thecode))
+            return
+        self.line("Dropping you into an interactive shell.\n")
+        banner = "CleverCSV has loaded the data into the variable: "
+        banner += "df" if self.option("pandas") else "rows"
+        console.interact(banner=banner)
