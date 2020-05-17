@@ -2,6 +2,16 @@
 Changelog
 =========
 
+Version 0.6.0
+-------------
+
+
+* Split the package into a "core" and "full" version. This allows users who 
+  only need the improved dialect detection functionality to download a version 
+  with a smaller footprint. Fixes `issue 
+  #10 <https://github.com/alan-turing-institute/CleverCSV/issues/10>`_\ ]. Thanks 
+  to @seperman.
+
 Version 0.5.6
 -------------
 
