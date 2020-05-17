@@ -132,8 +132,9 @@ easier. We currently have the following helper functions:
   available: 
   [stream_csv](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.stream_csv)
 * [csv2df](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.csv2df): 
-  detects the dialect and encoding of the file and then uses Pandas to read 
-  the CSV into a DataFrame.
+  detects the dialect and encoding of the file and then uses 
+  [Pandas](https://pandas.pydata.org/) to read the CSV into a DataFrame. Note 
+  that this function requires Pandas to be installed.
 * [write_table](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.write_table): 
   write a table (a list of lists) to a file using the RFC-4180 dialect.
 
@@ -141,20 +142,21 @@ Of course, you can also use the traditional way of loading a CSV file, as in
 the Python CSV module:
 
 ```python
-# importing this way makes it easy to port existing code to CleverCSV!
-import clevercsv as csv
+import clevercsv
 
 with open("data.csv", "r", newline="") as fp:
   # you can use verbose=True to see what CleverCSV does:
-  dialect = csv.Sniffer().sniff(fid.read(), verbose=False)
+  dialect = clevercsv.Sniffer().sniff(fid.read(), verbose=False)
   fp.seek(0)
-  reader = csv.reader(fp, dialect)
+  reader = clevercsv.reader(fp, dialect)
   rows = list(reader)
 ```
 
 That's the basics! If you want more details, you can look at the code of the 
 package, the test suite, or the [API 
-documentation](https://clevercsv.readthedocs.io/en/latest/source/modules.html).
+documentation](https://clevercsv.readthedocs.io/en/latest/source/modules.html). 
+If you run into any issues or have comments or suggestions, please open an 
+issue [on GitHub](https://github.com/alan-turing-institute/CleverCSV).
 
 ### Command-Line Tool
 
