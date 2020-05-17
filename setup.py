@@ -34,7 +34,7 @@ full_require = [
 
 docs_require = ["sphinx", "m2r"]
 test_require = full_require + []
-dev_require = ["green", "pythonfuzz", "termcolor"]
+dev_require = ["green", "pythonfuzz", "termcolor", "sphinx_rtd_theme"]
 
 # What packages are optional?
 EXTRAS = {
