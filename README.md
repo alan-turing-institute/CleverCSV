@@ -145,7 +145,7 @@ the Python CSV module:
 import clevercsv
 
 with open("data.csv", "r", newline="") as fp:
-  # you can use verbose=True to see what CleverCSV does:
+  # you can use verbose=True to see what CleverCSV does
   dialect = clevercsv.Sniffer().sniff(fid.read(), verbose=False)
   fp.seek(0)
   reader = clevercsv.reader(fp, dialect)
