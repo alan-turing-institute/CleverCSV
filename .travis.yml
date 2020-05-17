@@ -45,6 +45,9 @@ env:
     # We want to test the wheels that we build
     - CIBW_TEST_COMMAND="python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
 
+    # We want to install the full package when testing the wheel
+    - CIBW_TEST_EXTRAS="full"
+
 
 install:
   # Print the Python version
