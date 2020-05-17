@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.5.6
+
+* Fix speed of ``unix_path`` regex used in type detection. ([issue 
+  #13](https://github.com/alan-turing-institute/CleverCSV/issues/13)). Thanks 
+  to @kaskawu.
+
 ## Version 0.5.5
 
 * Add ``stream_csv`` wrapper that returns a generator over rows
