@@ -161,11 +161,18 @@ the Python CSV module:
    import clevercsv
 
    with open("data.csv", "r", newline="") as fp:
-     # you can use verbose=True to see what CleverCSV does:
-     dialect = clevercsv.Sniffer().sniff(fid.read(), verbose=False)
+     # you can use verbose=True to see what CleverCSV does
+     dialect = clevercsv.Sniffer().sniff(fp.read(), verbose=False)
      fp.seek(0)
      reader = clevercsv.reader(fp, dialect)
      rows = list(reader)
+
+For large files, you can speed up detection by supplying a smaller sample to 
+the sniffer, for instance:
+
+.. code-block:: python
+
+   dialect = clevercsv.Sniffer().sniff(fp.read(10000))
 
 That's the basics! If you want more details, you can look at the code of the 
 package, the test suite, or the `API 
@@ -210,7 +217,11 @@ dialect. The full help text is as follows:
 Each of the commands has further options (for instance, the ``code`` and 
 ``explore`` commands have support for importing the CSV file as a Pandas 
 DataFrame). Use ``clevercsv help <command>`` for more information. Below are 
-some examples for each command:
+some examples for each command.
+
+Note that each command accepts the ``-n`` or ``--num-chars`` flag to set the 
+number of characters used to detect the dialect. This can be especially 
+helpful to speed up dialect detection on large files.
 
 Code
 ~~~~
