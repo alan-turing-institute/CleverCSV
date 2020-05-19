@@ -1,16 +1,16 @@
 
-.. include:: ./readme.rst
+.. include:: ./_readme.rst
 
 .. toctree::
    :maxdepth: 2
 
-   readme
+   _readme
 
 .. toctree::
    :caption: Further Documentation
    :maxdepth: 2
 
-   changelog
+   _changelog
    source/modules
 
 
