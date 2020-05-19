@@ -40,7 +40,7 @@ env:
     - secure: "esChcOJ5bX2qLnkYhLVL/t3NZtlAWCJYDV6yWIg43wPV2GkUnIz01Qvrndyq4UsG6jLo7eoeuihEFV9uOfl9R202s1FWHn9rk1RNqedqfTn7o6xoVSgVMp9uf9etu9h774fO77aI4wxeYvhz0yv/c3x6O/gBy+hp01HRG0u0oCTH/Md4WhNK3N1FIGqP4DdLKLfvdrdc9Nq+frjG1UUZDLDcAU5PK+flFzaSjMZw7Q8QgeRxZdM6ZlzIsPAGpmO2Ax5Iin/i/PxHjtsH/fYjRoaN+HvDD52BIznK0gBzZJN4ubDw4k5X+QYUBzVOcqFG/Ueu64gJlyh1YX374nwcbZua73Y0FHD0tYgwQK+lejHDzHDSnnbZy0my9P0GRj521BQiIqQLKMG+8khue+RP4SsM5XbWUG/U6Da8KysFr2Vd5kUA9VPlufBb+R6ta+VsVDvQj03h0nSdL6hRkeE1u6z1OGNVpyEzCcb+bMR/+7vam39pgBL6BLOJXAD9VNDNeOdPqldO1fZKokD2J2EvYIYicBMYALCtuEzE2mhcFVyuBGbpy0onreBT8+dcQCdp6Wg4R5SiguOdtuJ2fN7StP0tk8EDAOf+QclDljgLYFugRMJoajIv/z9aCSXmWbNioDRyY5urIB9t4xyw9ZdCYpjgnv4mkaIu0x0k+0SLMaw="
 
     # CleverCSV is python3.6+
-    - CIBW_SKIP="cp27-* cp33-* cp34-* cp35-*"
+    - CIBW_SKIP="pp27-* cp27-* cp33-* cp34-* cp35-*"
 
     # We want to test the wheels that we build
     - CIBW_TEST_COMMAND="python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
