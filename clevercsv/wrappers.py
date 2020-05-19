@@ -19,12 +19,15 @@ from .utils import get_encoding
 from .write import writer
 
 
-def read_as_dicts(filename, dialect=None, encoding=None, verbose=False):
+def read_as_dicts(
+    filename, dialect=None, encoding=None, num_chars=None, verbose=False
+):
     if encoding is None:
         encoding = get_encoding(filename)
     with open(filename, "r", newline="", encoding=encoding) as fid:
         if dialect is None:
-            dialect = Detector().detect(fid.read(), verbose=verbose)
+            data = fid.read(num_chars) if num_chars else fid.read()
+            dialect = Detector().detect(data, verbose=verbose)
             fid.seek(0)
         r = DictReader(fid, dialect=dialect)
         for row in r:
@@ -143,7 +146,7 @@ def stream_csv(
         yield from r
 
 
-def csv2df(filename, *args, **kwargs):
+def csv2df(filename, *args, num_chars=None, **kwargs):
     """ Read a CSV file to a Pandas dataframe
 
     This function uses CleverCSV to detect the dialect, and then passes this to 
@@ -160,6 +163,13 @@ def csv2df(filename, *args, **kwargs):
     *args:
         Additional arguments for the ``pandas.read_csv`` function.
 
+    num_chars: int
+        Number of characters to use for dialect detection. If None, use the 
+        entire file.
+
+        Note that using less than the entire file will speed up detection, but 
+        can reduce the accuracy of the detected dialect.
+
     **kwargs:
         Additional keyword arguments for the ``pandas.read_csv`` function.
 
@@ -169,7 +179,8 @@ def csv2df(filename, *args, **kwargs):
     pd = import_optional_dependency("pandas")
     enc = get_encoding(filename)
     with open(filename, "r", newline="", encoding=enc) as fid:
-        dialect = Detector().detect(fid.read())
+        data = fid.read(num_chars) if num_chars else fid.read()
+        dialect = Detector().detect(data)
     csv_dialect = dialect.to_csv_dialect()
 
     # This is used to catch pandas' warnings when a dialect is supplied.
