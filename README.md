@@ -152,8 +152,8 @@ with open("data.csv", "r", newline="") as fp:
   rows = list(reader)
 ```
 
-For large files, you speed up detection by supplying a smaller sample to the 
-sniffer, for instance:
+For large files, you can speed up detection by supplying a smaller sample to 
+the sniffer, for instance:
 ```python
 dialect = clevercsv.Sniffer().sniff(fp.read(10000))
 ```

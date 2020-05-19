@@ -287,8 +287,6 @@ class TypeDetectorTestCase(unittest.TestCase):
             "http://?",
             "http://??",
             "http://??/",
-            "http://a.b--c.de/",
-            "http://a.b-.co",
             "http://foo.bar/foo(bar)baz quux",
             "http://foo.bar?q=Spaces should be encoded",
             "http://www.foo.bar./",
