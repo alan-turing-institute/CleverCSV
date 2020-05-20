@@ -2,6 +2,18 @@
 Changelog
 =========
 
+Version 0.6.3
+-------------
+
+
+* Rename wrapper functions to a more coherent naming scheme. Old names will be 
+  available until 0.7.0, but now produce a FutureWarning.
+* Add ``stream_dicts`` wrapper function.
+* Improve handling of file encoding for the ``read_dataframe`` wrapper: 
+  detected encoding is now passed on to Pandas.
+* Fix handling of optional dependency error for TabView on non-Windows 
+  platforms.
+
 Version 0.6.2
 -------------
 
