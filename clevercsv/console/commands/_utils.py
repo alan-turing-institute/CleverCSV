@@ -28,7 +28,7 @@ def generate_code(filename, dialect, encoding, use_pandas=False):
     if use_pandas:
         return base + [
             "",
-            f'df = clevercsv.csv2df("{filename}", delimiter={d}, quotechar={q}, escapechar={e})',
+            f'df = clevercsv.read_dataframe("{filename}", delimiter={d}, quotechar={q}, escapechar={e})',
             "",
         ]
 

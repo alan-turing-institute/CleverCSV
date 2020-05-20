@@ -12,10 +12,14 @@ from .exceptions import Error
 from .read import reader
 from .wrappers import (
     detect_dialect,
-    csv2df,
-    read_csv,
-    read_as_dicts,
-    stream_csv,
+    read_dataframe,
+    read_dicts,
+    read_table,
+    stream_dicts,
+    stream_table,
     write_table,
 )
 from .write import writer
+
+# outdated, to be removed in 0.7.0
+from .wrappers import read_as_dicts, read_csv, stream_csv, csv2df
