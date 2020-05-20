@@ -35,9 +35,9 @@ def stream_dicts(
 
     dialect : str, SimpleDialect, or csv.Dialect object
         If the dialect is known, it can be provided here. This function uses 
-        the Clevercsv :class:``DictReader`` object, which supports various 
-        dialect types (string, SimpleDialect, or csv.Dialect). If None, the 
-        dialect will be detected.
+        the Clevercsv :class:`clevercsv.DictReader` object, which supports 
+        various dialect types (string, SimpleDialect, or csv.Dialect). If None, 
+        the dialect will be detected.
 
     encoding : str
         The encoding of the file. If None, it is detected.
@@ -91,9 +91,9 @@ def read_dicts(
 
     dialect : str, SimpleDialect, or csv.Dialect object
         If the dialect is known, it can be provided here. This function uses 
-        the Clevercsv :class:``DictReader`` object, which supports various 
-        dialect types (string, SimpleDialect, or csv.Dialect). If None, the 
-        dialect will be detected.
+        the Clevercsv :class:`clevercsv.DictReader` object, which supports 
+        various dialect types (string, SimpleDialect, or csv.Dialect). If None, 
+        the dialect will be detected.
 
     encoding : str
         The encoding of the file. If None, it is detected.
@@ -133,7 +133,7 @@ def read_dicts(
 def read_as_dicts(
     filename, dialect=None, encoding=None, num_chars=None, verbose=False
 ):
-    """This function is deprecated, use read_as_dicts instead."""
+    """This function is deprecated, use read_dicts instead."""
     warnings.warn(
         "'read_as_dicts' was renamed to 'read_dicts' in version "
         "0.6.3 and will be removed in 0.7.0.",
