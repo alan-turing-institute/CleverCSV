@@ -238,7 +238,7 @@ $ clevercsv code --pandas imdb.csv
 
 import clevercsv
 
-df = clevercsv.csv2df("imdb.csv", delimiter=",", quotechar="", escapechar="\\")
+df = clevercsv.read_dataframe("imdb.csv", delimiter=",", quotechar="", escapechar="\\")
 ```
 
 #### Detect
