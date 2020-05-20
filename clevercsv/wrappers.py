@@ -331,13 +331,15 @@ def read_dataframe(filename, *args, num_chars=None, **kwargs):
         can reduce the accuracy of the detected dialect.
 
     **kwargs:
-        Additional keyword arguments for the ``pandas.read_csv`` function.
+        Additional keyword arguments for the ``pandas.read_csv`` function. You 
+        can specify the file encoding here if needed, and it will be used 
+        during dialect detection.
 
     """
     if not (os.path.exists(filename) and os.path.isfile(filename)):
         raise ValueError("Filename must be a regular file")
     pd = import_optional_dependency("pandas")
-    enc = get_encoding(filename)
+    enc = kwargs.get("encoding") or get_encoding(filename)
     with open(filename, "r", newline="", encoding=enc) as fid:
         data = fid.read(num_chars) if num_chars else fid.read()
         dialect = Detector().detect(data)
