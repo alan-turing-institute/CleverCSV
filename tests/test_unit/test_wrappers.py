@@ -21,13 +21,13 @@ from clevercsv.exceptions import NoDetectionResult
 class WrappersTestCase(unittest.TestCase):
     def _df_test(self, table, dialect, **kwargs):
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
-        tmpid = os.fdopen(tmpfd, "w")
+        tmpid = os.fdopen(tmpfd, "w", encoding=kwargs.get("encoding"))
         w = writer(tmpid, dialect=dialect)
         w.writerows(table)
         tmpid.close()
 
         exp_df = pd.DataFrame.from_records(table[1:], columns=table[0])
-        df = wrappers.csv2df(tmpfname)
+        df = wrappers.read_dataframe(tmpfname)
 
         try:
             self.assertTrue(df.equals(exp_df))
@@ -47,7 +47,7 @@ class WrappersTestCase(unittest.TestCase):
         tmpfname = self._write_tmpfile(table, dialect)
         exp = [list(map(str, r)) for r in table]
         try:
-            self.assertEqual(exp, wrappers.read_csv(tmpfname))
+            self.assertEqual(exp, wrappers.read_table(tmpfname))
         finally:
             os.unlink(tmpfname)
 
@@ -55,7 +55,7 @@ class WrappersTestCase(unittest.TestCase):
         tmpfname = self._write_tmpfile(table, dialect)
         exp = [list(map(str, r)) for r in table]
         try:
-            out = wrappers.stream_csv(tmpfname)
+            out = wrappers.stream_table(tmpfname)
             self.assertTrue(isinstance(out, types.GeneratorType))
             self.assertEqual(exp, list(out))
         finally:
@@ -69,7 +69,7 @@ class WrappersTestCase(unittest.TestCase):
         tmpid.close()
 
         try:
-            self.assertEqual(expected, wrappers.read_csv(tmpfname))
+            self.assertEqual(expected, wrappers.read_table(tmpfname))
         finally:
             os.unlink(tmpfname)
 
@@ -81,13 +81,13 @@ class WrappersTestCase(unittest.TestCase):
         tmpid.close()
 
         try:
-            out = wrappers.stream_csv(tmpfname)
+            out = wrappers.stream_table(tmpfname)
             self.assertTrue(isinstance(out, types.GeneratorType))
             self.assertEqual(expected, list(out))
         finally:
             os.unlink(tmpfname)
 
-    def test_csv2df(self):
+    def test_read_dataframe(self):
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         with self.subTest(name="simple"):
@@ -113,8 +113,12 @@ class WrappersTestCase(unittest.TestCase):
         with self.subTest(name="simple_nchar"):
             self._df_test(table, dialect, num_char=10)
 
+        table = [["Ä", "Ð", "Ç"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        with self.subTest(name="simple_encoding"):
+            self._df_test(table, dialect, num_char=10, encoding="latin1")
 
-    def test_read_csv(self):
+    def test_read_table(self):
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         with self.subTest(name="simple"):
@@ -149,7 +153,7 @@ class WrappersTestCase(unittest.TestCase):
             with self.assertRaises(NoDetectionResult):
                 self._read_test_rows(rows, exp)
 
-    def test_stream_csv(self):
+    def test_stream_table(self):
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         with self.subTest(name="simple"):

@@ -7,13 +7,14 @@ except ImportError:
     class TabView:
         def view(*args, **kwargs):
             print("Unfortunately Tabview is not available on Windows.")
+
     tabview = TabView()
 
 
 from cleo import Command
 
 from clevercsv.exceptions import NoDetectionResult
-from clevercsv.wrappers import read_csv
+from clevercsv.wrappers import read_table
 
 from ._utils import parse_int
 
@@ -38,7 +39,7 @@ Use the <info>view</info> command to view a CSV file on the command line.
         verbose = self.io.verbosity > 0
         num_chars = parse_int(self.option("num-chars"), "num-chars")
         try:
-            rows = read_csv(
+            rows = read_table(
                 self.argument("path"),
                 encoding=self.option("encoding"),
                 num_chars=num_chars,
