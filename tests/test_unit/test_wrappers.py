@@ -21,7 +21,7 @@ from clevercsv.exceptions import NoDetectionResult
 class WrappersTestCase(unittest.TestCase):
     def _df_test(self, table, dialect, **kwargs):
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
-        tmpid = os.fdopen(tmpfd, "w")
+        tmpid = os.fdopen(tmpfd, "w", encoding=kwargs.get("encoding"))
         w = writer(tmpid, dialect=dialect)
         w.writerows(table)
         tmpid.close()
@@ -112,6 +112,11 @@ class WrappersTestCase(unittest.TestCase):
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         with self.subTest(name="simple_nchar"):
             self._df_test(table, dialect, num_char=10)
+
+        table = [["Ä", "Ð", "Ç"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        with self.subTest(name="simple_encoding"):
+            self._df_test(table, dialect, num_char=10, encoding="latin1")
 
     def test_read_table(self):
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
