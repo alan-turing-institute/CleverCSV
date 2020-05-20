@@ -1,5 +1,17 @@
 # Changelog
 
+## Version 0.6.2
+
+* Update URL regex to avoid catastrophic backtracking and increase 
+  performance. See [issue 
+  #13](https://github.com/alan-turing-institute/CleverCSV/issues/13) and 
+  [issue #15](https://github.com/alan-turing-institute/CleverCSV/issues/15). 
+  Thanks to @kaskawu for the fix and @jlumbroso for re-raising the issue.
+* Add ``num_chars`` keyword argument to ``read_as_dicts`` and ``csv2df`` 
+  wrappers.
+* Improve documentation w.r.t. handling large files. Thanks to @jlumbroso for 
+  raising this issue.
+
 ## Version 0.6.1
 
 * Add an ``explore`` command to the command line application for CleverCSV. 
