@@ -141,15 +141,20 @@ easier. We currently have the following helper functions:
 
 * `detect_dialect <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.detect_dialect>`_\ : 
   takes a path to a CSV file and returns the detected dialect
-* `read_csv <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.read_csv>`_\ : 
+* `read_table <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.read_table>`_\ : 
   automatically detects the dialect and encoding of the file, and returns the 
   data as a list of rows. A version that returns a generator is also 
   available: 
-  `stream_csv <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.stream_csv>`_
-* `csv2df <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.csv2df>`_\ : 
+  `stream_table <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.stream_table>`_
+* `read_dataframe <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.read_dataframe>`_\ : 
   detects the dialect and encoding of the file and then uses 
   `Pandas <https://pandas.pydata.org/>`_ to read the CSV into a DataFrame. Note 
   that this function requires Pandas to be installed.
+* `read_dicts <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.read_dicts>`_\ : 
+  detect the dialect and return the rows of the file as dictionaries, assuming 
+  the first row contains the headers. A streaming version called 
+  `stream_dicts <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.stream_dicts>`_ 
+  is also available.
 * `write_table <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.write_table>`_\ : 
   write a table (a list of lists) to a file using the RFC-4180 dialect.
 
@@ -252,7 +257,7 @@ We also have a version that reads a Pandas dataframe:
 
    import clevercsv
 
-   df = clevercsv.csv2df("imdb.csv", delimiter=",", quotechar="", escapechar="\\")
+   df = clevercsv.read_dataframe("imdb.csv", delimiter=",", quotechar="", escapechar="\\")
 
 Detect
 ~~~~~~
