@@ -164,7 +164,7 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
 
 import clevercsv
 
-df = clevercsv.csv2df("{tmpfname}", delimiter=";", quotechar="", escapechar="")
+df = clevercsv.read_dataframe("{tmpfname}", delimiter=";", quotechar="", escapechar="")
 
 """
         try:
