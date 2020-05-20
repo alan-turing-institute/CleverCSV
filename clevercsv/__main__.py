@@ -14,7 +14,9 @@ def main():
     # Check that necessary dependencies are available
     import_optional_dependency("cleo")
     import_optional_dependency("clikit")
-    import_optional_dependency("tabview", raise_on_missing=False)
+    import_optional_dependency(
+        "tabview", raise_on_missing=not sys.platform == "win32"
+    )
 
     # if so, load the actual main function and call it.
     from .console import main as realmain
