@@ -182,9 +182,9 @@ def read_table(
 
     dialect: str, SimpleDialect, or csv.Dialect object
         If the dialect is known, it can be provided here. This function uses 
-        the CleverCSV :class:``reader`` object, which supports various dialect 
-        types (string, SimpleDialect, or csv.Dialect). If None, the dialect 
-        will be detected.
+        the CleverCSV :class:`clevercsv.reader` object, which supports various 
+        dialect types (string, SimpleDialect, or csv.Dialect). If None, the 
+        dialect will be detected.
 
     encoding : str
         The encoding of the file. If None, it is detected.
@@ -255,9 +255,9 @@ def stream_table(
 
     dialect: str, SimpleDialect, or csv.Dialect object
         If the dialect is known, it can be provided here. This function uses 
-        the CleverCSV :class:``reader`` object, which supports various dialect 
-        types (string, SimpleDialect, or csv.Dialect). If None, the dialect 
-        will be detected.
+        the CleverCSV :class:`clevercsv.reader` object, which supports various 
+        dialect types (string, SimpleDialect, or csv.Dialect). If None, the 
+        dialect will be detected.
 
     encoding : str
         The encoding of the file. If None, it is detected.
