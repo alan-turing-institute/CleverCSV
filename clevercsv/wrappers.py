@@ -339,7 +339,11 @@ def read_dataframe(filename, *args, num_chars=None, **kwargs):
     if not (os.path.exists(filename) and os.path.isfile(filename)):
         raise ValueError("Filename must be a regular file")
     pd = import_optional_dependency("pandas")
+
+    # Use provided encoding or detect it, and record it for pandas
     enc = kwargs.get("encoding") or get_encoding(filename)
+    kwargs["encoding"] = enc
+
     with open(filename, "r", newline="", encoding=enc) as fid:
         data = fid.read(num_chars) if num_chars else fid.read()
         dialect = Detector().detect(data)
