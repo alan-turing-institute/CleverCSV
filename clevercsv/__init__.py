@@ -20,3 +20,6 @@ from .wrappers import (
     write_table,
 )
 from .write import writer
+
+# outdated, to be removed in 0.7.0
+from .wrappers import read_as_dicts, read_csv, stream_csv, csv2df
