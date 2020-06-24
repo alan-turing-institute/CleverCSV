@@ -355,9 +355,10 @@ If you encounter an issue in CleverCSV, please `open an
 issue <https://help.github.com/en/github/managing-your-work-on-github/creating-an-issue>`_ 
 or `submit a pull 
 request <https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request>`_. 
-Don't hesitate, you're helping to make this project better! If GitHub's not 
-your thing but you still want to contact us, you can send an email to 
-``gertjanvandenburg at gmail dot com`` instead.
+Don't hesitate, you're helping to make this project better for everyone! If 
+GitHub's not your thing but you still want to contact us, you can send an 
+email to ``gertjanvandenburg at gmail dot com`` instead. You can also ask 
+questions `on Gitter <https://gitter.im/alan-turing-institute/CleverCSV>`_.
 
 Note that all contributions to the project must adhere to the `Code of 
 Conduct <https://github.com/alan-turing-institute/CleverCSV/blob/master/CODE_OF_CONDUCT.md>`_.
