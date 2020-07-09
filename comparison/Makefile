@@ -98,31 +98,31 @@ comparison: $(TARGETS)
 
 figures: $(FIGURES)
 
-figure_accuracy_100.png: ./make_plot.py $(TARGETS)
+$(FIGURE_DIR)/figure_accuracy_100.png: ./make_plot.py $(TARGETS)
 	python $< --result-dir $(RESULT_DIR) --min-lines 100 -o $@ accuracy
 
-figure_runtime_100.png: ./make_plot.py $(TARGETS)
+$(FIGURE_DIR)/figure_runtime_100.png: ./make_plot.py $(TARGETS)
 	python $< --result-dir $(RESULT_DIR) --min-lines 100 -o $@ runtime
 
-figure_accuracy_1000.png: ./make_plot.py $(TARGETS)
+$(FIGURE_DIR)/figure_accuracy_1000.png: ./make_plot.py $(TARGETS)
 	python $< --result-dir $(RESULT_DIR) --min-lines 1000 -o $@ accuracy
 
-figure_runtime_1000.png: ./make_plot.py $(TARGETS)
+$(FIGURE_DIR)/figure_runtime_1000.png: ./make_plot.py $(TARGETS)
 	python $< --result-dir $(RESULT_DIR) --min-lines 1000 -o $@ runtime
 
-figure_accuracy_10000.png: ./make_plot.py $(TARGETS)
+$(FIGURE_DIR)/figure_accuracy_10000.png: ./make_plot.py $(TARGETS)
 	python $< --result-dir $(RESULT_DIR) --min-lines 10000 -o $@ accuracy
 
-figure_runtime_10000.png: ./make_plot.py $(TARGETS)
+$(FIGURE_DIR)/figure_runtime_10000.png: ./make_plot.py $(TARGETS)
 	python $< --result-dir $(RESULT_DIR) --min-lines 10000 -o $@ runtime
 
-figure_accuracy_delimiter_100.png: ./make_plot.py $(TARGETS)
+$(FIGURE_DIR)/figure_accuracy_delimiter_100.png: ./make_plot.py $(TARGETS)
 	python $< --result-dir $(RESULT_DIR) --min-lines 100 -o $@ -d accuracy
 
-figure_accuracy_delimiter_1000.png: ./make_plot.py $(TARGETS)
+$(FIGURE_DIR)/figure_accuracy_delimiter_1000.png: ./make_plot.py $(TARGETS)
 	python $< --result-dir $(RESULT_DIR) --min-lines 1000 -o $@ -d accuracy
 
-figure_accuracy_delimiter_10000.png: ./make_plot.py $(TARGETS)
+$(FIGURE_DIR)/figure_accuracy_delimiter_10000.png: ./make_plot.py $(TARGETS)
 	python $< --result-dir $(RESULT_DIR) --min-lines 10000 -o $@ -d accuracy
 
 
