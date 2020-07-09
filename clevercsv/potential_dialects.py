@@ -15,6 +15,7 @@ import unicodedata
 from .dialect import SimpleDialect
 from .escape import is_potential_escapechar
 from .utils import pairwise
+from .detect_type import PATTERNS
 
 
 def get_dialects(data, encoding="UTF-8", delimiters=None):
@@ -102,7 +103,7 @@ def unicode_category(x, encoding=None):
 
 def filter_urls(data):
     """Filter URLs from the data """
-    pat = "(?:(?:[A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)(?:(?:\/[\+~%\/.\w\-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?"
+    pat = PATTERNS['url']
     return regex.sub(pat, "U", data, count=0)
 
 
