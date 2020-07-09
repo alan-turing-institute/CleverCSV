@@ -117,7 +117,7 @@ def make_plot(
 
     for method in result_files:
         for n_lines in result_files[method]:
-            if not n_lines is None and n_lines > min_lines:
+            if n_lines and n_lines > min_lines:
                 continue
 
             filename = result_files[method][n_lines]
@@ -196,7 +196,7 @@ def main():
     paths = [os.path.join(args.result_dir, f) for f in files]
 
     checksums = load_checksums(paths, args.min_lines)
-    print(f"Identified {len(checksums)} with at least {args.min_lines} lines")
+    print(f"Identified {len(checksums)} files with at least {args.min_lines} lines")
 
     result_files = {}
     for f in sorted(files):
