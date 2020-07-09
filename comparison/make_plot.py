@@ -160,12 +160,12 @@ def make_plot(
 
     num_files = len(checksums)
 
-    ax.set_xscale("log")
     ax.set_xlabel("Lines used for detection")
 
     if plot_type == "accuracy":
         pre = f"{'Delimiter' if delimiter_only else 'Detection'} accuracy"
         loc = "best"
+        ax.set_xscale("log")
         ax.set_ylim(top=1.0)
     else:
         pre = "Average runtime"
