@@ -55,8 +55,7 @@ encodings.json: ./determine_encodings.py | result-dir
 #####################
 
 define run-detector-lines
-$(RESULT_DIR)/$(1)_$(2).json: ./comparison.py encodings.json |\
-	result-dir
+$(RESULT_DIR)/$(1)_$(2).json: ./comparison.py encodings.json | result-dir
 	python $$< \
 		--dialect-dir $(DIALECT_DIR) \
 		--file-dir $(FILE_DIR) \
@@ -69,8 +68,7 @@ $(RESULT_DIR)/$(1)_$(2).json: ./comparison.py encodings.json |\
 endef
 
 define run-detector-full
-$(RESULT_DIR)/$(1)_full.json: ./comparison.py encodings.json |\
-	result-dir
+$(RESULT_DIR)/$(1)_full.json: ./comparison.py encodings.json | result-dir
 	python $$< \
 		--dialect-dir $(DIALECT_DIR) \
 		--file-dir $(FILE_DIR) \
