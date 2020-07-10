@@ -31,7 +31,7 @@ TARGETS =
 
 .PHONY: all comparison result-dir 
 
-all: comparison
+all: comparison figures
 
 result-dir:
 	mkdir -p $(RESULT_DIR)
@@ -64,7 +64,7 @@ $(RESULT_DIR)/$(1)_$(2).json: ./comparison.py encodings.json | result-dir
 		--n-lines $(2) \
 		--method $(1) \
 		--verbose
-	TARGETS += $(RESULT_DIR)/$(1)_$(2).json
+TARGETS += $(RESULT_DIR)/$(1)_$(2).json
 endef
 
 define run-detector-full
@@ -76,7 +76,7 @@ $(RESULT_DIR)/$(1)_full.json: ./comparison.py encodings.json | result-dir
 		--output-file $$@ \
 		--method $(1) \
 		--verbose
-	TARGETS += $(RESULT_DIR)/$(1)_full.json
+TARGETS += $(RESULT_DIR)/$(1)_full.json
 endef
 
 $(foreach method,$(METHODS),$(eval $(call run-detector-full,$(method))))
