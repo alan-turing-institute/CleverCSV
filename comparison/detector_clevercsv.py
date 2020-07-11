@@ -9,6 +9,7 @@ Author: Gertjan van den Burg
 """
 
 import clevercsv
+import sys
 
 from utils import DetectionError, get_sample
 
@@ -29,3 +30,11 @@ def detector(gz_filename, encoding, n_lines=None):
         quotechar=dialect.quotechar,
         escapechar=dialect.escapechar,
     )
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        filename = sys.argv[1]
+        encoding = clevercsv.utils.get_encoding(filename)
+        print(detector(filename, encoding))
+    else:
+        print(f"Usage: {sys.argv[0]} filename", file=sys.stderr)
