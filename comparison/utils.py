@@ -7,8 +7,9 @@ Utilities.
 Author: Gertjan van den Burg
 """
 
-import gzip
+import argparse
 import chardet
+import gzip
 
 
 class DetectionError(Exception):
@@ -63,3 +64,17 @@ def count_lines(filename, encoding):
 
     fp.close()
     return n_lines
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-n",
+        help="Number of lines to use for detection",
+        default=None,
+        type=int,
+    )
+    parser.add_argument(
+        "filename", help="File to detect dialect for (.csv or .csv.gz)"
+    )
+    return parser.parse_args()

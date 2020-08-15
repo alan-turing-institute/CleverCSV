@@ -8,7 +8,8 @@ Author: Gertjan van den Burg
 
 """
 
-from utils import get_sample
+
+from utils import get_sample, parse_args
 
 
 def detector(gz_filename, encoding, n_lines=None):
@@ -18,3 +19,11 @@ def detector(gz_filename, encoding, n_lines=None):
         quotechar = '"'
 
     return dict(delimiter=",", quotechar=quotechar, escapechar="")
+
+
+if __name__ == "__main__":
+    from clevercsv.utils import get_encoding
+
+    args = parse_args()
+    encoding = get_encoding(args.filename)
+    print(detector(args.filename, encoding, n_lines=args.n))

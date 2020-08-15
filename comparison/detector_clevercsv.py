@@ -9,9 +9,8 @@ Author: Gertjan van den Burg
 """
 
 import clevercsv
-import sys
 
-from utils import DetectionError, get_sample
+from utils import DetectionError, get_sample, parse_args
 
 
 def detector(gz_filename, encoding, n_lines=None):
@@ -31,10 +30,8 @@ def detector(gz_filename, encoding, n_lines=None):
         escapechar=dialect.escapechar,
     )
 
+
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-        encoding = clevercsv.utils.get_encoding(filename)
-        print(detector(filename, encoding))
-    else:
-        print(f"Usage: {sys.argv[0]} filename", file=sys.stderr)
+    args = parse_args()
+    encoding = clevercsv.utils.get_encoding(args.filename)
+    print(detector(args.filename, encoding, n_lines=args.n))

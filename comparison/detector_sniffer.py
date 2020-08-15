@@ -10,7 +10,7 @@ Author: Gertjan van den Burg
 
 import csv
 
-from utils import DetectionError, get_sample
+from utils import DetectionError, get_sample, parse_args
 
 
 def detector(gz_filename, encoding, n_lines=None):
@@ -33,3 +33,10 @@ def detector(gz_filename, encoding, n_lines=None):
             return None
     dialect = dict(delimiter=delimiter, quotechar=quotechar, escapechar="")
     return dialect
+
+if __name__ == "__main__":
+    from clevercsv.utils import get_encoding
+
+    args = parse_args()
+    encoding = get_encoding(args.filename)
+    print(detector(args.filename, encoding, n_lines=args.n))

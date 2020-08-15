@@ -9,9 +9,8 @@ Suggested by https://github.com/jlumbroso
 """
 
 import clevercsv
-import sys
 
-from utils import DetectionError, get_sample, count_lines
+from utils import DetectionError, get_sample, count_lines, parse_args
 
 
 def trailing_equality(l, k=4):
@@ -73,9 +72,6 @@ def detector(filename, encoding, n_lines=None, lines_start=100, n_equal=5):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-        encoding = clevercsv.utils.get_encoding(filename)
-        print(detector(filename, encoding))
-    else:
-        print(f"Usage: {sys.argv[0]} filename", file=sys.stderr)
+    args = parse_args()
+    encoding = clevercsv.utils.get_encoding(args.filename)
+    print(detector(args.filename, encoding, n_lines=args.n))
