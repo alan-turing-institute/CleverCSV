@@ -15,6 +15,7 @@ import json
 import multiprocessing
 import os
 import termcolor
+import time
 import warnings
 
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -26,11 +27,13 @@ LOG_SUCCESS = os.path.join(THIS_DIR, "success.log")
 LOG_ERROR = os.path.join(THIS_DIR, "error.log")
 LOG_FAILED = os.path.join(THIS_DIR, "failed.log")
 LOG_METHOD = os.path.join(THIS_DIR, "method.log")
+LOG_RUNTIME = os.path.join(THIS_DIR, "runtime.log")
 
 LOG_SUCCESS_PARTIAL = os.path.join(THIS_DIR, "success_partial.log")
 LOG_ERROR_PARTIAL = os.path.join(THIS_DIR, "error_partial.log")
 LOG_FAILED_PARTIAL = os.path.join(THIS_DIR, "failed_partial.log")
 LOG_METHOD_PARTIAL = os.path.join(THIS_DIR, "method_partial.log")
+LOG_RUNTIME_PARTIAL = os.path.join(THIS_DIR, "runtime_partial.log")
 
 TIMEOUT = 5 * 60
 N_BYTES_PARTIAL = 10000
@@ -57,16 +60,25 @@ def log_method(name, method, partial):
         fp.write(f"{name},{method}\n")
 
 
+def log_runtime(name, runtime, partial):
+    fname = LOG_RUNTIME_PARTIAL if partial else LOG_RUNTIME
+    with open(fname, "a") as fp:
+        fp.write(f"{name},{runtime}\n")
+
+
 def worker(args, return_dict, **kwargs):
     det = clevercsv.Detector()
     filename, encoding, partial = args
     return_dict["error"] = False
     return_dict["dialect"] = None
     return_dict["method"] = None
+    return_dict["runtime"] = float("nan")
     with gzip.open(filename, "rt", newline="", encoding=encoding) as fp:
         data = fp.read(N_BYTES_PARTIAL) if partial else fp.read()
         try:
+            t = time.time()
             return_dict["dialect"] = det.detect(data, **kwargs)
+            return_dict["runtime"] = time.time() - t
             return_dict["method"] = det.method_
         except clevercsv.Error:
             return_dict["error"] = True
@@ -82,8 +94,13 @@ def run_with_timeout(args, kwargs, limit):
     p.join(limit)
     if p.is_alive():
         p.terminate()
-        return None, True, None
-    return return_dict["dialect"], return_dict["error"], return_dict["method"]
+        return None, True, None, float('nan')
+    return (
+        return_dict["dialect"],
+        return_dict["error"],
+        return_dict["method"],
+        return_dict["runtime"],
+    )
 
 
 def run_test(name, gz_filename, annotation, verbose=1, partial=False):
@@ -94,7 +111,7 @@ def run_test(name, gz_filename, annotation, verbose=1, partial=False):
             enc = chardet.detect(fid.read())["encoding"]
 
     true_dialect = annotation["dialect"]
-    dialect, error, method = run_with_timeout(
+    dialect, error, method, runtime = run_with_timeout(
         (gz_filename, enc, partial), {"verbose": verbose > 1}, TIMEOUT
     )
     if error:
@@ -112,6 +129,7 @@ def run_test(name, gz_filename, annotation, verbose=1, partial=False):
         log_result(name, "success", verbose, partial)
 
     log_method(name, method, partial)
+    log_runtime(name, runtime, partial)
 
 
 def load_test_cases():
@@ -143,8 +161,9 @@ def clear_output_files(partial):
             LOG_FAILED_PARTIAL,
             LOG_ERROR_PARTIAL,
             LOG_METHOD_PARTIAL,
+            LOG_RUNTIME_PARTIAL
         ],
-        False: [LOG_SUCCESS, LOG_FAILED, LOG_ERROR, LOG_METHOD],
+        False: [LOG_SUCCESS, LOG_FAILED, LOG_ERROR, LOG_METHOD, LOG_RUNTIME],
     }
     delete = lambda f: os.unlink(f) if os.path.exists(f) else None
     any(map(delete, files[partial]))
