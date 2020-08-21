@@ -18,7 +18,9 @@ from .utils import pairwise
 from .detect_type import PATTERNS
 
 
-def get_dialects(data, encoding="UTF-8", delimiters=None):
+def get_dialects(
+    data, encoding="UTF-8", delimiters=None, test_masked_by_quotes=False
+):
     """Return the possible dialects for the given data.
 
     We consider as escape characters those characters for which 
@@ -44,6 +46,12 @@ def get_dialects(data, encoding="UTF-8", delimiters=None):
     delimiters: iterable
         Set of delimiters to consider. See :func:`get_delimiters` for more 
         info.
+
+    test_masked_by_quotes : bool
+        Remove dialects where the delimiter is always masked by the quote 
+        character. Enabling this typically removes a number of potential 
+        dialects from the list, which can remove false positives. It however 
+        not a very fast operation, so it is disabled by default.
 
     Returns
     -------
@@ -73,10 +81,13 @@ def get_dialects(data, encoding="UTF-8", delimiters=None):
     for delim in delims:
         for quotechar in quotechars:
             for escapechar in escapechars[(delim, quotechar)]:
-                if masked_by_quotechar(data, quotechar, escapechar, delim):
+                if test_masked_by_quotes and masked_by_quotechar(
+                    data, quotechar, escapechar, delim
+                ):
                     continue
                 d = SimpleDialect(delim, quotechar, escapechar)
                 dialects.append(d)
+
     return dialects
 
 
