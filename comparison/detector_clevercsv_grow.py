@@ -56,7 +56,7 @@ def detector(filename, encoding, n_lines=None, lines_start=100, n_equal=5):
         dialects.append(detect_dialect(filename, encoding, max_lines))
 
     while (
-        not trailing_equality(dialects, n_equal) and current_lines < max_lines
+        not trailing_equality(dialects, n_equal) and current_lines <= max_lines
     ):
         dialects.append(detect_dialect(filename, encoding, current_lines))
         current_lines *= 2
