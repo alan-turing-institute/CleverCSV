@@ -44,7 +44,6 @@ clevercsv.console.commands.view module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 
