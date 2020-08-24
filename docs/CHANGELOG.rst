@@ -2,6 +2,15 @@
 Changelog
 =========
 
+Version 0.6.4
+-------------
+
+
+* Various speed ups to constructing the list of potential dialects. This 
+  removes a costly step of the detection process that will likely add a few 
+  more potential dialects, but has the end result of making overall dialect 
+  detection faster.
+
 Version 0.6.3
 -------------
 
