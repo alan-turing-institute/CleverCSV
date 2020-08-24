@@ -44,22 +44,22 @@ def detector(filename, encoding, n_lines=None, lines_start=100, n_equal=5):
     # file yet doesn't lose significantly in accuracy (which is what we want to
     # test!)
 
-    have_lines = count_lines(filename, encoding)
+    file_line_count = count_lines(filename, encoding)
     if n_lines is None:
-        max_lines = have_lines
+        max_line_count = file_line_count
     else:
-        max_lines = min(n_lines, have_lines)
+        max_line_count = min(n_lines, file_line_count)
 
     dialects = []
-    current_lines = lines_start
-    if current_lines >= max_lines:
-        dialects.append(detect_dialect(filename, encoding, max_lines))
+    current_line_count = lines_start
+    if current_line_count >= max_line_count:
+        dialects.append(detect_dialect(filename, encoding, max_line_count))
 
     while (
-        not trailing_equality(dialects, n_equal) and current_lines <= max_lines
+        not trailing_equality(dialects, n_equal) and current_line_count <= max_line_count
     ):
-        dialects.append(detect_dialect(filename, encoding, current_lines))
-        current_lines *= 2
+        dialects.append(detect_dialect(filename, encoding, current_line_count))
+        current_line_count *= 2
 
     dialect = dialects[-1]
     if dialect is None:
