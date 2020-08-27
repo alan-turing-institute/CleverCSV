@@ -31,6 +31,8 @@ def detector(gz_filename, encoding, n_lines=None):
         delimiter, skipinitialspace = sniffer._guess_delimiter(sample, None)
         if not delimiter:
             return None
+
+    quotechar = quotechar or '"'
     dialect = dict(delimiter=delimiter, quotechar=quotechar, escapechar="")
     return dialect
 
