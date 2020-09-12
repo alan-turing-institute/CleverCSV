@@ -10,6 +10,8 @@ Author: Gertjan van den Burg
 
 """
 
+import warnings
+
 from collections import OrderedDict
 
 from .read import reader
@@ -44,6 +46,18 @@ class DictReader(object):
                 self._fieldnames = next(self.reader)
             except StopIteration:
                 pass
+
+        # Note: this was added because I don't think it's expected that Python
+        # simply drops information if there are duplicate headers. There is
+        # discussion on this issue in the Python bug tracker here:
+        # https://bugs.python.org/issue17537 (see linked thread therein). A
+        # warning is easy enough to suppress and should ensure that the user
+        # is at least aware of this behavior.
+        if not len(self._fieldnames) == len(set(self._fieldnames)):
+            warnings.warn(
+                "fieldnames are not unique, some columns will be dropped."
+            )
+
         self.line_num = self.reader.line_num
         return self._fieldnames
 

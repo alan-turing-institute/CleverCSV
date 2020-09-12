@@ -234,6 +234,16 @@ class DictTestCase(unittest.TestCase):
     # End tests from CPython #
     ##########################
 
+    ###################################
+    # Start tests added for CleverCSV #
+
+    def test_read_duplicate_fieldnames(self):
+        reader = clevercsv.DictReader(["f1,f2,f1\r\n", "a", "b", "c"])
+        with self.assertWarns(UserWarning):
+            reader.fieldnames
+
+    # End tests added for CleverCSV #
+    #################################
 
 if __name__ == "__main__":
     unittest.main()
