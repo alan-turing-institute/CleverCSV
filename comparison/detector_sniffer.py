@@ -32,7 +32,13 @@ def detector(gz_filename, encoding, n_lines=None):
         if not delimiter:
             return None
 
-    quotechar = quotechar or '"'
+    # The Python CSV library uses the line:
+    #   quotechar = quotechar or '"'
+    # which sets the quotechar to '"' if it detected to be the empty string.  
+    # The reason this works is that the quote mode is set to QUOTE_MINIMAL. If 
+    # the file contains no quote character this is harmless, and the  C parser 
+    # does not accept an empty quote character. But we are interested in the 
+    # actual dialect detected, so we do not use this fix.
     dialect = dict(delimiter=delimiter, quotechar=quotechar, escapechar="")
     return dialect
 
