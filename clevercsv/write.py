@@ -51,12 +51,12 @@ class writer(object):
 
     def writerow(self, row):
         try:
-            self._writer.writerow(row)
+            return self._writer.writerow(row)
         except csv.Error as e:
             raise Error(str(e))
 
     def writerows(self, rows):
         try:
-            self._writer.writerows(rows)
+            return self._writer.writerows(rows)
         except csv.Error as e:
             raise Error(str(e))
