@@ -20,7 +20,10 @@ from clevercsv.write import writer
 
 class ConsoleTestCase(unittest.TestCase):
     def _build_file(self, table, dialect, encoding=None):
-        tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv",)
+        tmpfd, tmpfname = tempfile.mkstemp(
+            prefix="ccsv_",
+            suffix=".csv",
+        )
         tmpid = os.fdopen(tmpfd, "w", newline=None, encoding=encoding)
         w = writer(tmpid, dialect=dialect)
         w.writerows(table)
@@ -308,9 +311,6 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         tmpfname = self._build_file(table, dialect)
 
-        tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
-        os.close(tmpfd)
-
         application = build_application()
         command = application.find("standardize")
         tester = CommandTester(command)
@@ -325,5 +325,57 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         try:
             output = tester.io.fetch_output()
             self.assertEqual(exp, output)
+        finally:
+            os.unlink(tmpfname)
+
+    def test_standardize_in_place(self):
+        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        tmpfname = self._build_file(table, dialect)
+
+        application = build_application()
+        command = application.find("standardize")
+        tester = CommandTester(command)
+        retcode = tester.execute(f"-i {tmpfname}")
+
+        self.assertEqual(retcode, 2)
+
+        # Excel format (i.e. RFC4180) *requires* CRLF
+        crlf = "\r\n"
+        exp = crlf.join(["A,B,C", "1,2,3", "4,5,6"])
+        # add line terminator of last row
+        exp += crlf
+
+        try:
+            output = tester.io.fetch_output()
+            with open(tmpfname, "r", newline="") as fp:
+                contents = fp.read()
+            self.assertEqual(exp, contents)
+        finally:
+            os.unlink(tmpfname)
+
+    def test_standardize_in_place_noop(self):
+        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = "excel"
+        tmpfname = self._build_file(table, dialect)
+
+        application = build_application()
+        command = application.find("standardize")
+        tester = CommandTester(command)
+        retcode = tester.execute(f"-i {tmpfname}")
+
+        self.assertEqual(retcode, 0)
+
+        # Excel format (i.e. RFC4180) *requires* CRLF
+        crlf = "\r\n"
+        exp = crlf.join(["A,B,C", "1,2,3", "4,5,6"])
+        # add line terminator of last row
+        exp += crlf
+
+        try:
+            output = tester.io.fetch_output()
+            with open(tmpfname, "r", newline="") as fp:
+                contents = fp.read()
+            self.assertEqual(exp, contents)
         finally:
             os.unlink(tmpfname)
