@@ -19,12 +19,12 @@ from clevercsv.write import writer
 
 
 class ConsoleTestCase(unittest.TestCase):
-    def _build_file(self, table, dialect, encoding=None):
+    def _build_file(self, table, dialect, encoding=None, newline=None):
         tmpfd, tmpfname = tempfile.mkstemp(
             prefix="ccsv_",
             suffix=".csv",
         )
-        tmpid = os.fdopen(tmpfd, "w", newline=None, encoding=encoding)
+        tmpid = os.fdopen(tmpfd, "w", newline=newline, encoding=encoding)
         w = writer(tmpid, dialect=dialect)
         w.writerows(table)
         tmpid.close()
@@ -357,7 +357,7 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
     def test_standardize_in_place_noop(self):
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = "excel"
-        tmpfname = self._build_file(table, dialect)
+        tmpfname = self._build_file(table, dialect, newline="")
 
         application = build_application()
         command = application.find("standardize")
