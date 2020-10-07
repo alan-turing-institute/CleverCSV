@@ -41,10 +41,7 @@ import it.*
 
 ---
 
-*Contents:* **[Introduction](#introduction)** | 
-**[Installation](#installation)** | **[Usage](#usage)** | [Python 
-Library](#python-library) | [Command-Line Tool](#command-line-tool) | 
-**[Contributing](#contributing)** | **[Notes](#notes)**
+*Contents:* <a href="#introduction"><b>Introduction</b></a> | <a href="#installation"><b>Installation</b></a> | <a href="#usage"><b>Usage</b></a> | <a href="#python-library">Python Library</a> | <a href="#command-line-tool">Command-Line Tool</a> | <a href="#contributing"><b>Contributing</b></a> | <a href="#notes"><b>Notes</b></a>
 
 ---
 
