@@ -8,6 +8,7 @@ Author: Gertjan van den Burg
 """
 
 import chardet
+import hashlib
 
 
 def pairwise(iterable):
@@ -21,7 +22,7 @@ def pairwise(iterable):
 def get_encoding(filename):
     """Get the encoding of the file
 
-    This function uses the chardet package for detecting the encoding of a 
+    This function uses the chardet package for detecting the encoding of a
     file.
 
     Parameters
@@ -46,3 +47,26 @@ def get_encoding(filename):
     detector.close()
     encoding = detector.result.get("encoding", None)
     return encoding
+
+
+def sha1sum(filename):
+    """Compute the SHA1 checksum of a given file
+
+    Parameters
+    ----------
+    filename : str
+        Path to a file
+
+    Returns
+    -------
+    checksum : str
+        The SHA1 checksum of the file contents.
+    """
+    blocksize = 1 << 16
+    hasher = hashlib.sha1()
+    with open(filename, "rb") as fp:
+        buf = fp.read(blocksize)
+        while len(buf) > 0:
+            hasher.update(buf)
+            buf = fp.read(blocksize)
+    return hasher.hexdigest()
