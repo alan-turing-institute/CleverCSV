@@ -46,7 +46,13 @@ import it.*
 * `Research Paper on CSV dialect detection 
   (PDF) <https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf>`_ 
 * `Reproducible Research Repo <https://github.com/alan-turing-institute/CSV_Wrangling/>`_
-* `Blog post on messy CSV files <https://towardsdatascience.com/handling-messy-csv-files-2ef829aa441d>`_\ :raw-html-m2r:`<sup>NEW!</sup>`
+* `Blog post on messy CSV files <https://towardsdatascience.com/handling-messy-csv-files-2ef829aa441d>`_
+
+----
+
+*Contents:* :raw-html-m2r:`<a href="#introduction"><b>Introduction</b></a>` | :raw-html-m2r:`<a href="#installation"><b>Installation</b></a>` | :raw-html-m2r:`<a href="#usage"><b>Usage</b></a>` | :raw-html-m2r:`<a href="#python-library">Python Library</a>` | :raw-html-m2r:`<a href="#command-line-tool">Command-Line Tool</a>` | :raw-html-m2r:`<a href="#contributing"><b>Contributing</b></a>` | :raw-html-m2r:`<a href="#notes"><b>Notes</b></a>`
+
+----
 
 Introduction
 ------------
@@ -123,8 +129,8 @@ Usage
 CleverCSV consists of a Python library and a command line tool called 
 ``clevercsv``.
 
-Library
-^^^^^^^
+Python Library
+^^^^^^^^^^^^^^
 
 We designed CleverCSV to provide a drop-in replacement for the built-in CSV 
 module, with some useful functionality added to it. Therefore, if you simply 
