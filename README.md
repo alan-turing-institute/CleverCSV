@@ -39,6 +39,15 @@ import it.*
 - [Reproducible Research Repo](https://github.com/alan-turing-institute/CSV_Wrangling/)
 - [Blog post on messy CSV files](https://towardsdatascience.com/handling-messy-csv-files-2ef829aa441d)
 
+---
+
+*Contents:* **[Introduction](#introduction)** | 
+**[Installation](#installation)** | **[Usage](#usage)** | [Python 
+Library](#python-library) | [Command-Line Tool](#command-line-tool) | 
+**[Contributing](#contributing)** | **[Notes](#notes)**
+
+---
+
 ## Introduction
 
 - CSV files are awesome! They are lightweight, easy to share, human-readable, 
@@ -110,7 +119,7 @@ $ pip install clevercsv
 CleverCSV consists of a Python library and a command line tool called 
 ``clevercsv``.
 
-### Library
+### Python Library
 
 We designed CleverCSV to provide a drop-in replacement for the built-in CSV 
 module, with some useful functionality added to it. Therefore, if you simply 
