@@ -347,7 +347,6 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         exp += crlf
 
         try:
-            output = tester.io.fetch_output()
             with open(tmpfname, "r", newline="") as fp:
                 contents = fp.read()
             self.assertEqual(exp, contents)
@@ -373,9 +372,154 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
         exp += crlf
 
         try:
-            output = tester.io.fetch_output()
             with open(tmpfname, "r", newline="") as fp:
                 contents = fp.read()
             self.assertEqual(exp, contents)
         finally:
             os.unlink(tmpfname)
+
+    def test_standardize_multi(self):
+        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialects = ["excel", "unix", "excel-tab"]
+        tmpfnames = [self._build_file(table, D, newline="") for D in dialects]
+
+        tmpoutnames = []
+        for _ in range(len(dialects)):
+            tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
+            os.close(tmpfd)
+            tmpoutnames.append(tmpoutname)
+
+        outputs = " ".join([f"-o {tmpoutname}" for tmpoutname in tmpoutnames])
+
+        application = build_application()
+        command = application.find("standardize")
+        tester = CommandTester(command)
+        retcode = tester.execute(f"{outputs} {' '.join(tmpfnames)}")
+
+        self.assertEqual(retcode, 0)
+
+        exp = "\r\n".join([",".join(map(str, row)) for row in table]) + "\r\n"
+
+        try:
+            for tmpoutname in tmpoutnames:
+                with open(tmpoutname, "r", newline="") as fp:
+                    contents = fp.read()
+                self.assertEqual(contents, exp)
+        finally:
+            any(map(os.unlink, tmpfnames))
+            any(map(os.unlink, tmpoutnames))
+
+    def test_standardize_multi_errors(self):
+        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialects = ["excel", "unix", "excel-tab"]
+        tmpfnames = [self._build_file(table, D, newline="") for D in dialects]
+
+        tmpoutnames = []
+        for _ in range(1):
+            tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
+            os.close(tmpfd)
+            tmpoutnames.append(tmpoutname)
+
+        outputs = " ".join([f"-o {tmpoutname}" for tmpoutname in tmpoutnames])
+
+        application = build_application()
+        command = application.find("standardize")
+        tester = CommandTester(command)
+        retcode = tester.execute(f"{outputs} {' '.join(tmpfnames)}")
+
+        self.assertEqual(retcode, 1)
+
+        stdout = tester.io.fetch_output()
+        self.assertEqual(
+            stdout,
+            "Number of output files should match the number of input files.\n",
+        )
+
+        any(map(os.unlink, tmpfnames))
+        any(map(os.unlink, tmpoutnames))
+
+    def test_standardize_multi_encoding(self):
+        table = [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialects = ["excel", "unix", "excel-tab"]
+        encoding = "ISO-8859-1"
+        tmpfnames = [
+            self._build_file(table, D, newline="", encoding=encoding)
+            for D in dialects
+        ]
+
+        tmpoutnames = []
+        for _ in range(len(dialects)):
+            tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
+            os.close(tmpfd)
+            tmpoutnames.append(tmpoutname)
+
+        outputs = " ".join([f"-o {tmpoutname}" for tmpoutname in tmpoutnames])
+
+        application = build_application()
+        command = application.find("standardize")
+        tester = CommandTester(command)
+        retcode = tester.execute(
+            f"-e {encoding} {outputs} {' '.join(tmpfnames)}"
+        )
+
+        self.assertEqual(retcode, 0)
+
+        exp = "\r\n".join([",".join(map(str, row)) for row in table]) + "\r\n"
+
+        try:
+            for tmpoutname in tmpoutnames:
+                with open(
+                    tmpoutname, "r", newline="", encoding=encoding
+                ) as fp:
+                    contents = fp.read()
+                self.assertEqual(contents, exp)
+        finally:
+            any(map(os.unlink, tmpfnames))
+            any(map(os.unlink, tmpoutnames))
+
+    def test_standardize_in_place_multi(self):
+        table = [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialects = ["excel", "unix", "excel-tab"]
+        encoding = "ISO-8859-1"
+        tmpfnames = [
+            self._build_file(table, D, newline="", encoding=encoding)
+            for D in dialects
+        ]
+
+        application = build_application()
+        command = application.find("standardize")
+        tester = CommandTester(command)
+        retcode = tester.execute(f"-i -e {encoding} {' '.join(tmpfnames)}")
+
+        self.assertEqual(retcode, 2)
+
+        exp = "\r\n".join([",".join(map(str, row)) for row in table]) + "\r\n"
+
+        try:
+            for tmpfname in tmpfnames:
+                with open(tmpfname, "r", newline="", encoding=encoding) as fp:
+                    contents = fp.read()
+                self.assertEqual(contents, exp)
+        finally:
+            any(map(os.unlink, tmpfnames))
+
+    def test_standardize_in_place_multi_noop(self):
+        table = [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialects = ["excel", "excel", "excel"]
+        tmpfnames = [self._build_file(table, D, newline="") for D in dialects]
+
+        application = build_application()
+        command = application.find("standardize")
+        tester = CommandTester(command)
+        retcode = tester.execute(f"-i {' '.join(tmpfnames)}")
+
+        self.assertEqual(retcode, 0)
+
+        exp = "\r\n".join([",".join(map(str, row)) for row in table]) + "\r\n"
+        try:
+            for tmpfname in tmpfnames:
+                with open(tmpfname, "r", newline="") as fp:
+                    contents = fp.read()
+                self.assertEqual(contents, exp)
+        finally:
+            any(map(os.unlink, tmpfnames))
