@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 0.6.5
+-------------
+
+
+* Add support for standardizing in-place and standardizing multiple files.
+* Add warning on duplicate field names in DictReader
+* Add return value to writers to match the standard library.
+
 Version 0.6.4
 -------------
 
