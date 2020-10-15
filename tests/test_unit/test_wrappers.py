@@ -228,7 +228,5 @@ class WrappersTestCase(unittest.TestCase):
             # locale.getpreferredencoding() (see gh-27).
             self._write_test(table, exp, encoding="utf-8")
 
-        table = [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]]
-        exp = "Å,B,C\r\n1,2,3\r\n4,5,6\r\n"
         with self.subTest(name="encoding_2"):
             self._write_test(table, exp, encoding="cp1252")
