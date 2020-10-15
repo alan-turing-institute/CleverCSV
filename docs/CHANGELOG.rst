@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 0.6.6
+-------------
+
+
+* Add an ``encoding`` argument to ``write_table`` to allow specifying the output 
+  encoding. Thanks to @mitchgrogg for reporting `issue 
+  #27 <https://github.com/alan-turing-institute/CleverCSV/issues/27>`_.
+
 Version 0.6.5
 -------------
 
