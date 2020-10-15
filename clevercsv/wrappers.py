@@ -24,8 +24,8 @@ def stream_dicts(
 ):
     """Read a CSV file as a generator over dictionaries
 
-    This function streams the rows of the CSV file as dictionaries. The keys of 
-    the dictionaries are assumed to be in the first row of the CSV file. The 
+    This function streams the rows of the CSV file as dictionaries. The keys of
+    the dictionaries are assumed to be in the first row of the CSV file. The
     dialect will be detected automatically, unless it is provided.
 
     Parameters
@@ -34,19 +34,19 @@ def stream_dicts(
         Path of the CSV file
 
     dialect : str, SimpleDialect, or csv.Dialect object
-        If the dialect is known, it can be provided here. This function uses 
-        the Clevercsv :class:`clevercsv.DictReader` object, which supports 
-        various dialect types (string, SimpleDialect, or csv.Dialect). If None, 
+        If the dialect is known, it can be provided here. This function uses
+        the Clevercsv :class:`clevercsv.DictReader` object, which supports
+        various dialect types (string, SimpleDialect, or csv.Dialect). If None,
         the dialect will be detected.
 
     encoding : str
         The encoding of the file. If None, it is detected.
 
     num_chars : int
-        Number of characters to use to detect the dialect. If None, use the 
+        Number of characters to use to detect the dialect. If None, use the
         entire file.
 
-        Note that using less than the entire file will speed up detection, but 
+        Note that using less than the entire file will speed up detection, but
         can reduce the accuracy of the detected dialect.
 
     verbose: bool
@@ -80,8 +80,8 @@ def read_dicts(
 ):
     """Read a CSV file as a list of dictionaries
 
-    This function returns the rows of the CSV file as a list of dictionaries.  
-    The keys of the dictionaries are assumed to be in the first row of the CSV 
+    This function returns the rows of the CSV file as a list of dictionaries.
+    The keys of the dictionaries are assumed to be in the first row of the CSV
     file. The dialect will be detected automatically, unless it is provided.
 
     Parameters
@@ -90,19 +90,19 @@ def read_dicts(
         Path of the CSV file
 
     dialect : str, SimpleDialect, or csv.Dialect object
-        If the dialect is known, it can be provided here. This function uses 
-        the Clevercsv :class:`clevercsv.DictReader` object, which supports 
-        various dialect types (string, SimpleDialect, or csv.Dialect). If None, 
+        If the dialect is known, it can be provided here. This function uses
+        the Clevercsv :class:`clevercsv.DictReader` object, which supports
+        various dialect types (string, SimpleDialect, or csv.Dialect). If None,
         the dialect will be detected.
 
     encoding : str
         The encoding of the file. If None, it is detected.
 
     num_chars : int
-        Number of characters to use to detect the dialect. If None, use the 
+        Number of characters to use to detect the dialect. If None, use the
         entire file.
 
-        Note that using less than the entire file will speed up detection, but 
+        Note that using less than the entire file will speed up detection, but
         can reduce the accuracy of the detected dialect.
 
     verbose: bool
@@ -149,7 +149,11 @@ def read_as_dicts(
 
 
 def read_csv(
-    filename, dialect=None, encoding=None, num_chars=None, verbose=False,
+    filename,
+    dialect=None,
+    encoding=None,
+    num_chars=None,
+    verbose=False,
 ):
     """This function is deprecated, use read_table instead."""
     warnings.warn(
@@ -167,12 +171,16 @@ def read_csv(
 
 
 def read_table(
-    filename, dialect=None, encoding=None, num_chars=None, verbose=False,
+    filename,
+    dialect=None,
+    encoding=None,
+    num_chars=None,
+    verbose=False,
 ):
     """Read a CSV file as a table (a list of lists)
 
-    This is a convenience function that reads a CSV file and returns the data 
-    as a list of lists (= rows). The dialect will be detected automatically, 
+    This is a convenience function that reads a CSV file and returns the data
+    as a list of lists (= rows). The dialect will be detected automatically,
     unless it is provided.
 
     Parameters
@@ -181,19 +189,19 @@ def read_table(
         Path of the CSV file
 
     dialect: str, SimpleDialect, or csv.Dialect object
-        If the dialect is known, it can be provided here. This function uses 
-        the CleverCSV :class:`clevercsv.reader` object, which supports various 
-        dialect types (string, SimpleDialect, or csv.Dialect). If None, the 
+        If the dialect is known, it can be provided here. This function uses
+        the CleverCSV :class:`clevercsv.reader` object, which supports various
+        dialect types (string, SimpleDialect, or csv.Dialect). If None, the
         dialect will be detected.
 
     encoding : str
         The encoding of the file. If None, it is detected.
 
     num_chars : int
-        Number of characters to use to detect the dialect. If None, use the 
+        Number of characters to use to detect the dialect. If None, use the
         entire file.
 
-        Note that using less than the entire file will speed up detection, but 
+        Note that using less than the entire file will speed up detection, but
         can reduce the accuracy of the detected dialect.
 
     verbose: bool
@@ -222,7 +230,11 @@ def read_table(
 
 
 def stream_csv(
-    filename, dialect=None, encoding=None, num_chars=None, verbose=False,
+    filename,
+    dialect=None,
+    encoding=None,
+    num_chars=None,
+    verbose=False,
 ):
     """This function is deprecated, use stream_table instead."""
     warnings.warn(
@@ -240,12 +252,16 @@ def stream_csv(
 
 
 def stream_table(
-    filename, dialect=None, encoding=None, num_chars=None, verbose=False,
+    filename,
+    dialect=None,
+    encoding=None,
+    num_chars=None,
+    verbose=False,
 ):
     """Read a CSV file as a generator over rows of a table
 
-    This is a convenience function that reads a CSV file and returns the data 
-    as a generator of rows. The dialect will be detected automatically, unless 
+    This is a convenience function that reads a CSV file and returns the data
+    as a generator of rows. The dialect will be detected automatically, unless
     it is provided.
 
     Parameters
@@ -254,19 +270,19 @@ def stream_table(
         Path of the CSV file
 
     dialect: str, SimpleDialect, or csv.Dialect object
-        If the dialect is known, it can be provided here. This function uses 
-        the CleverCSV :class:`clevercsv.reader` object, which supports various 
-        dialect types (string, SimpleDialect, or csv.Dialect). If None, the 
+        If the dialect is known, it can be provided here. This function uses
+        the CleverCSV :class:`clevercsv.reader` object, which supports various
+        dialect types (string, SimpleDialect, or csv.Dialect). If None, the
         dialect will be detected.
 
     encoding : str
         The encoding of the file. If None, it is detected.
 
     num_chars : int
-        Number of characters to use to detect the dialect. If None, use the 
+        Number of characters to use to detect the dialect. If None, use the
         entire file.
 
-        Note that using less than the entire file will speed up detection, but 
+        Note that using less than the entire file will speed up detection, but
         can reduce the accuracy of the detected dialect.
 
     verbose: bool
@@ -307,32 +323,32 @@ def csv2df(filename, *args, num_chars=None, **kwargs):
 
 
 def read_dataframe(filename, *args, num_chars=None, **kwargs):
-    """ Read a CSV file to a Pandas dataframe
+    """Read a CSV file to a Pandas dataframe
 
-    This function uses CleverCSV to detect the dialect, and then passes this to 
-    the ``read_csv`` function in pandas. Additional arguments and keyword 
+    This function uses CleverCSV to detect the dialect, and then passes this to
+    the ``read_csv`` function in pandas. Additional arguments and keyword
     arguments are passed to ``read_csv`` as well.
 
     Parameters
     ----------
 
     filename: str
-        The filename of the CSV file. At the moment, only local files are 
+        The filename of the CSV file. At the moment, only local files are
         supported.
 
     *args:
         Additional arguments for the ``pandas.read_csv`` function.
 
     num_chars: int
-        Number of characters to use for dialect detection. If None, use the 
+        Number of characters to use for dialect detection. If None, use the
         entire file.
 
-        Note that using less than the entire file will speed up detection, but 
+        Note that using less than the entire file will speed up detection, but
         can reduce the accuracy of the detected dialect.
 
     **kwargs:
-        Additional keyword arguments for the ``pandas.read_csv`` function. You 
-        can specify the file encoding here if needed, and it will be used 
+        Additional keyword arguments for the ``pandas.read_csv`` function. You
+        can specify the file encoding here if needed, and it will be used
         during dialect detection.
 
     """
@@ -365,7 +381,7 @@ def detect_dialect(
 ):
     """Detect the dialect of a CSV file
 
-    This is a utility function that simply returns the detected dialect of a 
+    This is a utility function that simply returns the detected dialect of a
     given CSV file.
 
     Parameters
@@ -374,8 +390,8 @@ def detect_dialect(
         The filename of the CSV file.
 
     num_chars : int
-        Number of characters to read for the detection. If None, the entire 
-        file will be read. Note that limiting the number of characters can 
+        Number of characters to read for the detection. If None, the entire
+        file will be read. Note that limiting the number of characters can
         reduce the accuracy of the detected dialect.
 
     encoding : str
@@ -385,14 +401,14 @@ def detect_dialect(
         Enable verbose mode during detection.
 
     method : str
-        Dialect detection method to use. Either 'normal' for normal form 
-        detection, 'consistency' for the consistency measure, or 'auto' for 
+        Dialect detection method to use. Either 'normal' for normal form
+        detection, 'consistency' for the consistency measure, or 'auto' for
         first normal and then consistency.
 
     Returns
     -------
     dialect : SimpleDialect
-        The detected dialect as a :class:`SimpleDialect`, or None if detection 
+        The detected dialect as a :class:`SimpleDialect`, or None if detection
         failed.
 
     """
@@ -411,14 +427,16 @@ def write_table(table, filename, dialect="excel", transpose=False):
     Parameters
     ----------
     table : list
-        A table as a list of lists. The table must have the same number of 
+        A table as a list of lists. The table must have the same number of
         cells in each row (taking the :attr:`transpose` flag into account).
 
     filename : str
         The filename of the CSV file to write the table to.
 
     dialect : SimpleDialect or csv.Dialect
-        The dialect to use.
+        The dialect to use. The default is the 'excel' dialect, which
+        corresponds to RFC4180. This is done to encourage more standardized CSV
+        files.
 
     transpose : bool
         Transpose the table before writing.
