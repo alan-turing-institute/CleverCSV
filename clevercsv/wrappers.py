@@ -419,7 +419,9 @@ def detect_dialect(
     return dialect
 
 
-def write_table(table, filename, dialect="excel", transpose=False):
+def write_table(
+    table, filename, dialect="excel", transpose=False, encoding=None
+):
     """Write a table (a list of lists) to a file
 
     This is a convenience function for writing a table to a CSV file.
@@ -441,6 +443,12 @@ def write_table(table, filename, dialect="excel", transpose=False):
     transpose : bool
         Transpose the table before writing.
 
+    encoding : str
+        Encoding to use to write the data to the file. Note that the default
+        encoding is platform dependent, which ensures compatibility with the
+        Python open() function. It thus defaults to 
+        `locale.getpreferredencoding()`.
+
     Raises
     ------
     ValueError:
@@ -454,6 +462,6 @@ def write_table(table, filename, dialect="excel", transpose=False):
     if len(set(map(len, table))) > 1:
         raise ValueError("Table doesn't have constant row length.")
 
-    with open(filename, "w", newline="") as fp:
+    with open(filename, "w", newline="", encoding=encoding) as fp:
         w = writer(fp, dialect=dialect)
         w.writerows(table)
