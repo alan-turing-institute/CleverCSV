@@ -41,7 +41,7 @@ import it.*
 
 ---
 
-*Contents:* <a href="#introduction"><b>Introduction</b></a> | <a href="#installation"><b>Installation</b></a> | <a href="#usage"><b>Usage</b></a> | <a href="#python-library">Python Library</a> | <a href="#command-line-tool">Command-Line Tool</a> | <a href="#contributing"><b>Contributing</b></a> | <a href="#notes"><b>Notes</b></a>
+*Contents:* <a href="#introduction"><b>Introduction</b></a> | <a href="#installation"><b>Installation</b></a> | <a href="#usage"><b>Usage</b></a> | <a href="#python-library">Python Library</a> | <a href="#command-line-tool">Command-Line Tool</a> | <a href="#version-control-integration">Version Control Integration</a> | <a href="#contributing"><b>Contributing</b></a> | <a href="#notes"><b>Notes</b></a>
 
 ---
 
@@ -328,6 +328,33 @@ before viewing or saving:
 ```text
 $ clevercsv view --transpose imdb.csv
 ```
+
+### Version Control Integration
+
+If you'd like to make sure that you never commit a messy (non-standard) CSV 
+file to your repository, you can install a 
+[pre-commit](https://pre-commit.com/) hook. First, install pre-commit using 
+the [installation instructions](https://pre-commit.com/#install). Next, add 
+the following configuration to the ``.pre-commit-config.yaml`` file in your 
+repository:
+
+```yaml
+repos:
+  - repo: local
+    hooks:
+      - id: clevercsv-standardize
+        name: CleverCSV Standardize
+        entry: clevercsv standardize --in-place
+        language: python
+        language_version: python3
+        types: ["csv"]
+        additional_dependencies: ["clevercsv[full]"]
+```
+
+Finally, run ``pre-commit install`` to set up the git hook. Pre-commit will 
+now use CleverCSV to standardize your CSV files following 
+[RFC-4180](https://tools.ietf.org/html/rfc4180) whenever you commit a CSV file 
+to your repository.
 
 ## Contributing
 
