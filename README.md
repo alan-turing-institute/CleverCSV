@@ -150,7 +150,8 @@ easier. We currently have the following helper functions:
   [stream_dicts](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.stream_dicts) 
   is also available.
 * [write_table](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.write_table): 
-  write a table (a list of lists) to a file using the RFC-4180 dialect.
+  write a table (a list of lists) to a file using the 
+  [RFC-4180](https://tools.ietf.org/html/rfc4180) dialect.
 
 Of course, you can also use the traditional way of loading a CSV file, as in 
 the Python CSV module:
@@ -309,7 +310,7 @@ CleverCSV has loaded the data into the variable: df
 #### Standardize
 
 Use the ``standardize`` command when you want to rewrite a file using the 
-RFC-4180 standard:
+[RFC-4180 standard](https://tools.ietf.org/html/rfc4180):
 
 ```text
 $ clevercsv standardize --output imdb_standard.csv imdb.csv
