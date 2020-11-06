@@ -341,15 +341,10 @@ repository:
 
 ```yaml
 repos:
-  - repo: local
+  - repo: https://github.com/alan-turing-institute/CleverCSV-pre-commit
+    rev: v0.6.6   # or any later version
     hooks:
       - id: clevercsv-standardize
-        name: CleverCSV Standardize
-        entry: clevercsv standardize --in-place
-        language: python
-        language_version: python3
-        types: ["csv"]
-        additional_dependencies: ["clevercsv[full]"]
 ```
 
 Finally, run ``pre-commit install`` to set up the git hook. Pre-commit will 
