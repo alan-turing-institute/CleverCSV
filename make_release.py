@@ -20,6 +20,7 @@ import webbrowser
 URLS = {
     "RTD": "https://readthedocs.org/projects/clevercsv/builds/",
     "Travis": "https://travis-ci.org/alan-turing-institute/CleverCSV",
+    "dummy": "https://github.com/alan-turing-institute/CleverCSV-pre-commit",
 }
 
 
@@ -229,6 +230,11 @@ class WaitForRTD(Step):
             "Wait for ReadTheDocs to complete and verify that its successful"
         )
 
+class UpdatePreCommitDummy(Step):
+    def action(self, context):
+        self.instruct(f"Update the pre-commit dummy package ({URLS['dummy']}) "
+                "by running ``make release`` there")
+
 
 def main(target=None):
     colorama.init()
@@ -262,6 +268,7 @@ def main(target=None):
         # triggers Travis to build with cibw and push to PyPI
         ("push3", PushToGitHub(),),
         ("travis3", WaitForTravis()),
+        ("pre-commit", UpdatePreCommitDummy()),
     ]
     context = {}
     context["pkgname"] = get_package_name()
