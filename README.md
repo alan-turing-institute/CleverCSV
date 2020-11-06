@@ -41,7 +41,7 @@ import it.*
 
 ---
 
-*Contents:* <a href="#introduction"><b>Introduction</b></a> | <a href="#installation"><b>Installation</b></a> | <a href="#usage"><b>Usage</b></a> | <a href="#python-library">Python Library</a> | <a href="#command-line-tool">Command-Line Tool</a> | <a href="#contributing"><b>Contributing</b></a> | <a href="#notes"><b>Notes</b></a>
+*Contents:* <a href="#introduction"><b>Introduction</b></a> | <a href="#installation"><b>Installation</b></a> | <a href="#usage"><b>Usage</b></a> | <a href="#python-library">Python Library</a> | <a href="#command-line-tool">Command-Line Tool</a> | <a href="#version-control-integration">Version Control Integration</a> | <a href="#contributing"><b>Contributing</b></a> | <a href="#notes"><b>Notes</b></a>
 
 ---
 
@@ -150,7 +150,8 @@ easier. We currently have the following helper functions:
   [stream_dicts](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.stream_dicts) 
   is also available.
 * [write_table](https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.write_table): 
-  write a table (a list of lists) to a file using the RFC-4180 dialect.
+  write a table (a list of lists) to a file using the 
+  [RFC-4180](https://tools.ietf.org/html/rfc4180) dialect.
 
 Of course, you can also use the traditional way of loading a CSV file, as in 
 the Python CSV module:
@@ -309,7 +310,7 @@ CleverCSV has loaded the data into the variable: df
 #### Standardize
 
 Use the ``standardize`` command when you want to rewrite a file using the 
-RFC-4180 standard:
+[RFC-4180 standard](https://tools.ietf.org/html/rfc4180):
 
 ```text
 $ clevercsv standardize --output imdb_standard.csv imdb.csv
@@ -328,6 +329,28 @@ before viewing or saving:
 ```text
 $ clevercsv view --transpose imdb.csv
 ```
+
+### Version Control Integration
+
+If you'd like to make sure that you never commit a messy (non-standard) CSV 
+file to your repository, you can install a 
+[pre-commit](https://pre-commit.com/) hook. First, install pre-commit using 
+the [installation instructions](https://pre-commit.com/#install). Next, add 
+the following configuration to the ``.pre-commit-config.yaml`` file in your 
+repository:
+
+```yaml
+repos:
+  - repo: https://github.com/alan-turing-institute/CleverCSV-pre-commit
+    rev: v0.6.6   # or any later version
+    hooks:
+      - id: clevercsv-standardize
+```
+
+Finally, run ``pre-commit install`` to set up the git hook. Pre-commit will 
+now use CleverCSV to standardize your CSV files following 
+[RFC-4180](https://tools.ietf.org/html/rfc4180) whenever you commit a CSV file 
+to your repository.
 
 ## Contributing
 
