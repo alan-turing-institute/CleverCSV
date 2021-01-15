@@ -1,8 +1,8 @@
 <p align="center">
         <img width="60%" src="https://raw.githubusercontent.com/alan-turing-institute/CleverCSV/eea72549195e37bd4347d87fd82bc98be2f1383d/.logo.png">
         <br>
-        <a href="https://travis-ci.org/alan-turing-institute/CleverCSV">
-                <img src="https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master" alt="Travis Build Status">
+        <a href="https://github.com/alan-turing-institute/CleverCSV/actions">
+                <img src="https://github.com/alan-turing-institute/CleverCSV/workflows/build/badge.svg" alt="Github Actions Build Status">
         </a>
         <a href="https://pypi.org/project/clevercsv/">
                 <img src="https://badge.fury.io/py/clevercsv.svg" alt="PyPI version">
