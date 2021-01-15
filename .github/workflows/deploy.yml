@@ -33,7 +33,7 @@ jobs:
           CIBW_TEST_EXTRAS: "full"
           CIBW_SKIP: "pp* cp27-* cp33-* cp34-* cp35-*"
 
-      - name: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2
         with:
           path: ./wheelhouse/*.whl
 
