@@ -13,10 +13,8 @@
         <a href="https://pepy.tech/project/clevercsv">
                 <img src="https://pepy.tech/badge/clevercsv" alt="Downloads">
         </a>
-        <a href="https://gitter.im/alan-turing-institute/CleverCSV">
-              <img src="https://badges.gitter.im/alan-turing-institute/CleverCSV.svg" alt="chat on gitter">
-        </a>
-        <a href="https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb">
+        <a 
+        href="https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb">
                 <img src="https://mybinder.org/badge_logo.svg" alt="Binder">
         </a>
         <a href="https://rdcu.be/bLVur">
@@ -38,6 +36,9 @@ import it.*
   (PDF)](https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf) 
 - [Reproducible Research Repo](https://github.com/alan-turing-institute/CSV_Wrangling/)
 - [Blog post on messy CSV files](https://towardsdatascience.com/handling-messy-csv-files-2ef829aa441d)
+- [Discussion 
+  forum](https://github.com/alan-turing-institute/CleverCSV/discussions): a 
+  place to ask questions and share ideas!
 
 ---
 
