@@ -2,8 +2,8 @@ name: Deploy to PyPI
 
 on:
   push:
-    tags:
-      - v*
+    #tags:
+    #- v*
 
 jobs:
   build_wheels:
