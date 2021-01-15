@@ -8,8 +8,8 @@
    <p align="center">
            <img width="60%" src="https://raw.githubusercontent.com/alan-turing-institute/CleverCSV/eea72549195e37bd4347d87fd82bc98be2f1383d/.logo.png">
            <br>
-           <a href="https://travis-ci.org/alan-turing-institute/CleverCSV">
-                   <img src="https://travis-ci.org/alan-turing-institute/CleverCSV.svg?branch=master" alt="Travis Build Status">
+           <a href="https://github.com/alan-turing-institute/CleverCSV/actions">
+                   <img src="https://github.com/alan-turing-institute/CleverCSV/workflows/build/badge.svg" alt="Github Actions Build Status">
            </a>
            <a href="https://pypi.org/project/clevercsv/">
                    <img src="https://badge.fury.io/py/clevercsv.svg" alt="PyPI version">
@@ -20,10 +20,8 @@
            <a href="https://pepy.tech/project/clevercsv">
                    <img src="https://pepy.tech/badge/clevercsv" alt="Downloads">
            </a>
-           <a href="https://gitter.im/alan-turing-institute/CleverCSV">
-                 <img src="https://badges.gitter.im/alan-turing-institute/CleverCSV.svg" alt="chat on gitter">
-           </a>
-           <a href="https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb">
+           <a 
+           href="https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb">
                    <img src="https://mybinder.org/badge_logo.svg" alt="Binder">
            </a>
            <a href="https://rdcu.be/bLVur">
@@ -47,10 +45,13 @@ import it.*
   (PDF) <https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf>`_ 
 * `Reproducible Research Repo <https://github.com/alan-turing-institute/CSV_Wrangling/>`_
 * `Blog post on messy CSV files <https://towardsdatascience.com/handling-messy-csv-files-2ef829aa441d>`_
+* `Discussion 
+  forum <https://github.com/alan-turing-institute/CleverCSV/discussions>`_\ : a 
+  place to ask questions and share ideas!
 
 ----
 
-*Contents:* :raw-html-m2r:`<a href="#introduction"><b>Introduction</b></a>` | :raw-html-m2r:`<a href="#installation"><b>Installation</b></a>` | :raw-html-m2r:`<a href="#usage"><b>Usage</b></a>` | :raw-html-m2r:`<a href="#python-library">Python Library</a>` | :raw-html-m2r:`<a href="#command-line-tool">Command-Line Tool</a>` | :raw-html-m2r:`<a href="#contributing"><b>Contributing</b></a>` | :raw-html-m2r:`<a href="#notes"><b>Notes</b></a>`
+*Contents:* :raw-html-m2r:`<a href="#introduction"><b>Introduction</b></a>` | :raw-html-m2r:`<a href="#installation"><b>Installation</b></a>` | :raw-html-m2r:`<a href="#usage"><b>Usage</b></a>` | :raw-html-m2r:`<a href="#python-library">Python Library</a>` | :raw-html-m2r:`<a href="#command-line-tool">Command-Line Tool</a>` | :raw-html-m2r:`<a href="#version-control-integration">Version Control Integration</a>` | :raw-html-m2r:`<a href="#contributing"><b>Contributing</b></a>` | :raw-html-m2r:`<a href="#notes"><b>Notes</b></a>`
 
 ----
 
@@ -165,7 +166,8 @@ easier. We currently have the following helper functions:
   `stream_dicts <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.stream_dicts>`_ 
   is also available.
 * `write_table <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.write_table>`_\ : 
-  write a table (a list of lists) to a file using the RFC-4180 dialect.
+  write a table (a list of lists) to a file using the 
+  `RFC-4180 <https://tools.ietf.org/html/rfc4180>`_ dialect.
 
 Of course, you can also use the traditional way of loading a CSV file, as in 
 the Python CSV module:
@@ -330,7 +332,7 @@ Standardize
 ~~~~~~~~~~~
 
 Use the ``standardize`` command when you want to rewrite a file using the 
-RFC-4180 standard:
+`RFC-4180 standard <https://tools.ietf.org/html/rfc4180>`_\ :
 
 .. code-block:: text
 
@@ -350,6 +352,29 @@ before viewing or saving:
 .. code-block:: text
 
    $ clevercsv view --transpose imdb.csv
+
+Version Control Integration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you'd like to make sure that you never commit a messy (non-standard) CSV 
+file to your repository, you can install a 
+`pre-commit <https://pre-commit.com/>`_ hook. First, install pre-commit using 
+the `installation instructions <https://pre-commit.com/#install>`_. Next, add 
+the following configuration to the ``.pre-commit-config.yaml`` file in your 
+repository:
+
+.. code-block:: yaml
+
+   repos:
+     - repo: https://github.com/alan-turing-institute/CleverCSV-pre-commit
+       rev: v0.6.6   # or any later version
+       hooks:
+         - id: clevercsv-standardize
+
+Finally, run ``pre-commit install`` to set up the git hook. Pre-commit will 
+now use CleverCSV to standardize your CSV files following 
+`RFC-4180 <https://tools.ietf.org/html/rfc4180>`_ whenever you commit a CSV file 
+to your repository.
 
 Contributing
 ------------
