@@ -27,7 +27,7 @@ jobs:
 
       - name: Build wheels
         run: |
-          python -m cibuildwheel --output-dir ./wheelhouse ./python
+          python -m cibuildwheel --output-dir ./wheelhouse
         env:
           CIBW_TEST_COMMAND: "python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
           CIBW_TEST_EXTRAS: "full"
@@ -49,11 +49,11 @@ jobs:
           python-version: '3.7'
 
       - name: Build sdist
-        run: cd python && python setup.py sdist
+        run: python setup.py sdist
 
       - uses: actions/upload-artifact@v2
         with:
-          path: python/dist/*.tar.gz
+          path: dist/*.tar.gz
 
   upload_testpypi:
     needs: [build_wheels, build_sdist]
