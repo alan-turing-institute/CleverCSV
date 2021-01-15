@@ -12,14 +12,15 @@ Date: 2019-07-23
 
 """
 
-import sys
 import colorama
 import os
+import sys
+import tempfile
 import webbrowser
 
 URLS = {
     "RTD": "https://readthedocs.org/projects/clevercsv/builds/",
-    "Travis": "https://travis-ci.org/alan-turing-institute/CleverCSV",
+    "CI": "https://github.com/alan-turing-institute/CleverCSV/actions",
     "dummy": "https://github.com/alan-turing-institute/CleverCSV-pre-commit",
 }
 
@@ -111,6 +112,12 @@ class UpdateChangelog(Step):
         self.print_run("vi CHANGELOG.md")
 
 
+class UpdateReadme(Step):
+    def action(self, context):
+        self.instruct("Update readme if necessary")
+        self.print_run("vi README.md")
+
+
 class RunTests(Step):
     def action(self, context):
         self.do_cmd("make test")
@@ -119,7 +126,7 @@ class RunTests(Step):
 class BumpVersionPackage(Step):
     def action(self, context):
         self.instruct("Update __version__.py with new version")
-        self.print_run(f"vi {context['pkgname']}/__version__.py")
+        self.do_cmd(f"vi {context['pkgname']}/__version__.py")
 
     def post(self, context):
         wait_for_enter()
@@ -140,28 +147,17 @@ class MakeDocs(Step):
         self.do_cmd("make docs")
 
 
-class MakeDist(Step):
-    def action(self, context):
-        self.do_cmd("make dist")
-
-
-class PushToTestPyPI(Step):
-    def action(self, context):
-        self.do_cmd(
-            "twine upload --repository-url https://test.pypi.org/legacy/ dist/*"
-        )
-
-
 class InstallFromTestPyPI(Step):
     def action(self, context):
-        self.print_run("cd /tmp/")
-        self.print_cmd("rm -rf ./venv")
-        self.print_cmd("virtualenv ./venv")
-        self.print_cmd("source ./venv/bin/activate")
-        self.print_cmd(
-            "pip install --index-url https://test.pypi.org/simple/ "
-            + f"--extra-index-url https://pypi.org/simple {context['pkgname']}[full]=={context['version']}"
+        tmpvenv = tempfile.mkdtemp(prefix="p2r_venv_")
+        self.do_cmd(
+            f"python -m venv {tmpvenv} && source {tmpvenv}/bin/activate && "
+            "pip install --no-cache-dir --index-url "
+            "https://test.pypi.org/simple/ "
+            "--extra-index-url https://pypi.org/simple "
+            f"{context['pkgname']}=={context['version']}"
         )
+        context["tmpvenv"] = tmpvenv
 
 
 class TestPackage(Step):
@@ -169,13 +165,14 @@ class TestPackage(Step):
         self.instruct(
             f"Ensure that the following command gives version {context['version']}"
         )
-        self.print_run(f"{context['pkgname']} -V")
+        self.do_cmd(
+            f"source {context['tmpvenv']}/bin/activate && {context['pkgname']} -V"
+        )
 
 
-class DeactivateVenv(Step):
+class RemoveVenv(Step):
     def action(self, context):
-        self.print_run("deactivate")
-        self.instruct("Go back to the project directory")
+        self.do_cmd(f"rm -rf {context['tmpvenv']}")
 
 
 class GitTagVersion(Step):
@@ -199,7 +196,7 @@ class GitAddRelease(Step):
     def action(self, context):
         self.instruct("Add Changelog & Readme to git")
         self.instruct(
-            f"Commit with title: CleverCSV Release {context['version']}"
+            f"Commit with title: {context['pkgname']} Release {context['version']}"
         )
         self.instruct("Embed changelog in body commit message")
         self.print_run("git gui")
@@ -215,12 +212,10 @@ class PushToGitHub(Step):
         self.do_cmd("git push -u --tags origin master")
 
 
-class WaitForTravis(Step):
+class WaitForCI(Step):
     def action(self, context):
-        webbrowser.open(URLS["Travis"])
-        self.instruct(
-            "Wait for Travis to complete and verify that its successful"
-        )
+        webbrowser.open(URLS["CI"])
+        self.instruct("Wait for CI to complete and verify that its successful")
 
 
 class WaitForRTD(Step):
@@ -230,10 +225,13 @@ class WaitForRTD(Step):
             "Wait for ReadTheDocs to complete and verify that its successful"
         )
 
+
 class UpdatePreCommitDummy(Step):
     def action(self, context):
-        self.instruct(f"Update the pre-commit dummy package ({URLS['dummy']}) "
-                "by running ``make release`` there")
+        self.instruct(
+            f"Update the pre-commit dummy package ({URLS['dummy']}) "
+            "by running ``make release`` there"
+        )
 
 
 def main(target=None):
@@ -244,30 +242,28 @@ def main(target=None):
         ("clean1", MakeClean()),
         ("docs1", MakeDocs()),
         ("runtests", RunTests()),
-        # trigger Travis to run tests on all platforms
+        # trigger CI to run tests on all platforms
         ("push1", PushToGitHub()),
-        ("travis1", WaitForTravis()),
+        ("ci1", WaitForCI()),
         ("waitrtd", WaitForRTD()),
         ("bumpversion", BumpVersionPackage()),
         ("gitadd2", GitAdd()),
         ("gittagpre", GitTagPreRelease()),
-        # trigger Travis to run tests using cibuildwheel
+        # trigger CI to run tests using cibuildwheel
         ("push2", PushToGitHub()),
-        ("travis2", WaitForTravis()),
+        ("ci2", WaitForCI()),
         ("changelog", UpdateChangelog()),
+        ("readme", UpdateReadme()),
         ("clean2", MakeClean()),
         ("docs2", MakeDocs()),
-        ("dist", MakeDist()),
-        ("testpypi", PushToTestPyPI()),
         ("install", InstallFromTestPyPI()),
         ("testpkg", TestPackage()),
-        ("deactivate", DeactivateVenv()),
+        ("remove_venv", RemoveVenv()),
         ("addrelease", GitAddRelease()),
-        ("pypi", PushToPyPI()),
         ("tagfinal", GitTagVersion()),
         # triggers Travis to build with cibw and push to PyPI
-        ("push3", PushToGitHub(),),
-        ("travis3", WaitForTravis()),
+        ("push3", PushToGitHub()),
+        ("ci3", WaitForCI()),
         ("pre-commit", UpdatePreCommitDummy()),
     ]
     context = {}
