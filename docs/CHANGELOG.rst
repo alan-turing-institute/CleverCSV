@@ -2,6 +2,13 @@
 Changelog
 =========
 
+Version 0.6.7
+-------------
+
+
+* Updates to release process. This version introduces pre-compiled wheels for 
+  Python 3.9.
+
 Version 0.6.6
 -------------
 
