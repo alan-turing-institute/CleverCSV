@@ -1,0 +1,30 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: 53 18 * * */7
+
+jobs:
+  python-test:
+    name: Unit tests for Python package
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+        py: [ '3.6', '3.7', '3.8', '3.9' ]
+    steps:
+      - name: Install Python ${{ matrix.py }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.py }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install CleverCSV
+        run: pip install -e .[full,tests]
+
+      - name: Run unit tests
+        run: python -m unittest discover -v -f -s ./tests/test_unit
