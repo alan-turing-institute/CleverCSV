@@ -155,7 +155,7 @@ class InstallFromTestPyPI(Step):
             "pip install --no-cache-dir --index-url "
             "https://test.pypi.org/simple/ "
             "--extra-index-url https://pypi.org/simple "
-            f"{context['pkgname']}=={context['version']}"
+            f"{context['pkgname']}[full]=={context['version']}"
         )
         context["tmpvenv"] = tmpvenv
 
