@@ -3,9 +3,16 @@
  * @author G.J.J. van den Burg
  * @date 2019-02-13
  * @brief CleverCSV Python Parser object
-
+ *
+ * Copyright (c) The Alan Turing Institute.
+ * See the LICENSE file for licensing information.
+ *
+ * @details
  * This implementation is a minor (but important) modification of the CSV 
- * module in CPython.
+ * module in CPython. In particular, we change the LL(1) parser to an LL(2) 
+ * parser to remove the need to specify double quotes. We also add the option 
+ * to return whether a cell was quoted or not, which is used in type 
+ * detection.
  */
 
 

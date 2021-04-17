@@ -379,6 +379,8 @@ on wrangling messy CSV files by [Gertjan van den Burg](https://gertjan.dev),
 
 ## Notes
 
-License: MIT (see LICENSE file).
+CleverCSV is licensed under the [MIT license](./LICENSE). Please [cite our 
+research](https://link.springer.com/article/10.1007/s10618-019-00646-y) if you 
+use CleverCSV in your work.
 
-Copyright (c) 2019-2020 [The Alan Turing Institute](https://turing.ac.uk).
+Copyright (c) 2018-2021 [The Alan Turing Institute](https://turing.ac.uk).
