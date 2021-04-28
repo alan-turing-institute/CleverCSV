@@ -336,6 +336,27 @@ class TypeDetectorTestCase(unittest.TestCase):
                     )
                 )
 
+    def test_bytearray(self):
+        yes_bytearray = [
+            "bytearray(b'')",
+            "bytearray(b'abc,*&@\"')",
+            "bytearray(b'bytearray(b'')')",
+        ]
+        no_bytearray = [
+            "bytearray(b'abc",
+            "bytearray(b'abc'",
+            "bytearray('abc')",
+            "abc,bytearray(b'def')",
+        ]
+
+        for case in yes_bytearray:
+            with self.subTest(case=case):
+                self.assertTrue(self.td.is_bytearray(case))
+
+        for case in no_bytearray:
+            with self.subTest(case=case):
+                self.assertFalse(self.td.is_bytearray(case))
+
     # Unix path
 
     def test_unix_path(self):
