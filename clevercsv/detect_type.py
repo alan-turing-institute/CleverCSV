@@ -239,7 +239,7 @@ class TypeDetector(object):
             if not isdate:
                 return False
             # [date]T[time] or [date]T[time]Z
-            if parts[1].endswith('Z') and self.is_time(parts[1][:-1]):
+            if parts[1].endswith("Z") and self.is_time(parts[1][:-1]):
                 return True
             if self.is_time(parts[1]):
                 return True
@@ -286,7 +286,7 @@ class TypeDetector(object):
 
 def gen_known_type(cells):
     """
-    Utility that yields a generator over whether or not the provided cells are 
+    Utility that yields a generator over whether or not the provided cells are
     of a known type or not.
     """
     td = TypeDetector()

@@ -325,7 +325,11 @@ class TypeDetectorTestCase(unittest.TestCase):
         only_quoted = ["this string, with a comma"]
         for unicode_alpanum in only_quoted:
             with self.subTest(unicode_alpanum=unicode_alpanum):
-                self.assertFalse(self.td.is_unicode_alphanum(unicode_alpanum,))
+                self.assertFalse(
+                    self.td.is_unicode_alphanum(
+                        unicode_alpanum,
+                    )
+                )
                 self.assertTrue(
                     self.td.is_unicode_alphanum(
                         unicode_alpanum, is_quoted=True
