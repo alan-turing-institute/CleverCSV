@@ -141,6 +141,7 @@ class TypeDetector(object):
             ("nan", self.is_nan),
             ("date", self.is_date),
             ("datetime", self.is_datetime),
+            ('bytearray', self.is_bytearray),
         ]
         for name, func in type_tests:
             if func(cell, is_quoted=is_quoted):
@@ -282,6 +283,11 @@ class TypeDetector(object):
         if self.strip_whitespace:
             cell = cell.strip(" ")
         return self._run_regex(cell, "unix_path")
+
+    def is_bytearray(self, cell: str, **kwargs) -> bool:
+        if self.strip_whitespace:
+            cell = cell.strip(" ")
+        return cell.startswith("bytearray(b") and cell.endswith(")")
 
 
 def gen_known_type(cells):
