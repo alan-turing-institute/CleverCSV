@@ -5,7 +5,7 @@
 
 SHELL := bash
 .SHELLFLAGS := -eu -o pipefail -c
-MAKEFLAGS += --warn-undefined-variables --no-builtin-rules
+MAKEFLAGS += --no-builtin-rules
 
 PACKAGE=clevercsv
 DOC_DIR=./docs/
