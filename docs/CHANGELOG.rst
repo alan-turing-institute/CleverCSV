@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 0.6.8
+-------------
+
+
+* Add a "bytearray" type to address a specific failure case 
+  (\ `#35 <https://github.com/alan-turing-institute/CleverCSV/issues/35>`_\ ).
+* Minor clarifications to licensing.
+
 Version 0.6.7
 -------------
 
