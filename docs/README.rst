@@ -79,7 +79,7 @@ automatically detect the dialect of a file. This may seem like an easy
 problem, but to a computer a CSV file is simply a long string, and every 
 dialect will give you *some* table. In CleverCSV we use a technique based on 
 the patterns of row lengths of the parsed file and the data type of the 
-resulting cells. With our method we achieve a 97% accuracy for dialect 
+resulting cells. With our method we achieve 97% accuracy for dialect 
 detection, with a 21% improvement on non-standard (\ *messy*\ ) CSV files compared 
 to the Python standard library.
 
@@ -404,6 +404,8 @@ on wrangling messy CSV files by `Gertjan van den Burg <https://gertjan.dev>`_\ ,
 Notes
 -----
 
-License: MIT (see LICENSE file).
+CleverCSV is licensed under the `MIT license <./LICENSE>`_. Please `cite our 
+research <https://link.springer.com/article/10.1007/s10618-019-00646-y>`_ if you 
+use CleverCSV in your work.
 
-Copyright (c) 2019-2020 `The Alan Turing Institute <https://turing.ac.uk>`_.
+Copyright (c) 2018-2021 `The Alan Turing Institute <https://turing.ac.uk>`_.
