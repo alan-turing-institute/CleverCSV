@@ -55,6 +55,65 @@ import it.*
 
 ----
 
+Quick Start
+-----------
+
+Click `here <#introduction>`_ to go to the introduction with more details about 
+CleverCSV. If you're in a hurry, below is a quick overview of how to get 
+started with the CleverCSV command line interface and the Python package.
+
+From the command line:
+
+.. code-block:: python
+
+   # Install CleverCSV (using [full] includes the command line interface)
+   $ pip install clevercsv[full]
+
+   # Download an example file
+   $ wget https://raw.githubusercontent.com/alan-turing-institute/CleverCSV/master/example/imdb.csv
+
+   # Detect the dialect
+   $ clevercsv detect ./imdb.csv
+   Detected: SimpleDialect(',', '', '\\')
+
+   # Generate code to import the file
+   $ clevercsv code ./imdb.csv
+   # Code generated with CleverCSV version 0.6.8
+   import clevercsv
+
+   with open("./imdb.csv", "r", newline="", encoding="utf-8") as fp:
+       reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\\")
+       rows = list(reader)
+
+   # Explore the CSV file as a Pandas dataframe
+   $ clevercsv explore -p imdb.csv
+   Dropping you into an interactive shell.
+   CleverCSV has loaded the data into the variable: df
+   >>> df
+
+As a Python package:
+
+.. code-block:: python
+
+   # Import the package
+   >>> import clevercsv
+
+   # Load the file as a list of rows
+   >>> rows = clevercsv.read_table('./imdb.csv')
+
+   # Load the file as a Pandas Dataframe
+   # Note that df = pd.read_csv('./imdb.csv') would fail here
+   >>> df = clevercsv.read_dataframe('./imdb.csv')
+
+   # Use CleverCSV as drop-in replacement for the Python CSV module
+   # This follows the Sniffer example: https://docs.python.org/3/library/csv.html#csv.Sniffer
+   # Note that csv.Sniffer would fail here
+   >>> with open('./imdb.csv', newline='') as csvfile:
+   ...     dialect = clevercsv.Sniffer().sniff(csvfile.read())
+   ...     csvfile.seek(0)
+   ...     reader = clevercsv.reader(csvfile, dialect)
+   ...     rows = list(reader)
+
 Introduction
 ------------
 
