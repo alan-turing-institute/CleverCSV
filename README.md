@@ -42,52 +42,24 @@ import it.*
 
 ---
 
-*Contents:* <a href="#introduction"><b>Introduction</b></a> | <a href="#installation"><b>Installation</b></a> | <a href="#usage"><b>Usage</b></a> | <a href="#python-library">Python Library</a> | <a href="#command-line-tool">Command-Line Tool</a> | <a href="#version-control-integration">Version Control Integration</a> | <a href="#contributing"><b>Contributing</b></a> | <a href="#notes"><b>Notes</b></a>
+*Contents:* <a href="#quick-start"><b>Quick Start</b></a> | <a href="#introduction"><b>Introduction</b></a> | <a href="#installation"><b>Installation</b></a> | <a href="#usage"><b>Usage</b></a> | <a href="#python-library">Python Library</a> | <a href="#command-line-tool">Command-Line Tool</a> | <a href="#version-control-integration">Version Control Integration</a> | <a href="#contributing"><b>Contributing</b></a> | <a href="#notes"><b>Notes</b></a>
 
 ---
 
 ## Quick Start
 
-Click [here](#introduction) to go to the introduction with more details about 
+[Click here](#introduction) to go to the introduction with more details about 
 CleverCSV. If you're in a hurry, below is a quick overview of how to get 
-started with the CleverCSV command line interface and the Python package.
+started with the CleverCSV Python package and the command line interface. 
 
-From the command line:
-
-```python
-# Install CleverCSV (using [full] includes the command line interface)
-$ pip install clevercsv[full]
-
-# Download an example file
-$ wget https://raw.githubusercontent.com/alan-turing-institute/CleverCSV/master/example/imdb.csv
-
-# Detect the dialect
-$ clevercsv detect ./imdb.csv
-Detected: SimpleDialect(',', '', '\\')
-
-# Generate code to import the file
-$ clevercsv code ./imdb.csv
-# Code generated with CleverCSV version 0.6.8
-import clevercsv
-
-with open("./imdb.csv", "r", newline="", encoding="utf-8") as fp:
-    reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\\")
-    rows = list(reader)
-
-# Explore the CSV file as a Pandas dataframe
-$ clevercsv explore -p imdb.csv
-Dropping you into an interactive shell.
-CleverCSV has loaded the data into the variable: df
->>> df
-```
-
-As a Python package:
+For the Python package:
 
 ```python
 # Import the package
 >>> import clevercsv
 
 # Load the file as a list of rows
+# This uses the imdb.csv file in the examples directory
 >>> rows = clevercsv.read_table('./imdb.csv')
 
 # Load the file as a Pandas Dataframe
@@ -102,6 +74,32 @@ As a Python package:
 ...     csvfile.seek(0)
 ...     reader = clevercsv.reader(csvfile, dialect)
 ...     rows = list(reader)
+```
+
+And for the command line interface:
+
+```python
+# Install the full version of CleverCSV (this includes the command line interface)
+$ pip install clevercsv[full]
+
+# Detect the dialect
+$ clevercsv detect ./imdb.csv
+Detected: SimpleDialect(',', '', '\\')
+
+# Generate code to import the file
+$ clevercsv code ./imdb.csv
+
+import clevercsv
+
+with open("./imdb.csv", "r", newline="", encoding="utf-8") as fp:
+    reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\\")
+    rows = list(reader)
+
+# Explore the CSV file as a Pandas dataframe
+$ clevercsv explore -p imdb.csv
+Dropping you into an interactive shell.
+CleverCSV has loaded the data into the variable: df
+>>> df
 ```
 
 ## Introduction
