@@ -19,7 +19,7 @@ def detect_dialect_consistency(
 ):
     """Detect the dialect with the data consistency measure
 
-    This uses the data consistency measure to detect the dialect. See the paper 
+    This uses the data consistency measure to detect the dialect. See the paper
     for details.
 
     Parameters
@@ -28,8 +28,8 @@ def detect_dialect_consistency(
         The data of the file as a string
 
     delimiters : iterable
-        List of delimiters to consider. If None, the :func:`get_delimiters` 
-        function is used to automatically detect this (as described in the 
+        List of delimiters to consider. If None, the :func:`get_delimiters`
+        function is used to automatically detect this (as described in the
         paper).
 
     skip : bool

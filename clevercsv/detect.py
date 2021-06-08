@@ -16,14 +16,14 @@ from .read import reader
 
 class Detector(object):
     """
-    Detect the Dialect of CSV files with normal forms or the data consistency 
-    measure. This class provides a drop-in replacement for the Python dialect 
+    Detect the Dialect of CSV files with normal forms or the data consistency
+    measure. This class provides a drop-in replacement for the Python dialect
     Sniffer from the standard library.
 
     Note
     ----
-    We call the object ``Detector`` just to mark the difference in the 
-    implementation and avoid naming issues. You can import it as ``from ccsv 
+    We call the object ``Detector`` just to mark the difference in the
+    implementation and avoid naming issues. You can import it as ``from ccsv
     import Sniffer`` nonetheless.
 
     """
@@ -60,7 +60,7 @@ class Detector(object):
     def has_header(self, sample):
         """Detect if a file has a header from a sample.
 
-        This function is copied from CPython! The only change we've made is to 
+        This function is copied from CPython! The only change we've made is to
         use our dialect detection method.
 
         """

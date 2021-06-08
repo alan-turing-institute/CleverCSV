@@ -456,7 +456,7 @@ def write_table(
     encoding : str
         Encoding to use to write the data to the file. Note that the default
         encoding is platform dependent, which ensures compatibility with the
-        Python open() function. It thus defaults to 
+        Python open() function. It thus defaults to
         `locale.getpreferredencoding()`.
 
     Raises
