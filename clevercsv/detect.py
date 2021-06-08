@@ -35,7 +35,9 @@ class Detector(object):
         # Compatibility method for Python
         return self.detect(sample, delimiters=delimiters, verbose=verbose)
 
-    def detect(self, sample, delimiters=None, verbose=False, method="auto"):
+    def detect(
+        self, sample, delimiters=None, verbose=False, method="auto", skip=True
+    ):
         # method in ['auto', 'normal', 'consistency']
         # wrapper for the print function
         log = lambda *a, **kw: print(*a, **kw) if verbose else None
@@ -52,7 +54,7 @@ class Detector(object):
         self.method_ = "consistency"
         log("Running data consistency measure ...", flush=True)
         return detect_dialect_consistency(
-            sample, delimiters=delimiters, verbose=verbose
+            sample, delimiters=delimiters, skip=skip, verbose=verbose
         )
 
     def has_header(self, sample):

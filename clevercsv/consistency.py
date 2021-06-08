@@ -14,7 +14,9 @@ from .detect_type import type_score
 from .potential_dialects import get_dialects
 
 
-def detect_dialect_consistency(data, delimiters=None, verbose=False):
+def detect_dialect_consistency(
+    data, delimiters=None, skip=True, verbose=False
+):
     """Detect the dialect with the data consistency measure
 
     This uses the data consistency measure to detect the dialect. See the paper 
@@ -30,6 +32,10 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
         function is used to automatically detect this (as described in the 
         paper).
 
+    skip : bool
+        Skip computation of the type score for dialects with a low pattern
+        score.
+
     verbose : bool
         Print out the dialects considered and their scores.
 
@@ -42,10 +48,11 @@ def detect_dialect_consistency(data, delimiters=None, verbose=False):
 
     # Get potential dialects
     dialects = get_dialects(data, delimiters=delimiters)
-    return detect_consistency_dialects(data, dialects, verbose=verbose)
+    return detect_consistency_dialects(data, dialects, skip=skip, 
+            verbose=verbose)
 
 
-def detect_consistency_dialects(data, dialects, verbose=False):
+def detect_consistency_dialects(data, dialects, skip=True, verbose=False):
     """Wrapper for dialect detection with the consistency measure
 
     This function takes a list of dialects to consider.
@@ -54,7 +61,7 @@ def detect_consistency_dialects(data, dialects, verbose=False):
     log("Considering %i dialects." % len(dialects))
 
     old_limit = field_size_limit(len(data) + 1)
-    scores = consistency_scores(data, dialects, skip=True, logger=log)
+    scores = consistency_scores(data, dialects, skip=skip, logger=log)
     H = get_best_set(scores)
     result = break_ties(data, H)
     field_size_limit(old_limit)

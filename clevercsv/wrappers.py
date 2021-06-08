@@ -377,7 +377,12 @@ def read_dataframe(filename, *args, num_chars=None, **kwargs):
 
 
 def detect_dialect(
-    filename, num_chars=None, encoding=None, verbose=False, method="auto"
+    filename,
+    num_chars=None,
+    encoding=None,
+    verbose=False,
+    method="auto",
+    skip=True,
 ):
     """Detect the dialect of a CSV file
 
@@ -405,6 +410,10 @@ def detect_dialect(
         detection, 'consistency' for the consistency measure, or 'auto' for
         first normal and then consistency.
 
+    skip : bool
+        Skip computation of the type score for dialects with a low pattern
+        score.
+
     Returns
     -------
     dialect : SimpleDialect
@@ -415,7 +424,8 @@ def detect_dialect(
     enc = encoding or get_encoding(filename)
     with open(filename, "r", newline="", encoding=enc) as fp:
         data = fp.read(num_chars) if num_chars else fp.read()
-        dialect = Detector().detect(data, verbose=verbose, method=method)
+        dialect = Detector().detect(data, verbose=verbose, method=method, 
+                skip=skip)
     return dialect
 
 

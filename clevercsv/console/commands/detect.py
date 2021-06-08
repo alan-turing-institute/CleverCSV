@@ -19,6 +19,7 @@ class DetectCommand(Command):
         detection. This will speed up detection but may reduce accuracy. }
         { --p|plain : Print the components of the dialect on separate lines. }
         { --j|json : Print the components of the dialect as a JSON object. }
+        { --no-skip : Don't skip type detection for dialects with low pattern score. }
     """
 
     help = "The <info>detect</info> command detects the dialect of a given CSV file."
@@ -26,13 +27,15 @@ class DetectCommand(Command):
     def handle(self):
         verbose = self.io.verbosity > 0
         num_chars = parse_int(self.option("num-chars"), "num-chars")
-        method = 'consistency' if self.option('consistency') else 'auto'
+        method = "consistency" if self.option("consistency") else "auto"
+        skip = not self.option("no-skip")
         dialect = detect_dialect(
             self.argument("path"),
             num_chars=num_chars,
             encoding=self.option("encoding"),
             verbose=verbose,
-            method=method
+            method=method,
+            skip=skip,
         )
         if dialect is None:
             return self.line("Dialect detection failed.")
