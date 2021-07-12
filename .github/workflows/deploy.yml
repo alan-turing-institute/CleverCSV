@@ -7,11 +7,17 @@ on:
 
 jobs:
   build_wheels:
-    name: Build wheels on ${{ matrix.os }}
+    name: Build wheels on ${{ matrix.os }} for ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ 'ubuntu-18.04', 'windows-2019', 'macos-10.15' ]
+        arch: [auto, aarch64]
+        exclude:
+          - os: macos-10.15
+            arch: aarch64
+          - os: windows-2019
+            arch: aarch64
 
     steps:
       - uses: actions/checkout@v2
@@ -21,14 +27,19 @@ jobs:
         with:
           python-version: '3.7'
 
+      - name: Set up QEMU
+        if: ${{ matrix.arch == 'aarch64' }}
+        uses: docker/setup-qemu-action@v1
+
       - name: Install cibuildwheel
         run: |
-          python -m pip install cibuildwheel==1.7.4
+          python -m pip install cibuildwheel
 
       - name: Build wheels
         run: |
           python -m cibuildwheel --output-dir ./wheelhouse
         env:
+          CIBW_ARCHS_LINUX: ${{matrix.arch}}
           CIBW_TEST_COMMAND: "python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
           CIBW_TEST_EXTRAS: "full"
           CIBW_SKIP: "pp* cp27-* cp33-* cp34-* cp35-*"
