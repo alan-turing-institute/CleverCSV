@@ -20,8 +20,7 @@
            <a href="https://pepy.tech/project/clevercsv">
                    <img src="https://pepy.tech/badge/clevercsv" alt="Downloads">
            </a>
-           <a 
-           href="https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb">
+           <a href="https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb">
                    <img src="https://mybinder.org/badge_logo.svg" alt="Binder">
            </a>
            <a href="https://rdcu.be/bLVur">
