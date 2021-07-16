@@ -7,6 +7,7 @@ Author: Gertjan van den Burg
 
 """
 
+import json
 import regex
 
 from .cparser_util import parse_string
@@ -107,6 +108,7 @@ PATTERNS = {
     "time_HHMM": "(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])",
     "time_HH": "(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])",
     "time_hmm": "([0-9]|1[0-9]|2[0-3]):([0-5][0-9])",
+    "time_hhmmsszz": "(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])[+-]([0-1][0-9]):([0-5][0-9])",
     "currency": "\p{Sc}\s?(.*)",
     "unix_path": "[~.]?(?:\/[a-zA-Z0-9\.\-\_]+)+\/?",
     "date": "((0[1-9]|1[0-2])((0[1-9]|[12]\d|3[01])([12]\d{3}|\d{2})|(?P<sep1>[-\/. ])(0?[1-9]|[12]\d|3[01])(?P=sep1)([12]\d{3}|\d{2}))|(0[1-9]|[12]\d|3[01])((0[1-9]|1[0-2])([12]\d{3}|\d{2})|(?P<sep2>[-\/. ])(0?[1-9]|1[0-2])(?P=sep2)([12]\d{3}|\d{2}))|([12]\d{3}|\d{2})((?P<sep3>[-\/. ])(0?[1-9]|1[0-2])(?P=sep3)(0?[1-9]|[12]\d|3[01])|年(0?[1-9]|1[0-2])月(0?[1-9]|[12]\d|3[01])日|년(0?[1-9]|1[0-2])월(0?[1-9]|[12]\d|3[01])일|(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01]))|(([1-9]|1[0-2])(?P<sep4>[-\/. ])(0?[1-9]|[12]\d|3[01])(?P=sep4)([12]\d{3}|\d{2})|([1-9]|[12]\d|3[01])(?P<sep5>[-\/. ])(0?[1-9]|1[0-2])(?P=sep5)([12]\d{3}|\d{2})))",
@@ -141,7 +143,8 @@ class TypeDetector(object):
             ("nan", self.is_nan),
             ("date", self.is_date),
             ("datetime", self.is_datetime),
-            ('bytearray', self.is_bytearray),
+            ("bytearray", self.is_bytearray),
+            ("json", self.is_json_obj),
         ]
         for name, func in type_tests:
             if func(cell, is_quoted=is_quoted):
@@ -197,6 +200,7 @@ class TypeDetector(object):
             self._run_regex(cell, "time_hmm")
             or self._run_regex(cell, "time_hhmm")
             or self._run_regex(cell, "time_hhmmss")
+            or self._run_regex(cell, "time_hhmmsszz")
         )
 
     def is_empty(self, cell, **kwargs):
@@ -288,6 +292,17 @@ class TypeDetector(object):
         if self.strip_whitespace:
             cell = cell.strip(" ")
         return cell.startswith("bytearray(b") and cell.endswith(")")
+
+    def is_json_obj(self, cell: str, **kwargs) -> bool:
+        if self.strip_whitespace:
+            cell = cell.strip(" ")
+        if not (cell.startswith('{') and cell.endswith('}')):
+            return False
+        try:
+            _ = json.loads(cell)
+        except json.JSONDecodeError:
+            return False
+        return True
 
 
 def gen_known_type(cells):
