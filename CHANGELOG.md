@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.7.0
+
+* Add a JSON object data type to address a specific failure case 
+  ([#37](https://github.com/alan-turing-institute/CleverCSV/issues/37)).
+* Add support for timezones for time data type
+* Add support for building wheels on non-native architectures 
+  ([#39](https://github.com/alan-turing-institute/CleverCSV/issues/39)).
+* Add a flag to disable skipping type detection using the command line 
+  interface.
+
 ## Version 0.6.8
 
 * Add a "bytearray" type to address a specific failure case 
