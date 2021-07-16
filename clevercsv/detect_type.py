@@ -7,6 +7,7 @@ Author: Gertjan van den Burg
 
 """
 
+import json
 import regex
 
 from .cparser_util import parse_string
@@ -141,7 +142,8 @@ class TypeDetector(object):
             ("nan", self.is_nan),
             ("date", self.is_date),
             ("datetime", self.is_datetime),
-            ('bytearray', self.is_bytearray),
+            ("bytearray", self.is_bytearray),
+            ("json", self.is_json_obj),
         ]
         for name, func in type_tests:
             if func(cell, is_quoted=is_quoted):
@@ -288,6 +290,17 @@ class TypeDetector(object):
         if self.strip_whitespace:
             cell = cell.strip(" ")
         return cell.startswith("bytearray(b") and cell.endswith(")")
+
+    def is_json_obj(self, cell: str, **kwargs) -> bool:
+        if self.strip_whitespace:
+            cell = cell.strip(" ")
+        if not (cell.startswith('{') and cell.endswith('}')):
+            return False
+        try:
+            _ = json.loads(cell)
+        except json.JSONDecodeError:
+            return False
+        return True
 
 
 def gen_known_type(cells):
