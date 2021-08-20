@@ -250,16 +250,6 @@ def stream_table(
         yield from r
 
 
-def csv2df(filename, *args, num_chars=None, **kwargs):
-    """This function is deprecated, use read_dataframe instead."""
-    warnings.warn(
-        "'csv2df' was renamed to 'read_dataframe' in version "
-        "0.6.3 and will be removed in 0.7.0.",
-        FutureWarning,
-    )
-    return read_dataframe(filename, *args, num_chars=num_chars, **kwargs)
-
-
 def read_dataframe(filename, *args, num_chars=None, **kwargs):
     """Read a CSV file to a Pandas dataframe
 
