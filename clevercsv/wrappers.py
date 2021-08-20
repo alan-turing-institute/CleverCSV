@@ -130,46 +130,6 @@ def read_dicts(
     )
 
 
-def read_as_dicts(
-    filename, dialect=None, encoding=None, num_chars=None, verbose=False
-):
-    """This function is deprecated, use read_dicts instead."""
-    warnings.warn(
-        "'read_as_dicts' was renamed to 'read_dicts' in version "
-        "0.6.3 and will be removed in 0.7.0.",
-        FutureWarning,
-    )
-    return read_dicts(
-        filename,
-        dialect=dialect,
-        encoding=encoding,
-        num_chars=num_chars,
-        verbose=verbose,
-    )
-
-
-def read_csv(
-    filename,
-    dialect=None,
-    encoding=None,
-    num_chars=None,
-    verbose=False,
-):
-    """This function is deprecated, use read_table instead."""
-    warnings.warn(
-        "'read_csv' was renamed to 'read_table' in version "
-        "0.6.3 and will be removed in 0.7.0.",
-        FutureWarning,
-    )
-    return read_table(
-        filename,
-        dialect=dialect,
-        encoding=encoding,
-        num_chars=num_chars,
-        verbose=verbose,
-    )
-
-
 def read_table(
     filename,
     dialect=None,
@@ -226,28 +186,6 @@ def read_table(
             num_chars=num_chars,
             verbose=verbose,
         )
-    )
-
-
-def stream_csv(
-    filename,
-    dialect=None,
-    encoding=None,
-    num_chars=None,
-    verbose=False,
-):
-    """This function is deprecated, use stream_table instead."""
-    warnings.warn(
-        "'stream_csv' was renamed to 'stream_table' in version "
-        "0.6.3 and will be removed in 0.7.0.",
-        FutureWarning,
-    )
-    yield from stream_table(
-        filename,
-        dialect=dialect,
-        encoding=encoding,
-        num_chars=num_chars,
-        verbose=verbose,
     )
 
 
