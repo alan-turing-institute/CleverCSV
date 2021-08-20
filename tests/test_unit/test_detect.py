@@ -122,7 +122,7 @@ bytearray(b'fake data'),10:35:30,2006-10-27T02:30:45
         self.assertEqual(dialect.quotechar, "'")
         dialect = detector.detect(self.sample10)
         self.assertEqual(dialect.delimiter, ",")
-        self.assertEqual(dialect.quotechar, '')
+        self.assertEqual(dialect.quotechar, "")
         dialect = detector.detect(self.sample11)
         self.assertEqual(dialect.delimiter, ",")
         self.assertEqual(dialect.quotechar, '"')

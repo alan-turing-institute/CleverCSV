@@ -35,13 +35,13 @@ def import_optional_dependency(name, raise_on_missing=True):
         Name of the module to import
 
     raise_on_missing : bool
-        Whether to raise an error when the package is missing or to simply 
+        Whether to raise an error when the package is missing or to simply
         return None.
 
     Returns
     -------
     module : module
-        The module if importing was successful, None if 
+        The module if importing was successful, None if
         :attr:`raise_on_missing` is False.
 
     Raises

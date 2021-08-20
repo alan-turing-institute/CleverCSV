@@ -9,8 +9,8 @@ Author: Gertjan van den Burg
 """
 
 import csv
-import json
 import functools
+import json
 
 
 @functools.total_ordering
@@ -18,8 +18,8 @@ class SimpleDialect(object):
     """
     The simplified dialect object.
 
-    For the delimiter, quotechar, and escapechar the empty string means no 
-    delimiter/quotechar/escapechar in the file. None is used to mark it 
+    For the delimiter, quotechar, and escapechar the empty string means no
+    delimiter/quotechar/escapechar in the file. None is used to mark it
     undefined.
 
     Parameters
@@ -103,14 +103,13 @@ class SimpleDialect(object):
         return d
 
     def serialize(self):
-        """ Serialize dialect to a JSON object """
+        """Serialize dialect to a JSON object"""
         return json.dumps(self.to_dict())
 
     @classmethod
     def deserialize(cls, obj):
-        """ Deserialize dialect from a JSON object """
+        """Deserialize dialect from a JSON object"""
         return cls.from_dict(json.loads(obj))
-
 
     def __repr__(self):
         return "SimpleDialect(%r, %r, %r)" % (

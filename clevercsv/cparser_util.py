@@ -7,7 +7,8 @@ Python utility functions that wrap the C parser.
 
 import io
 
-from .cparser import Parser, Error as ParserError
+from .cparser import Error as ParserError
+from .cparser import Parser
 from .dialect import SimpleDialect
 from .exceptions import Error
 
@@ -17,7 +18,7 @@ _FIELD_SIZE_LIMIT = 128 * 1024
 def field_size_limit(*args, **kwargs):
     """Get/Set the limit to the field size.
 
-    This function is adapted from the one in the Python CSV module. See the 
+    This function is adapted from the one in the Python CSV module. See the
     documentation there.
     """
     global _FIELD_SIZE_LIMIT
@@ -53,27 +54,27 @@ def parse_data(
         The data of the CSV file as an iterable
 
     dialect : SimpleDialect
-        The dialect to use for the parsing. If None, the dialect with each 
+        The dialect to use for the parsing. If None, the dialect with each
         component set to the empty string is used.
 
     delimiter : str
-        The delimiter to use. If not None, overwrites the delimiter in the 
+        The delimiter to use. If not None, overwrites the delimiter in the
         dialect.
 
     quotechar : str
-        The quote character to use. If not None, overwrites the quote character 
+        The quote character to use. If not None, overwrites the quote character
         in the dialect.
 
     escapechar : str
-        The escape character to use. If not None, overwrites the escape 
+        The escape character to use. If not None, overwrites the escape
         character in the dialect.
 
     strict : bool
-        Enable strict mode or not. If not None, overwrites the strict mode set 
+        Enable strict mode or not. If not None, overwrites the strict mode set
         in the dialect.
 
     return_quoted : bool
-        For each cell, return a tuple "(field, is_quoted)" where the second 
+        For each cell, return a tuple "(field, is_quoted)" where the second
         element indicates whether the cell was a quoted cell or not.
 
     Yields
@@ -112,5 +113,5 @@ def parse_data(
 
 
 def parse_string(data, *args, **kwargs):
-    """ Utility for when the CSV file is encoded as a single string """
+    """Utility for when the CSV file is encoded as a single string"""
     return parse_data(io.StringIO(data, newline=""), *args, **kwargs)

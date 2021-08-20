@@ -14,8 +14,8 @@ import unicodedata
 def is_potential_escapechar(char, encoding, block_char=None):
     """Check if a character is a potential escape character.
 
-    A character is considered a potential escape character if it is in the 
-    "Punctuation, Other" Unicode category and in the list of blocked 
+    A character is considered a potential escape character if it is in the
+    "Punctuation, Other" Unicode category and in the list of blocked
     characters.
 
     Parameters
@@ -27,8 +27,8 @@ def is_potential_escapechar(char, encoding, block_char=None):
         The encoding of the character
 
     block_char : iterable
-        Characters that are in the Punctuation Other category but that should 
-        not be considered as escape character. If None, the default set is 
+        Characters that are in the Punctuation Other category but that should
+        not be considered as escape character. If None, the default set is
         used, equal to::
 
         ["!", "?", '"', "'", ".", ",", ";", ":", "%", "*", "&", "#"

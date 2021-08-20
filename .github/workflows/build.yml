@@ -2,13 +2,28 @@ name: build
 
 on:
   push:
+    branches:
+      - master
   pull_request:
+    branches:
+      - master
   schedule:
-    - cron: 53 18 * * */7
+    - cron: 53 18 */10 * *
 
 jobs:
+  code-quality:
+    name: Code quality checks for CleverCSV
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run black
+        uses: psf/black@stable
+
+      - name: Run isort
+        uses: jamescurtin/isort-action@master
+
   python-test:
-    name: Unit tests for Python package
+    needs: [code-quality]
+    name: Unit tests for CleverCSV
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

@@ -8,15 +8,17 @@ Author: G.J.J. van den Burg
 """
 
 import argparse
-import chardet
-import clevercsv
 import gzip
 import json
 import multiprocessing
 import os
-import termcolor
 import time
 import warnings
+
+import chardet
+import termcolor
+
+import clevercsv
 
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 SOURCE_DIR = os.path.join(THIS_DIR, "data")
@@ -94,7 +96,7 @@ def run_with_timeout(args, kwargs, limit):
     p.join(limit)
     if p.is_alive():
         p.terminate()
-        return None, True, None, float('nan')
+        return None, True, None, float("nan")
     return (
         return_dict["dialect"],
         return_dict["error"],
@@ -161,7 +163,7 @@ def clear_output_files(partial):
             LOG_FAILED_PARTIAL,
             LOG_ERROR_PARTIAL,
             LOG_METHOD_PARTIAL,
-            LOG_RUNTIME_PARTIAL
+            LOG_RUNTIME_PARTIAL,
         ],
         False: [LOG_SUCCESS, LOG_FAILED, LOG_ERROR, LOG_METHOD, LOG_RUNTIME],
     }

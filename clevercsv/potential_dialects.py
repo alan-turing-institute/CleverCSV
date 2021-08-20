@@ -9,13 +9,14 @@ Author: Gertjan van den Burg
 
 import codecs
 import itertools
-import regex
 import unicodedata
 
+import regex
+
+from .detect_type import PATTERNS
 from .dialect import SimpleDialect
 from .escape import is_potential_escapechar
 from .utils import pairwise
-from .detect_type import PATTERNS
 
 
 def get_dialects(
@@ -23,16 +24,16 @@ def get_dialects(
 ):
     """Return the possible dialects for the given data.
 
-    We consider as escape characters those characters for which 
-    is_potential_escapechar() is True and that occur at least once before a 
+    We consider as escape characters those characters for which
+    is_potential_escapechar() is True and that occur at least once before a
     quote character or delimiter in the dialect.
 
-    One may wonder if self-escaping is an issue here (i.e. "\\\\", two times 
-    backslash). It is not. In a file where a single backslash is desired and 
-    escaping with a backslash is used, then it only makes sense to do this in a 
-    file where the backslash is already used as an escape character (in which 
-    case we include it). If it is never used as escape for the delimiter or 
-    quotechar, then it is not necessary to self-escape. This is an assumption, 
+    One may wonder if self-escaping is an issue here (i.e. "\\\\", two times
+    backslash). It is not. In a file where a single backslash is desired and
+    escaping with a backslash is used, then it only makes sense to do this in a
+    file where the backslash is already used as an escape character (in which
+    case we include it). If it is never used as escape for the delimiter or
+    quotechar, then it is not necessary to self-escape. This is an assumption,
     but it holds in general and it reduces noise.
 
     Parameters
@@ -44,13 +45,13 @@ def get_dialects(
         The encoding of the file
 
     delimiters: iterable
-        Set of delimiters to consider. See :func:`get_delimiters` for more 
+        Set of delimiters to consider. See :func:`get_delimiters` for more
         info.
 
     test_masked_by_quotes : bool
-        Remove dialects where the delimiter is always masked by the quote 
-        character. Enabling this typically removes a number of potential 
-        dialects from the list, which can remove false positives. It however 
+        Remove dialects where the delimiter is always masked by the quote
+        character. Enabling this typically removes a number of potential
+        dialects from the list, which can remove false positives. It however
         not a very fast operation, so it is disabled by default.
 
     Returns
@@ -113,8 +114,8 @@ def unicode_category(x, encoding=None):
 
 
 def filter_urls(data):
-    """Filter URLs from the data """
-    pat = PATTERNS['url']
+    """Filter URLs from the data"""
+    pat = PATTERNS["url"]
     return regex.sub(pat, "U", data, count=0)
 
 
@@ -123,11 +124,11 @@ def get_delimiters(
 ):
     """Get potential delimiters
 
-    The set of potential delimiters is constructed as follows. For each unique 
-    character of the file, we check if its Unicode character category is in the 
-    set ``block_cat`` of prohibited categories.  If it is, we don't allow it to 
-    be a delimiter, with the exception of Tab (which is in the Control 
-    category).  We furthermore block characters in :attr:`block_char` from 
+    The set of potential delimiters is constructed as follows. For each unique
+    character of the file, we check if its Unicode character category is in the
+    set ``block_cat`` of prohibited categories.  If it is, we don't allow it to
+    be a delimiter, with the exception of Tab (which is in the Control
+    category).  We furthermore block characters in :attr:`block_char` from
     being delimiters.
 
     Parameters
@@ -139,15 +140,15 @@ def get_delimiters(
         The encoding of the file
 
     delimiters: iterable
-        Allowed delimiters. If provided, it overrides the block_cat/block_char 
-        mechanism and only the provided characters will be considered 
-        delimiters (if they occur in the file). If None, all characters can be 
-        considered delimiters subject to the :attr:`block_cat` and 
+        Allowed delimiters. If provided, it overrides the block_cat/block_char
+        mechanism and only the provided characters will be considered
+        delimiters (if they occur in the file). If None, all characters can be
+        considered delimiters subject to the :attr:`block_cat` and
         :attr:`block_char` parameters.
 
     block_cat: list
-        List of Unicode categories (2-letter abbreviations) for characters that 
-        should not be considered as delimiters. If None, the following default 
+        List of Unicode categories (2-letter abbreviations) for characters that
+        should not be considered as delimiters. If None, the following default
         set is used::
 
         ["Lu", "Ll", "Lt", "Lm", "Lo", "Nd", "Nl", "No", "Ps", "Pe", "Co"]
@@ -198,7 +199,7 @@ def get_delimiters(
 def get_quotechars(data, quote_chars=None):
     """Get potential quote characters
 
-    Quote characters are those that occur in the ``quote_chars`` set and are 
+    Quote characters are those that occur in the ``quote_chars`` set and are
     found at least once in the file.
 
     Parameters
@@ -208,7 +209,7 @@ def get_quotechars(data, quote_chars=None):
         The data of the file as a string
 
     quote_chars: iterable
-        Characters that should be considered quote characters. If it is None, 
+        Characters that should be considered quote characters. If it is None,
         the following default set is used::
 
         ["'", '"', "~", "`"]
@@ -217,7 +218,7 @@ def get_quotechars(data, quote_chars=None):
     Returns
     -------
     quotes: set
-        Set of potential quote characters. The empty string is added by 
+        Set of potential quote characters. The empty string is added by
         default.
 
     """
@@ -231,7 +232,7 @@ def get_quotechars(data, quote_chars=None):
 def masked_by_quotechar(data, quotechar, escapechar, test_char):
     """Test if a character is always masked by quote characters
 
-    This function tests if a given character is always within quoted segments 
+    This function tests if a given character is always within quoted segments
     (defined by the quote character). Double quoting and escaping is supported.
 
     Parameters
@@ -251,7 +252,7 @@ def masked_by_quotechar(data, quotechar, escapechar, test_char):
     Returns
     -------
     masked: bool
-        Returns True if the test character is never outside quoted segements, 
+        Returns True if the test character is never outside quoted segements,
         False otherwise.
 
     """

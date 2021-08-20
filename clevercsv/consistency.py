@@ -48,8 +48,9 @@ def detect_dialect_consistency(
 
     # Get potential dialects
     dialects = get_dialects(data, delimiters=delimiters)
-    return detect_consistency_dialects(data, dialects, skip=skip, 
-            verbose=verbose)
+    return detect_consistency_dialects(
+        data, dialects, skip=skip, verbose=verbose
+    )
 
 
 def detect_consistency_dialects(data, dialects, skip=True, verbose=False):

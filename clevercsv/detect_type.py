@@ -8,6 +8,7 @@ Author: Gertjan van den Burg
 """
 
 import json
+
 import regex
 
 from .cparser_util import parse_string
@@ -296,7 +297,7 @@ class TypeDetector(object):
     def is_json_obj(self, cell: str, **kwargs) -> bool:
         if self.strip_whitespace:
             cell = cell.strip(" ")
-        if not (cell.startswith('{') and cell.endswith('}')):
+        if not (cell.startswith("{") and cell.endswith("}")):
             return False
         try:
             _ = json.loads(cell)

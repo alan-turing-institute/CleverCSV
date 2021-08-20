@@ -12,11 +12,12 @@ Date: 2019-07-23
 
 """
 
-import colorama
 import os
 import sys
 import tempfile
 import webbrowser
+
+import colorama
 
 URLS = {
     "RTD": "https://readthedocs.org/projects/clevercsv/builds/",

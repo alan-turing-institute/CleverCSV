@@ -15,7 +15,7 @@ def tie_breaker(data, dialects):
     """
     Break ties between dialects.
 
-    This function is used to break ties where possible between two, three, or 
+    This function is used to break ties where possible between two, three, or
     four dialects that receive the same value for the data consistency measure.
 
     Parameters
@@ -92,18 +92,18 @@ def reduce_pairwise(data, dialects):
 def break_ties_two(data, A, B):
     """Break ties between two dialects.
 
-    This function breaks ties between two dialects that give the same score. We 
+    This function breaks ties between two dialects that give the same score. We
     distinguish several cases:
 
-    1. If delimiter and escapechar are the same and one of the quote characters 
-    is the empty string. We parse the file with both dialects and check if the 
-    parsing result is the same. If it is, the correct dialect is the one with  
+    1. If delimiter and escapechar are the same and one of the quote characters
+    is the empty string. We parse the file with both dialects and check if the
+    parsing result is the same. If it is, the correct dialect is the one with
     no quotechar, otherwise it's the other one.
-    2. If quotechar and escapechar are the same and the delimiters are comma 
-    and space, then we go for comma. Alternatively, if either of the delimiters 
+    2. If quotechar and escapechar are the same and the delimiters are comma
+    and space, then we go for comma. Alternatively, if either of the delimiters
     is the hyphen, we assume it's the other dialect.
-    3. If the delimiter and quotechar is the same and one dialect uses the 
-    escapchar and the other doesn't. We break this tie by checking if the 
+    3. If the delimiter and quotechar is the same and one dialect uses the
+    escapchar and the other doesn't. We break this tie by checking if the
     escapechar has an effect and if it occurs an even or odd number of times.
 
     If it's none of these cases, we don't break the tie and return None.
@@ -240,13 +240,13 @@ def break_ties_two(data, A, B):
 def break_ties_three(data, A, B, C):
     """Break ties between three dialects.
 
-    If the delimiters and the escape characters are all equal, then we look for 
-    the dialect that has no quotechar. The tie is broken by calling 
-    :func:`break_ties_two` for the dialect without quotechar and another 
+    If the delimiters and the escape characters are all equal, then we look for
+    the dialect that has no quotechar. The tie is broken by calling
+    :func:`break_ties_two` for the dialect without quotechar and another
     dialect that gives the same parsing result.
 
-    If only the delimiter is the same for all dialects then use 
-    :func:`break_ties_two` on the dialects that do not have a quotechar, 
+    If only the delimiter is the same for all dialects then use
+    :func:`break_ties_two` on the dialects that do not have a quotechar,
     provided there are only two of these.
 
     Parameters
@@ -344,9 +344,9 @@ def break_ties_three(data, A, B, C):
 def break_ties_four(data, dialects):
     """Break ties between four dialects.
 
-    This function works by breaking the ties between pairs of dialects that 
-    result in the same parsing result (if any). If this reduces the number of 
-    dialects, then :func:`break_ties_three` or :func:`break_ties_two` is used, 
+    This function works by breaking the ties between pairs of dialects that
+    result in the same parsing result (if any). If this reduces the number of
+    dialects, then :func:`break_ties_three` or :func:`break_ties_two` is used,
     otherwise, the tie can't be broken.
 
     Ties are only broken if all dialects have the same delimiter.

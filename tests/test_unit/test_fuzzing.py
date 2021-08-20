@@ -5,8 +5,9 @@ Unit tests based on fuzzing
 
 """
 
-import clevercsv
 import unittest
+
+import clevercsv
 
 
 class FuzzingTestCase(unittest.TestCase):

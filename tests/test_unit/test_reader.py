@@ -7,8 +7,9 @@ Author: Gertjan van den Burg
 
 """
 
-import clevercsv
 import unittest
+
+import clevercsv
 
 
 class ReaderTestCase(unittest.TestCase):
