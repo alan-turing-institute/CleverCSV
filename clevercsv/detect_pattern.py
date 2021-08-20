@@ -46,7 +46,7 @@ def pattern_score(data, dialect, eps=DEFAULT_EPS_PAT):
 def make_abstraction(data, dialect):
     """Create an abstract representation of the CSV file based on the dialect.
 
-    This function constructs the basic abstraction used to compute the row 
+    This function constructs the basic abstraction used to compute the row
     patterns.
 
     Parameters
@@ -75,8 +75,8 @@ def make_abstraction(data, dialect):
 def merge_with_quotechar(S, dialect):
     """Merge quoted blocks in the abstraction
 
-    This function takes the abstract representation and merges quoted blocks 
-    (``QC...CQ``) to a single cell (``C``). The function takes nested quotes 
+    This function takes the abstract representation and merges quoted blocks
+    (``QC...CQ``) to a single cell (``C``). The function takes nested quotes
     into account.
 
     Parameters
@@ -126,9 +126,9 @@ def merge_with_quotechar(S, dialect):
 def fill_empties(abstract):
     """Fill empty cells in the abstraction
 
-    The way the row patterns are constructed assumes that empty cells are 
-    marked by the letter `C` as well. This function fill those in. The function 
-    also removes duplicate occurrances of ``CC`` and replaces these  with 
+    The way the row patterns are constructed assumes that empty cells are
+    marked by the letter `C` as well. This function fill those in. The function
+    also removes duplicate occurrances of ``CC`` and replaces these  with
     ``C``.
 
     Parameters
@@ -165,8 +165,7 @@ def fill_empties(abstract):
 
 
 def strip_trailing(abstract):
-    """Strip trailing row separator from abstraction.
-    """
+    """Strip trailing row separator from abstraction."""
     while abstract.endswith("R"):
         abstract = abstract[:-1]
     return abstract

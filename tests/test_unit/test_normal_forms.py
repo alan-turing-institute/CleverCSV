@@ -10,13 +10,11 @@ Author: Gertjan van den Burg
 import unittest
 
 from clevercsv.dialect import SimpleDialect
-from clevercsv.normal_form import (
-    is_form_1,
-    is_form_2,
-    is_form_3,
-    is_form_4,
-    is_form_5,
-)
+from clevercsv.normal_form import is_form_1
+from clevercsv.normal_form import is_form_2
+from clevercsv.normal_form import is_form_3
+from clevercsv.normal_form import is_form_4
+from clevercsv.normal_form import is_form_5
 
 
 class NormalFormTestCase(unittest.TestCase):

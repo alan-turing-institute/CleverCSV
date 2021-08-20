@@ -13,6 +13,7 @@ Author: Gertjan van den Burg
 """
 
 import itertools
+
 import regex
 
 from .dialect import SimpleDialect
@@ -26,7 +27,7 @@ QUOTECHARS = ["'", '"']
 def detect_dialect_normal(
     data, encoding="UTF-8", delimiters=None, verbose=False
 ):
-    """ Detect the normal form of a file from a given sample
+    """Detect the normal form of a file from a given sample
 
     Parameters
     ----------
@@ -39,7 +40,7 @@ def detect_dialect_normal(
     Returns
     -------
     dialect : SimpleDialect
-        The dialect detected using normal forms, or None if no such dialect can 
+        The dialect detected using normal forms, or None if no such dialect can
         be found.
     """
     if delimiters is None:

@@ -11,7 +11,8 @@ Author: Gertjan van den Burg
 import csv
 
 from . import field_size_limit
-from .cparser import Parser, Error as ParserError
+from .cparser import Error as ParserError
+from .cparser import Parser
 from .dialect import SimpleDialect
 from .exceptions import Error
 

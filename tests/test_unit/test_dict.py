@@ -8,10 +8,11 @@ CleverCSV's behavior differs.
 
 """
 
-import clevercsv
 import io
 import tempfile
 import unittest
+
+import clevercsv
 
 
 class DictTestCase(unittest.TestCase):
@@ -244,6 +245,7 @@ class DictTestCase(unittest.TestCase):
 
     # End tests added for CleverCSV #
     #################################
+
 
 if __name__ == "__main__":
     unittest.main()

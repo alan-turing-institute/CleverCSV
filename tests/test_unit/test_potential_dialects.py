@@ -9,12 +9,10 @@ Author: Gertjan van den Burg
 
 import unittest
 
-from clevercsv.potential_dialects import (
-    filter_urls,
-    get_delimiters,
-    get_quotechars,
-    masked_by_quotechar,
-)
+from clevercsv.potential_dialects import filter_urls
+from clevercsv.potential_dialects import get_delimiters
+from clevercsv.potential_dialects import get_quotechars
+from clevercsv.potential_dialects import masked_by_quotechar
 
 
 class PotentialDialectTestCase(unittest.TestCase):

@@ -8,12 +8,14 @@ Author: Gertjan van den Burg
 """
 
 import os
-import pandas as pd
 import tempfile
 import types
 import unittest
 
-from clevercsv import wrappers, writer
+import pandas as pd
+
+from clevercsv import wrappers
+from clevercsv import writer
 from clevercsv.dialect import SimpleDialect
 from clevercsv.exceptions import NoDetectionResult
 
@@ -35,7 +37,7 @@ class WrappersTestCase(unittest.TestCase):
             os.unlink(tmpfname)
 
     def _write_tmpfile(self, table, dialect):
-        """ Write a table to a temporary file using specified dialect """
+        """Write a table to a temporary file using specified dialect"""
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         tmpid = os.fdopen(tmpfd, "w")
         w = writer(tmpid, dialect=dialect)
@@ -223,8 +225,8 @@ class WrappersTestCase(unittest.TestCase):
         table = [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]]
         exp = "Å,B,C\r\n1,2,3\r\n4,5,6\r\n"
         with self.subTest(name="encoding_1"):
-            # Not specifying an encoding here could potentially fail on 
-            # Windows, due to open() defaulting to 
+            # Not specifying an encoding here could potentially fail on
+            # Windows, due to open() defaulting to
             # locale.getpreferredencoding() (see gh-27).
             self._write_test(table, exp, encoding="utf-8")
 

@@ -362,8 +362,9 @@ def detect_dialect(
     enc = encoding or get_encoding(filename)
     with open(filename, "r", newline="", encoding=enc) as fp:
         data = fp.read(num_chars) if num_chars else fp.read()
-        dialect = Detector().detect(data, verbose=verbose, method=method, 
-                skip=skip)
+        dialect = Detector().detect(
+            data, verbose=verbose, method=method, skip=skip
+        )
     return dialect
 
 

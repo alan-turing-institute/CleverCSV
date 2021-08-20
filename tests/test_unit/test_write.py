@@ -8,9 +8,10 @@ Author: Gertjan van den Burg
 """
 
 
-import clevercsv
 import tempfile
 import unittest
+
+import clevercsv
 
 from clevercsv.dialect import SimpleDialect
 

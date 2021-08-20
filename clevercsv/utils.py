@@ -7,8 +7,9 @@ Author: Gertjan van den Burg
 
 """
 
-import chardet
 import hashlib
+
+import chardet
 
 
 def pairwise(iterable):

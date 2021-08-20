@@ -9,8 +9,9 @@ Author: Gertjan van den Burg
 
 import unittest
 
+from clevercsv.detect_type import TypeDetector
+from clevercsv.detect_type import type_score
 from clevercsv.dialect import SimpleDialect
-from clevercsv.detect_type import TypeDetector, type_score
 
 
 class TypeDetectorTestCase(unittest.TestCase):
