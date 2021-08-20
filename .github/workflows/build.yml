@@ -2,7 +2,11 @@ name: build
 
 on:
   push:
+    branches:
+      - master
   pull_request:
+    branches:
+      - master
   schedule:
     - cron: 53 18 */10 * *
 
