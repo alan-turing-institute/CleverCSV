@@ -256,10 +256,12 @@ class TypeDetectorTestCase(unittest.TestCase):
             "http://proceedings.mlr.press/v48/zhangf16.html",
             "https://papers.nips.cc/paper/7796-middle-out-decoding",
             "http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.89.6548",
+            "http://localhost:81/test/web/app_dev.php/fr/intranet/admin/client/2"
         ]
         for url in yes_url:
             with self.subTest(url=url):
                 self.assertTrue(self.td.is_url(url))
+
         no_url = [
             "//",
             "///",
