@@ -134,7 +134,8 @@ escapechar ="""
         tester = CommandTester(command)
         tester.execute(tmpfname)
 
-        exp = f"""\
+        # for chardet
+        exp_1 = f"""\
 
 # Code generated with CleverCSV version {__version__}
 
@@ -145,9 +146,22 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
     rows = list(reader)
 
 """
+
+        # for cChardet
+        exp_2 = f"""\
+
+# Code generated with CleverCSV version {__version__}
+
+import clevercsv
+
+with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
+    reader = clevercsv.reader(fp, delimiter=";", quotechar="", escapechar="")
+    rows = list(reader)
+
+"""
         try:
             output = tester.io.fetch_output()
-            self.assertEqual(exp, output)
+            self.assertIn(output, [exp_1, exp_2])
         finally:
             os.unlink(tmpfname)
 
@@ -187,7 +201,8 @@ df = clevercsv.read_dataframe("{tmpfname}", delimiter=";", quotechar="", escapec
         tester = CommandTester(command)
         tester.execute(tmpfname)
 
-        exp = f"""\
+        # for chardet
+        exp_1 = f"""\
 
 # Code generated with CleverCSV version {__version__}
 
@@ -198,9 +213,22 @@ with open("{tmpfname}", "r", newline="", encoding="{encoding}") as fp:
     rows = list(reader)
 
 """
+
+        # for cChardet
+        exp_2 = f"""\
+
+# Code generated with CleverCSV version {__version__}
+
+import clevercsv
+
+with open("{tmpfname}", "r", newline="", encoding="WINDOWS-1252") as fp:
+    reader = clevercsv.reader(fp, delimiter=";", quotechar="", escapechar="")
+    rows = list(reader)
+
+"""
         try:
             output = tester.io.fetch_output()
-            self.assertEqual(exp, output)
+            self.assertIn(output, [exp_1, exp_2])
         finally:
             os.unlink(tmpfname)
 
@@ -215,7 +243,8 @@ with open("{tmpfname}", "r", newline="", encoding="{encoding}") as fp:
         tester = CommandTester(command)
         tester.execute(tmpfname)
 
-        exp = f"""\
+        # for chardet
+        exp_1 = f"""\
 
 # Code generated with CleverCSV version {__version__}
 
@@ -226,9 +255,22 @@ with open("{tmpfname}", "r", newline="", encoding="{encoding}") as fp:
     rows = list(reader)
 
 """
+
+        # for cChardet
+        exp_2 = f"""\
+
+# Code generated with CleverCSV version {__version__}
+
+import clevercsv
+
+with open("{tmpfname}", "r", newline="", encoding="WINDOWS-1252") as fp:
+    reader = clevercsv.reader(fp, delimiter=",", quotechar="", escapechar="\\\\")
+    rows = list(reader)
+
+"""
         try:
             output = tester.io.fetch_output()
-            self.assertEqual(exp, output)
+            self.assertIn(output, [exp_1, exp_2])
         finally:
             os.unlink(tmpfname)
 
@@ -243,7 +285,8 @@ with open("{tmpfname}", "r", newline="", encoding="{encoding}") as fp:
         tester = CommandTester(command)
         tester.execute(tmpfname)
 
-        exp = f"""\
+        # for chardet
+        exp_1 = f"""\
 
 # Code generated with CleverCSV version {__version__}
 
@@ -254,9 +297,23 @@ with open("{tmpfname}", "r", newline="", encoding="ascii") as fp:
     rows = list(reader)
 
 """
+
+        # for cChardet
+        exp_2 = f"""\
+
+# Code generated with CleverCSV version {__version__}
+
+import clevercsv
+
+with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
+    reader = clevercsv.reader(fp, delimiter="\\t", quotechar="", escapechar="")
+    rows = list(reader)
+
+"""
+
         try:
             output = tester.io.fetch_output()
-            self.assertEqual(exp, output)
+            self.assertIn(output, [exp_1, exp_2])
         finally:
             os.unlink(tmpfname)
 

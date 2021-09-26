@@ -20,6 +20,7 @@ VERSIONS = {
     "clikit": "0.4.0",
     "tabview": "1.4",
     "pandas": "0.24.1",
+    "cchardet": "2.1.7"
 }
 
 

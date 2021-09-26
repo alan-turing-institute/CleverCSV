@@ -30,6 +30,7 @@ full_require = [
     "tabview>=1.4",
     "cleo>=0.7.6",
     "clikit>=0.4.0",
+    "cchardet>=2.1.7"
 ]
 
 docs_require = ["sphinx", "m2r"]
