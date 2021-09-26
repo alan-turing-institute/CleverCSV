@@ -76,6 +76,14 @@ clevercsv.dict\_read\_write module
    :undoc-members:
    :show-inheritance:
 
+clevercsv.encoding module
+-------------------------
+
+.. automodule:: clevercsv.encoding
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 clevercsv.escape module
 -----------------------
 
