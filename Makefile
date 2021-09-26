@@ -83,7 +83,7 @@ doc: venv ## Build documentation with Sphinx
 # Virtual environment #
 #######################
 
-.PHONY: venv
+.PHONY: venv clean_venv
 
 venv: $(VENV_DIR)/bin/activate
 
@@ -92,18 +92,20 @@ $(VENV_DIR)/bin/activate:
 	source $(VENV_DIR)/bin/activate && pip install -e .[dev]
 	touch $(VENV_DIR)/bin/activate
 
+clean_venv:
+	rm -rf $(VENV_DIR)
+
 ############
 # Clean up #
 ############
 
 .PHONY: clean
 
-clean: ## Clean build dist and egg directories left after install
+clean: clean_venv ## Clean build dist and egg directories left after install
 	rm -rf ./dist
 	rm -rf ./build
 	rm -rf ./$(PACKAGE).egg-info
 	rm -rf ./cover
-	rm -rf $(VENV_DIR)
 	rm -f MANIFEST
 	rm -f ./$(PACKAGE)/*.so
 	rm -f ./*_valgrind.log*
