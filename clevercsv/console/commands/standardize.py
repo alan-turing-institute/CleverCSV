@@ -7,8 +7,9 @@ import shutil
 
 from cleo import Command
 
+from clevercsv.encoding import get_encoding
 from clevercsv.read import reader
-from clevercsv.utils import get_encoding, sha1sum
+from clevercsv.utils import sha1sum
 from clevercsv.wrappers import detect_dialect
 from clevercsv.write import writer
 

@@ -2,7 +2,7 @@
 
 from cleo import Command
 
-from clevercsv.utils import get_encoding
+from clevercsv.encoding import get_encoding
 from clevercsv.wrappers import detect_dialect
 
 from ._utils import parse_int, generate_code

@@ -13,9 +13,9 @@ import warnings
 from ._optional import import_optional_dependency
 from .detect import Detector
 from .dict_read_write import DictReader
+from .encoding import get_encoding
 from .exceptions import NoDetectionResult
 from .read import reader
-from .utils import get_encoding
 from .write import writer
 
 
