@@ -18,6 +18,7 @@ DEFAULT_EPS_TYPE = 1e-10
 # Used this site: https://unicode-search.net/unicode-namesearch.pl
 # Specials allowed in unicode_alphanum regex if is_quoted = False
 SPECIALS_ALLOWED = [
+    "-",
     "_",
     # Periods
     "\u002e",
@@ -121,16 +122,14 @@ class TypeDetector(object):
         self.patterns = PATTERNS.copy()
         self.strip_whitespace = strip_whitespace
         self._compile_regexes()
+        self._register_type_tests()
 
     def _compile_regexes(self):
         for key, value in self.patterns.items():
             self.patterns[key] = regex.compile(value)
 
-    def is_known_type(self, cell, is_quoted=False):
-        return not self.detect_type(cell, is_quoted=is_quoted) is None
-
-    def detect_type(self, cell, is_quoted=False):
-        type_tests = [
+    def _register_type_tests(self):
+        self._type_tests = [
             ("empty", self.is_empty),
             ("url", self.is_url),
             ("email", self.is_email),
@@ -139,22 +138,30 @@ class TypeDetector(object):
             ("time", self.is_time),
             ("percentage", self.is_percentage),
             ("currency", self.is_currency),
-            ("unicode_alphanum", self.is_unicode_alphanum),
             ("unix_path", self.is_unix_path),
             ("nan", self.is_nan),
             ("date", self.is_date),
             ("datetime", self.is_datetime),
+            ("unicode_alphanum", self.is_unicode_alphanum),
             ("bytearray", self.is_bytearray),
             ("json", self.is_json_obj),
         ]
-        for name, func in type_tests:
+
+    def list_known_types(self):
+        return [tt[0] for tt in self._type_tests]
+
+    def is_known_type(self, cell, is_quoted=False):
+        return not self.detect_type(cell, is_quoted=is_quoted) is None
+
+    def detect_type(self, cell, is_quoted=False):
+        cell = cell.strip() if self.strip_whitespace else cell
+        for name, func in self._type_tests:
             if func(cell, is_quoted=is_quoted):
                 return name
         return None
 
     def _run_regex(self, cell, patname):
-        if self.strip_whitespace:
-            cell = cell.strip(" ")
+        cell = cell.strip() if self.strip_whitespace else cell
         pat = self.patterns.get(patname, None)
         match = pat.fullmatch(cell)
         return match is not None
@@ -186,6 +193,7 @@ class TypeDetector(object):
 
     def is_date(self, cell, **kwargs):
         # This function assumes the cell is not a number.
+        cell = cell.strip() if self.strip_whitespace else cell
         if not cell:
             return False
         if not cell[0].isdigit():
@@ -193,6 +201,7 @@ class TypeDetector(object):
         return self._run_regex(cell, "date")
 
     def is_time(self, cell, **kwargs):
+        cell = cell.strip() if self.strip_whitespace else cell
         if not cell:
             return False
         if not cell[0].isdigit():
@@ -205,18 +214,12 @@ class TypeDetector(object):
         )
 
     def is_empty(self, cell, **kwargs):
-        if self.strip_whitespace:
-            cell = cell.strip(" ")
         return cell == ""
 
     def is_percentage(self, cell, **kwargs):
-        if self.strip_whitespace:
-            cell = cell.strip(" ")
         return cell.endswith("%") and self.is_number(cell.rstrip("%"))
 
     def is_currency(self, cell, **kwargs):
-        if self.strip_whitespace:
-            cell = cell.strip(" ")
         pat = self.patterns.get("currency", None)
         m = pat.fullmatch(cell)
         if m is None:
@@ -230,8 +233,10 @@ class TypeDetector(object):
         # Takes care of cells with '[date] [time]' and '[date]T[time]' (iso)
         if not cell:
             return False
+
         if not cell[0].isdigit():
             return False
+
         if " " in cell:
             parts = cell.split(" ")
             if len(parts) > 2:
@@ -277,26 +282,17 @@ class TypeDetector(object):
         return False
 
     def is_nan(self, cell, **kwargs):
-        if self.strip_whitespace:
-            cell = cell.strip(" ")
-        # other forms (na and nan) are caught by unicode_alphanum
-        if cell.lower() == "n/a":
+        if cell.lower() in ["n/a", "na", "nan"]:
             return True
         return False
 
     def is_unix_path(self, cell, **kwargs):
-        if self.strip_whitespace:
-            cell = cell.strip(" ")
         return self._run_regex(cell, "unix_path")
 
     def is_bytearray(self, cell: str, **kwargs) -> bool:
-        if self.strip_whitespace:
-            cell = cell.strip(" ")
         return cell.startswith("bytearray(b") and cell.endswith(")")
 
     def is_json_obj(self, cell: str, **kwargs) -> bool:
-        if self.strip_whitespace:
-            cell = cell.strip(" ")
         if not (cell.startswith("{") and cell.endswith("}")):
             return False
         try:

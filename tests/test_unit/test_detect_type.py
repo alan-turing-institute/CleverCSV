@@ -177,7 +177,7 @@ class TypeDetectorTestCase(unittest.TestCase):
     # DATETIME
 
     def test_datetime(self):
-        yes_dt = ["2019-01-12T04:01:23Z"]
+        yes_dt = ["2019-01-12T04:01:23Z", "2021-09-26T12:13:31+01:00"]
         for dt in yes_dt:
             with self.subTest(dt=dt):
                 self.assertTrue(self.td.is_datetime(dt))
@@ -256,7 +256,7 @@ class TypeDetectorTestCase(unittest.TestCase):
             "http://proceedings.mlr.press/v48/zhangf16.html",
             "https://papers.nips.cc/paper/7796-middle-out-decoding",
             "http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.89.6548",
-            "http://localhost:81/test/web/app_dev.php/fr/intranet/admin/client/2"
+            "http://localhost:81/test/web/app_dev.php/fr/intranet/admin/client/2",
         ]
         for url in yes_url:
             with self.subTest(url=url):
