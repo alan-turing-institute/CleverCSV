@@ -2,6 +2,16 @@
 Changelog
 =========
 
+Version 0.7.1
+-------------
+
+
+* Remove deprecated wrapper functions
+* Expand URL regex to support ``localhost:<port>`` urls
+* Minor changes to the TypeDetector API
+* Add cChardet as optional dependency (fixes 
+  `#48 <https://github.com/alan-turing-institute/CleverCSV/issues/48>`_\ )
+
 Version 0.7.0
 -------------
 

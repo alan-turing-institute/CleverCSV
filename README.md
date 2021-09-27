@@ -223,11 +223,14 @@ with open("data.csv", "r", newline="") as fp:
   rows = list(reader)
 ```
 
-For large files, you can speed up detection by supplying a smaller sample to 
-the sniffer, for instance:
+For **large files**, you can speed up detection by supplying a smaller sample 
+to the sniffer, for example:
 ```python
 dialect = clevercsv.Sniffer().sniff(fp.read(10000))
 ```
+You can also speed up encoding detection by installing 
+[cCharDet](https://github.com/PyYoshi/cChardet), it will automatically be used 
+when it is available on the system.
 
 That's the basics! If you want more details, you can look at the code of the 
 package, the test suite, or the [API 
