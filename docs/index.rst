@@ -12,6 +12,7 @@
 
    _changelog
    source/modules
+   man/index
 
 
 Indices and tables

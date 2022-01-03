@@ -26,6 +26,7 @@ author = "G.J.J. van den Burg"
 # -- General configuration ---------------------------------------------------
 
 master_doc = 'index'
+smartquotes_action = "qe"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -56,3 +57,57 @@ html_theme = "sphinx_rtd_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+# -- Options for manual page output ------------------------------------------
+
+_man_authors = ["Louis-Philippe Véronneau", author]
+
+# Man pages, they are writter to be generated directly by `rst2man` so using
+# Sphinx to build them will give weird sections, but if we ever need it it's
+# there
+
+# (source start file, name, description, authors, manual section).
+man_pages = [
+    (
+        "man/clevercsv",
+        "clevercsv",
+        "clevercsv command line interface",
+        _man_authors,
+        1,
+    ),
+    (
+        "man/clevercsv-code",
+        "clevercsv-code",
+        "clevercsv code commands",
+        _man_authors,
+        1,
+    ),
+    (
+        "man/clevercsv-detect",
+        "clevercsv-detect",
+        "clevercsv detect commands",
+        _man_authors,
+        1,
+    ),
+    (
+        "man/clevercsv-explore",
+        "clevercsv-explore",
+        "clevercsv explore commands",
+        _man_authors,
+        1,
+    ),
+    (
+        "man/clevercsv-standardize",
+        "clevercsv-standardize",
+        "clevercsv standardize commands",
+        _man_authors,
+        1,
+    ),
+    (
+        "man/clevercsv-view",
+        "clevercsv-view",
+        "clevercsv view commands",
+        _man_authors,
+        1,
+    ),
+]
