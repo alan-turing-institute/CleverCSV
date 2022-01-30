@@ -5,7 +5,8 @@ from cleo import Command
 from clevercsv.encoding import get_encoding
 from clevercsv.wrappers import detect_dialect
 
-from ._utils import parse_int, generate_code
+from ._utils import generate_code
+from ._utils import parse_int
 
 
 class CodeCommand(Command):

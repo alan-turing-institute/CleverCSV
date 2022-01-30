@@ -7,8 +7,9 @@ This file is part of CleverCSV.
 
 """
 
-import clevercsv
 from pythonfuzz.main import PythonFuzz
+
+import clevercsv
 
 
 @PythonFuzz

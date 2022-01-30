@@ -4,6 +4,7 @@
 from cleo import Command
 
 from clevercsv.wrappers import detect_dialect
+
 from ._utils import parse_int
 
 

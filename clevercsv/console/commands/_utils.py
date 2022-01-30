@@ -34,11 +34,11 @@ def generate_code(filename, dialect, encoding, use_pandas=False):
 
     enc = "None" if encoding is None else f'"{encoding}"'
     lines = base + [
-            "",
-            f'with open("{filename}", "r", newline="", encoding={enc}) as fp:',
-            "    reader = clevercsv.reader(fp, "
-            + f"delimiter={d}, quotechar={q}, escapechar={e})",
-            "    rows = list(reader)",
-            "",
+        "",
+        f'with open("{filename}", "r", newline="", encoding={enc}) as fp:',
+        "    reader = clevercsv.reader(fp, "
+        + f"delimiter={d}, quotechar={q}, escapechar={e})",
+        "    rows = list(reader)",
+        "",
     ]
     return lines

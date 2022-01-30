@@ -2,8 +2,8 @@
 
 import io
 import os
-import tempfile
 import shutil
+import tempfile
 
 from cleo import Command
 

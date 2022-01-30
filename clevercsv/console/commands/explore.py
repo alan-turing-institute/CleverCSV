@@ -7,7 +7,8 @@ from cleo import Command
 from clevercsv.encoding import get_encoding
 from clevercsv.wrappers import detect_dialect
 
-from ._utils import parse_int, generate_code
+from ._utils import generate_code
+from ._utils import parse_int
 
 
 class ExploreCommand(Command):
@@ -17,8 +18,8 @@ class ExploreCommand(Command):
     explore
         { path : The path to the CSV file }
         { --e|encoding= : Set the encoding of the CSV file. }
-        { --n|num-chars= : Limit the number of characters to read for 
-        detection. This will speed up detection for large files, but may reduce 
+        { --n|num-chars= : Limit the number of characters to read for
+        detection. This will speed up detection for large files, but may reduce
         accuracy. }
         { --p|pandas : Read file into a Pandas dataframe. }
     """

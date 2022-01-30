@@ -8,7 +8,6 @@ We overwrite the default Cleo Config because we want to simplify the UI.
 """
 
 from cleo.config import ApplicationConfig
-
 from clikit.api.args.format.argument import Argument
 from clikit.api.args.format.option import Option
 from clikit.api.event import PRE_HANDLE
@@ -27,12 +26,8 @@ from clikit.resolver.help_resolver import HelpResolver
 class Config(ApplicationConfig):
     def configure(self):
         self.set_io_factory(self.create_io)
-        self.add_event_listener(
-            PRE_RESOLVE, self.resolve_help_command
-        )
-        self.add_event_listener(
-            PRE_HANDLE, self.print_version
-        )
+        self.add_event_listener(PRE_RESOLVE, self.resolve_help_command)
+        self.add_event_listener(PRE_HANDLE, self.print_version)
 
         self.add_option(
             "help", "h", Option.NO_VALUE, "Display this help message."

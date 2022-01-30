@@ -8,14 +8,12 @@ CleverCSV Command line application.
 from cleo import Application
 
 from .. import __version__
+from .commands import CodeCommand
+from .commands import DetectCommand
+from .commands import ExploreCommand
+from .commands import StandardizeCommand
+from .commands import ViewCommand
 from .config import Config
-from .commands import (
-    CodeCommand,
-    DetectCommand,
-    ExploreCommand,
-    StandardizeCommand,
-    ViewCommand,
-)
 
 
 def build_application():

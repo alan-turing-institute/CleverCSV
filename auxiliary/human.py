@@ -9,15 +9,16 @@ Author: Gertjan van den Burg
 """
 
 import argparse
-import chardet
 import codecs
 import gzip
 import io
 import json
-import libtmux
 import os
 import time
 import unicodedata
+
+import chardet
+import libtmux
 
 
 def get_encoding(filename):

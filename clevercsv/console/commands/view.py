@@ -26,7 +26,7 @@ class ViewCommand(Command):
     view
         { path : The path to the CSV file }
         { --e|encoding= : Set the encoding of the CSV file }
-        { --n|num-chars= : Limit the number of characters to read for 
+        { --n|num-chars= : Limit the number of characters to read for
         detection. This will speed up detection but may reduce accuracy. }
         { --t|transpose : Transpose the columns of the file before viewing. }
     """
