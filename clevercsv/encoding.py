@@ -26,7 +26,7 @@ def get_encoding(filename, try_cchardet=True):
         Path to a file
 
     try_cchardet: bool
-        Whether to run detection using cChardet if it is available. This can be 
+        Whether to run detection using cChardet if it is available. This can be
         faster, but may give different results than using chardet.
 
     Returns
