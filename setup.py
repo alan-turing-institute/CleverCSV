@@ -34,7 +34,7 @@ full_require = [
     "wilderness>=0.1.4",
 ]
 
-docs_require = ["sphinx", "m2r"]
+docs_require = ["sphinx", "m2r2"]
 test_require = full_require + []
 dev_require = ["green", "pythonfuzz", "termcolor", "sphinx_rtd_theme"]
 
