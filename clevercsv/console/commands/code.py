@@ -1,51 +1,79 @@
 # -*- coding: utf-8 -*-
 
-from cleo import Command
+import sys
+
+from wilderness import Command
 
 from clevercsv.encoding import get_encoding
 from clevercsv.wrappers import detect_dialect
 
-from ._utils import parse_int, generate_code
+from ._docs import FLAG_DESCRIPTIONS
+from ._utils import generate_code
+from ._utils import parse_int
 
 
 class CodeCommand(Command):
-    """
-    Generate Python code for importing the CSV file
 
-    code
-        { path : The path to the CSV file }
-        { --e|encoding= : Set the encoding of the CSV file. }
-        { --i|interact : Drop into a Python interactive shell. }
-        { --n|num-chars= : Limit the number of characters to read for
-        detection. This will speed up detection but may reduce accuracy. }
-        { --p|pandas : Write code that imports to a Pandas DataFrame }
-    """
+    _description = (
+        "Generate Python code for importing a given CSV file. This is "
+        "especially useful if you don't want to repeatedly detect the dialect "
+        "of the same file. Simply run:\n\n"
+        "\tclevercsv code your_csv_file.csv\n\n"
+        "and copy the generated code to a Python script."
+    )
 
-    help = """\
-The <info>code</info> command generates Python code for importing the specified 
-CSV file. This is especially useful if you don't want to repeatedly detect the 
-dialect of the same file. Simply run:
+    def __init__(self):
+        super().__init__(
+            name="code",
+            title="Generate Python code to import a CSV file",
+            description=self._description,
+            extra_sections={"CleverCSV": "Part of the CleverCSV suite"},
+        )
 
-clevercsv code yourfile.csv
+    def register(self):
+        self.add_argument("path", help="Path to the CSV file")
+        self.add_argument(
+            "-e",
+            "--encoding",
+            help="Set the encoding of the file",
+            description=FLAG_DESCRIPTIONS["encoding"],
+        )
+        self.add_argument(
+            "-n",
+            "--num-chars",
+            type=int,
+            help="Number of characters to use for detection",
+            description=FLAG_DESCRIPTIONS["num-chars"],
+        )
+        self.add_argument(
+            "-p",
+            "--pandas",
+            action="store_true",
+            help="Write code that uses a Pandas DataFrame",
+            description=(
+                "By default, this command writes a small Python script to "
+                "import the CSV file as a list of lists. By enabling this "
+                "option the script will be written such that the file will "
+                "be read as a Pandas DataFrame instead."
+            ),
+        )
 
-and copy the generated code to a Python script.
-"""
-
-    def handle(self):
-        filename = self.argument("path")
-        encoding = self.option("encoding") or get_encoding(filename)
-        num_chars = parse_int(self.option("num-chars"), "num-chars")
+    def handle(self) -> int:
+        filename = self.args.path
+        encoding = self.args.encoding or get_encoding(filename)
+        num_chars = parse_int(self.args.num_chars, "num-chars")
         dialect = detect_dialect(
             filename,
             num_chars=num_chars,
             encoding=encoding,
-            verbose=self.option("verbose"),
+            verbose=self.args.verbose,
         )
         if dialect is None:
-            return self.line("Dialect detection failed.")
+            print("Error: dialect detection failed.", file=sys.stderr)
+            return 1
 
         code_lines = generate_code(
-            filename, dialect, encoding, use_pandas=self.option("pandas")
+            filename, dialect, encoding, use_pandas=self.args.pandas
         )
-
-        self.line("\n".join(code_lines))
+        print("\n".join(code_lines))
+        return 0

@@ -28,9 +28,8 @@ REQUIRED = [
 full_require = [
     "pandas>=0.24.1",
     "tabview>=1.4",
-    "cleo>=0.7.6",
-    "clikit>=0.4.0",
-    "cchardet>=2.1.7"
+    "cchardet>=2.1.7",
+    "wilderness>=0.1.4",
 ]
 
 docs_require = ["sphinx", "m2r"]
