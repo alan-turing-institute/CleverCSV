@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import glob
 import io
 import os
 
 from setuptools import find_packages, setup
 from distutils.extension import Extension
+from setuptools._distutils.core import Command
 
 # Package meta-data.
 AUTHOR = "Gertjan van den Burg"
@@ -43,6 +45,25 @@ EXTRAS = {
     "tests": test_require,
     "dev": docs_require + test_require + dev_require,
 }
+
+
+class build_manpages(Command):
+    description = "Generate manpages"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        from wilderness import build_manpages
+
+        from clevercsv.console import build_application
+
+        build_manpages(build_application())
+
 
 # The rest you shouldn't have to touch too much :)
 # ------------------------------------------------
@@ -91,6 +112,8 @@ setup(
         Extension("clevercsv.cabstraction", sources=["src/abstraction.c"]),
     ],
     entry_points={"console_scripts": ["clevercsv = clevercsv.__main__:main"]},
+    data_files=[("man/man1", glob.glob("man/*.1"))],
+    cmdclass={"build_manpages": build_manpages},
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
