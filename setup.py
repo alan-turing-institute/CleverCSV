@@ -5,9 +5,11 @@ import glob
 import io
 import os
 
-from setuptools import find_packages, setup
-from distutils.extension import Extension
+from setuptools import find_packages
+from setuptools import setup
+from setuptools import Extension
 from setuptools._distutils.core import Command
+# from setuptools._distutils.extension import Extension
 
 # Package meta-data.
 AUTHOR = "Gertjan van den Burg"
@@ -36,7 +38,12 @@ full_require = [
 
 docs_require = ["sphinx", "m2r2"]
 test_require = full_require + []
-dev_require = ["green", "pythonfuzz", "termcolor", "sphinx_rtd_theme"]
+dev_require = [
+    "green",
+    # "pythonfuzz",
+    "termcolor",
+    "sphinx_rtd_theme",
+]
 
 # What packages are optional?
 EXTRAS = {
