@@ -10,7 +10,7 @@ import os
 import tempfile
 import unittest
 
-from cleo.testers import CommandTester
+from wilderness import Tester
 
 from clevercsv import __version__
 from clevercsv.console import build_application
@@ -35,12 +35,11 @@ class ConsoleTestCase(unittest.TestCase):
         exp = "Detected: " + str(dialect)
 
         application = build_application()
-        command = application.find("detect")
-        tester = CommandTester(command)
-        tester.execute(tmpfname)
+        tester = Tester(application)
+        tester.test_command("detect", [tmpfname])
 
         try:
-            output = tester.io.fetch_output().strip()
+            output = tester.get_stdout().strip()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -73,14 +72,13 @@ class ConsoleTestCase(unittest.TestCase):
         tmpfname = self._build_file(table, dialect, encoding=encoding)
 
         application = build_application()
-        command = application.find("detect")
-        tester = CommandTester(command)
-        tester.execute(f"--encoding '{encoding}' {tmpfname}")
+        tester = Tester(application)
+        tester.test_command("detect", ["--encoding", encoding, tmpfname])
 
         exp = "Detected: " + str(dialect)
 
         try:
-            output = tester.io.fetch_output().strip()
+            output = tester.get_stdout().strip()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -91,14 +89,13 @@ class ConsoleTestCase(unittest.TestCase):
         tmpfname = self._build_file(table, dialect)
 
         application = build_application()
-        command = application.find("detect")
-        tester = CommandTester(command)
-        tester.execute(f"--num-chars 5 {tmpfname}")
+        tester = Tester(application)
+        tester.test_command("detect", ["--num-chars", "5", tmpfname])
 
         exp = "Detected: " + str(dialect)
 
         try:
-            output = tester.io.fetch_output().strip()
+            output = tester.get_stdout().strip()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -109,16 +106,15 @@ class ConsoleTestCase(unittest.TestCase):
         tmpfname = self._build_file(table, dialect)
 
         application = build_application()
-        command = application.find("detect")
-        tester = CommandTester(command)
-        tester.execute(f"--plain {tmpfname}")
+        tester = Tester(application)
+        tester.test_command("detect", ["--plain", tmpfname])
 
         exp = """\
 delimiter = ;
 quotechar =
 escapechar ="""
         try:
-            output = tester.io.fetch_output().strip()
+            output = tester.get_stdout().strip()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -130,9 +126,8 @@ escapechar ="""
         tmpfname = self._build_file(table, dialect)
 
         application = build_application()
-        command = application.find("code")
-        tester = CommandTester(command)
-        tester.execute(tmpfname)
+        tester = Tester(application)
+        tester.test_command("code", [tmpfname])
 
         # for chardet
         exp_1 = f"""\
@@ -160,7 +155,7 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
 
 """
         try:
-            output = tester.io.fetch_output()
+            output = tester.get_stdout()
             self.assertIn(output, [exp_1, exp_2])
         finally:
             os.unlink(tmpfname)
@@ -171,9 +166,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         tmpfname = self._build_file(table, dialect)
 
         application = build_application()
-        command = application.find("code")
-        tester = CommandTester(command)
-        tester.execute(f"-p {tmpfname}")
+        tester = Tester(application)
+        tester.test_command("code", ["-p", tmpfname])
 
         exp = f"""\
 
@@ -185,7 +179,7 @@ df = clevercsv.read_dataframe("{tmpfname}", delimiter=";", quotechar="", escapec
 
 """
         try:
-            output = tester.io.fetch_output()
+            output = tester.get_stdout()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -197,9 +191,8 @@ df = clevercsv.read_dataframe("{tmpfname}", delimiter=";", quotechar="", escapec
         tmpfname = self._build_file(table, dialect, encoding=encoding)
 
         application = build_application()
-        command = application.find("code")
-        tester = CommandTester(command)
-        tester.execute(tmpfname)
+        tester = Tester(application)
+        tester.test_command("code", [tmpfname])
 
         # for chardet
         exp_1 = f"""\
@@ -227,7 +220,7 @@ with open("{tmpfname}", "r", newline="", encoding="WINDOWS-1252") as fp:
 
 """
         try:
-            output = tester.io.fetch_output()
+            output = tester.get_stdout()
             self.assertIn(output, [exp_1, exp_2])
         finally:
             os.unlink(tmpfname)
@@ -239,9 +232,8 @@ with open("{tmpfname}", "r", newline="", encoding="WINDOWS-1252") as fp:
         tmpfname = self._build_file(table, dialect, encoding=encoding)
 
         application = build_application()
-        command = application.find("code")
-        tester = CommandTester(command)
-        tester.execute(tmpfname)
+        tester = Tester(application)
+        tester.test_command("code", [tmpfname])
 
         # for chardet
         exp_1 = f"""\
@@ -269,7 +261,7 @@ with open("{tmpfname}", "r", newline="", encoding="WINDOWS-1252") as fp:
 
 """
         try:
-            output = tester.io.fetch_output()
+            output = tester.get_stdout()
             self.assertIn(output, [exp_1, exp_2])
         finally:
             os.unlink(tmpfname)
@@ -281,9 +273,8 @@ with open("{tmpfname}", "r", newline="", encoding="WINDOWS-1252") as fp:
         tmpfname = self._build_file(table, dialect)
 
         application = build_application()
-        command = application.find("code")
-        tester = CommandTester(command)
-        tester.execute(tmpfname)
+        tester = Tester(application)
+        tester.test_command("code", [tmpfname])
 
         # for chardet
         exp_1 = f"""\
@@ -312,7 +303,7 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
 """
 
         try:
-            output = tester.io.fetch_output()
+            output = tester.get_stdout()
             self.assertIn(output, [exp_1, exp_2])
         finally:
             os.unlink(tmpfname)
@@ -323,9 +314,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         tmpfname = self._build_file(table, dialect)
 
         application = build_application()
-        command = application.find("standardize")
-        tester = CommandTester(command)
-        tester.execute(tmpfname)
+        tester = Tester(application)
+        tester.test_command("standardize", [tmpfname])
 
         # Excel format (i.e. RFC4180) *requires* CRLF
         crlf = "\r\n"
@@ -333,7 +323,7 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         # add line terminator of last row
         exp += crlf
         try:
-            output = tester.io.fetch_output()
+            output = tester.get_stdout()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -347,9 +337,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         os.close(tmpfd)
 
         application = build_application()
-        command = application.find("standardize")
-        tester = CommandTester(command)
-        tester.execute(f"-o {tmpoutname} {tmpfname}")
+        tester = Tester(application)
+        tester.test_command("standardize", ["-o", tmpoutname, tmpfname])
 
         # Excel format (i.e. RFC4180) *requires* CRLF
         crlf = "\r\n"
@@ -369,9 +358,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         tmpfname = self._build_file(table, dialect)
 
         application = build_application()
-        command = application.find("standardize")
-        tester = CommandTester(command)
-        tester.execute(f"-t {tmpfname}")
+        tester = Tester(application)
+        tester.test_command("standardize", ["-t", tmpfname])
 
         # Excel format (i.e. RFC4180) *requires* CRLF
         crlf = "\r\n"
@@ -380,7 +368,7 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         exp += crlf
 
         try:
-            output = tester.io.fetch_output()
+            output = tester.get_stdout()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -391,11 +379,10 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         tmpfname = self._build_file(table, dialect)
 
         application = build_application()
-        command = application.find("standardize")
-        tester = CommandTester(command)
-        retcode = tester.execute(f"-i {tmpfname}")
+        tester = Tester(application)
+        tester.test_command("standardize", ["-i", tmpfname])
 
-        self.assertEqual(retcode, 2)
+        self.assertEqual(tester.get_return_code(), 2)
 
         # Excel format (i.e. RFC4180) *requires* CRLF
         crlf = "\r\n"
@@ -416,11 +403,10 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         tmpfname = self._build_file(table, dialect, newline="")
 
         application = build_application()
-        command = application.find("standardize")
-        tester = CommandTester(command)
-        retcode = tester.execute(f"-i {tmpfname}")
+        tester = Tester(application)
+        tester.test_command("standardize", ["-i", tmpfname])
 
-        self.assertEqual(retcode, 0)
+        self.assertEqual(tester.get_return_code(), 0)
 
         # Excel format (i.e. RFC4180) *requires* CRLF
         crlf = "\r\n"
@@ -446,14 +432,17 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
             os.close(tmpfd)
             tmpoutnames.append(tmpoutname)
 
-        outputs = " ".join([f"-o {tmpoutname}" for tmpoutname in tmpoutnames])
+        args = []
+        for tmpoutname in tmpoutnames:
+            args.append("-o")
+            args.append(tmpoutname)
+        args += tmpfnames
 
         application = build_application()
-        command = application.find("standardize")
-        tester = CommandTester(command)
-        retcode = tester.execute(f"{outputs} {' '.join(tmpfnames)}")
+        tester = Tester(application)
+        tester.test_command("standardize", args)
 
-        self.assertEqual(retcode, 0)
+        self.assertEqual(tester.get_return_code(), 0)
 
         exp = "\r\n".join([",".join(map(str, row)) for row in table]) + "\r\n"
 
@@ -477,18 +466,20 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
             os.close(tmpfd)
             tmpoutnames.append(tmpoutname)
 
-        outputs = " ".join([f"-o {tmpoutname}" for tmpoutname in tmpoutnames])
+        args = []
+        for tmpoutname in tmpoutnames:
+            args.append("-o")
+            args.append(tmpoutname)
+        args += tmpfnames
 
         application = build_application()
-        command = application.find("standardize")
-        tester = CommandTester(command)
-        retcode = tester.execute(f"{outputs} {' '.join(tmpfnames)}")
+        tester = Tester(application)
+        tester.test_command("standardize", args)
 
-        self.assertEqual(retcode, 1)
+        self.assertEqual(tester.get_return_code(), 1)
 
-        stdout = tester.io.fetch_output()
         self.assertEqual(
-            stdout,
+            tester.get_stderr(),
             "Number of output files should match the number of input files.\n",
         )
 
@@ -510,16 +501,17 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
             os.close(tmpfd)
             tmpoutnames.append(tmpoutname)
 
-        outputs = " ".join([f"-o {tmpoutname}" for tmpoutname in tmpoutnames])
+        args = ["-e", encoding]
+        for tmpoutname in tmpoutnames:
+            args.append("-o")
+            args.append(tmpoutname)
+        args += tmpfnames
 
         application = build_application()
-        command = application.find("standardize")
-        tester = CommandTester(command)
-        retcode = tester.execute(
-            f"-e {encoding} {outputs} {' '.join(tmpfnames)}"
-        )
+        tester = Tester(application)
+        tester.test_command("standardize", args)
 
-        self.assertEqual(retcode, 0)
+        self.assertEqual(tester.get_return_code(), 0)
 
         exp = "\r\n".join([",".join(map(str, row)) for row in table]) + "\r\n"
 
@@ -544,11 +536,10 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         ]
 
         application = build_application()
-        command = application.find("standardize")
-        tester = CommandTester(command)
-        retcode = tester.execute(f"-i -e {encoding} {' '.join(tmpfnames)}")
+        tester = Tester(application)
+        tester.test_command("standardize", ["-i", "-e", encoding] + tmpfnames)
 
-        self.assertEqual(retcode, 2)
+        self.assertEqual(tester.get_return_code(), 2)
 
         exp = "\r\n".join([",".join(map(str, row)) for row in table]) + "\r\n"
 
@@ -566,11 +557,10 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         tmpfnames = [self._build_file(table, D, newline="") for D in dialects]
 
         application = build_application()
-        command = application.find("standardize")
-        tester = CommandTester(command)
-        retcode = tester.execute(f"-i {' '.join(tmpfnames)}")
+        tester = Tester(application)
+        tester.test_command("standardize", ["-i"] + tmpfnames)
 
-        self.assertEqual(retcode, 0)
+        self.assertEqual(tester.get_return_code(), 0)
 
         exp = "\r\n".join([",".join(map(str, row)) for row in table]) + "\r\n"
         try:
