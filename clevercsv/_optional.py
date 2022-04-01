@@ -19,7 +19,7 @@ VERSIONS = {
     "tabview": "1.4",
     "pandas": "0.24.1",
     "cchardet": "2.1.7",
-    "wilderness": "0.1.4",
+    "wilderness": "0.1.5",
 }
 
 
