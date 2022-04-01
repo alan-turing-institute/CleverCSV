@@ -31,7 +31,7 @@ REQUIRED = [
 
 # When these are changed, update clevercsv/_optional.py accordingly
 full_require = [
-    "pandas>=0.24.1",
+    "pandas>=1.0.0",
     "tabview>=1.4",
     "cchardet>=2.1.7",
     "wilderness>=0.1.5",
