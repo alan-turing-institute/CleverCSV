@@ -34,8 +34,8 @@ class PotentialDialectTestCase(unittest.TestCase):
         self.assertEqual(out, exp)
 
     def test_get_delimiters(self):
-        data = u"A,B|CD,E;F\tD123£123€10.,0"
-        exp = set([u",", u"|", u";", u"\t", u"€", u"£", u""])
+        data = "A,B|CD,E;F\tD123£123€10.,0"
+        exp = set([",", "|", ";", "\t", "€", "£", ""])
         out = get_delimiters(data, "UTF-8")
         self.assertEqual(out, exp)
 

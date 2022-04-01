@@ -83,8 +83,9 @@ class ViewCommand(Command):
                 if len(row) == max_row_length:
                     fixed_rows.append(row)
                 else:
-                    fixed_rows.append(row + [None] * (max_row_length - 
-                        len(row)))
+                    fixed_rows.append(
+                        row + [None] * (max_row_length - len(row))
+                    )
             rows = list(map(list, zip(*fixed_rows)))
         tabview.view(rows)
         return 0

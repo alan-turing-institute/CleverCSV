@@ -5,10 +5,11 @@ import glob
 import io
 import os
 
+from setuptools import Extension
 from setuptools import find_packages
 from setuptools import setup
-from setuptools import Extension
 from setuptools._distutils.core import Command
+
 # from setuptools._distutils.extension import Extension
 
 # Package meta-data.
