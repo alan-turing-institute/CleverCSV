@@ -12,6 +12,7 @@ from setuptools._distutils.core import Command
 
 # from setuptools._distutils.extension import Extension
 
+
 # Package meta-data.
 AUTHOR = "Gertjan van den Burg"
 DESCRIPTION = "A Python package for handling messy CSV files"
