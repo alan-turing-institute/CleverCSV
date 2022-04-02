@@ -178,13 +178,13 @@ class RemoveVenv(Step):
 
 class GitTagVersion(Step):
     def action(self, context):
-        self.do_cmd(f"git tag v{context['version']}")
+        self.do_cmd(f"git tag -s v{context['version']}")
 
 
 class GitTagPreRelease(Step):
     def action(self, context):
         self.instruct("Tag version as a pre-release (increment as needed)")
-        self.print_run(f"git tag v{context['version']}-rc.1")
+        self.print_run(f"git tag -s v{context['version']}-rc.1")
 
 
 class GitAdd(Step):
