@@ -16,11 +16,10 @@ import importlib
 
 # update this when changing setup.py
 VERSIONS = {
-    "cleo": "0.7.6",
-    "clikit": "0.4.0",
     "tabview": "1.4",
     "pandas": "0.24.1",
     "cchardet": "2.1.7",
+    "wilderness": "0.1.5",
 }
 
 

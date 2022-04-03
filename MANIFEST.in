@@ -7,6 +7,7 @@ recursive-include clevercsv *.py
 recursive-include src *.c
 recursive-include bin *
 recursive-include tests/test_unit *.py
+recursive-include man *.1
 prune tests/test_integration
 exclude Makefile
 exclude .gitignore
