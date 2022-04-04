@@ -148,6 +148,11 @@ class MakeDocs(Step):
         self.do_cmd("make docs")
 
 
+class MakeMan(Step):
+    def action(self, context):
+        self.do_cmd("make man")
+
+
 class InstallFromTestPyPI(Step):
     def action(self, context):
         tmpvenv = tempfile.mkdtemp(prefix="p2r_venv_")
@@ -242,6 +247,7 @@ def main(target=None):
         ("gitadd1", GitAdd()),
         ("clean1", MakeClean()),
         ("docs1", MakeDocs()),
+        ("man1", MakeMan()),
         ("runtests", RunTests()),
         # trigger CI to run tests on all platforms
         ("push1", PushToGitHub()),
@@ -257,6 +263,7 @@ def main(target=None):
         ("readme", UpdateReadme()),
         ("clean2", MakeClean()),
         ("docs2", MakeDocs()),
+        ("man2", MakeMan()),
         ("install", InstallFromTestPyPI()),
         ("testpkg", TestPackage()),
         ("remove_venv", RemoveVenv()),
