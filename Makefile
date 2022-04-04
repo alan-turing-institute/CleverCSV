@@ -111,5 +111,6 @@ clean: clean_venv ## Clean build dist and egg directories left after install
 	rm -f MANIFEST
 	rm -f ./$(PACKAGE)/*.so
 	rm -f ./*_valgrind.log*
+	rm -f ./man/*
 	find . -type f -iname '*.pyc' -delete
 	find . -type d -name '__pycache__' -empty -delete
