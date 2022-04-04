@@ -29,7 +29,6 @@ jobs:
 
       - uses: pypa/cibuildwheel@v1.12.0
         env:
-          CIBW_BEFORE_BUILD: "pip install wilderness && python setup.py build_manpages"
           CIBW_TEST_COMMAND: "python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
           CIBW_TEST_EXTRAS: "full"
           CIBW_SKIP: "pp* cp27-* cp33-* cp34-* cp35-*"
