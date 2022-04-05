@@ -20,14 +20,6 @@ clevercsv.console.application module
    :undoc-members:
    :show-inheritance:
 
-clevercsv.console.config module
--------------------------------
-
-.. automodule:: clevercsv.console.config
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

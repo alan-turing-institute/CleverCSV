@@ -270,25 +270,15 @@ dialect. The full help text is as follows:
 
 .. code-block:: text
 
-   USAGE
-     clevercsv [-h] [-v] [-V] <command> [<arg1>] ... [<argN>]
+   usage: clevercsv [-h] [-V] [-v] command ...
 
-   ARGUMENTS
-     <command>       The command to execute
-     <arg>           The arguments of the command
-
-   GLOBAL OPTIONS
-     -h (--help)     Display this help message.
-     -v (--verbose)  Enable verbose mode.
-     -V (--version)  Display the application version.
-
-   AVAILABLE COMMANDS
-     code            Generate Python code for importing the CSV file
-     detect          Detect the dialect of a CSV file
-     explore         Drop into a Python shell with the CSV file loaded
-     help            Display the manual of a command
-     standardize     Convert a CSV file to one that conforms to RFC-4180
-     view            View the CSV file on the command line using TabView
+   Available commands:
+     help         Display help information
+     detect       Detect the dialect of a CSV file
+     view         View the CSV file on the command line using TabView
+     standardize  Convert a CSV file to one that conforms to RFC-4180
+     code         Generate Python code to import a CSV file
+     explore      Explore the CSV file in an interactive Python shell
 
 Each of the commands has further options (for instance, the ``code`` and 
 ``explore`` commands have support for importing the CSV file as a Pandas 

@@ -2,6 +2,13 @@
 Changelog
 =========
 
+Version 0.7.2
+-------------
+
+
+* Re-implement command line interface using Wilderness
+* Add man-pages to package
+
 Version 0.7.1
 -------------
 
