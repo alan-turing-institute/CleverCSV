@@ -263,8 +263,8 @@ Available commands:
 
 Each of the commands has further options (for instance, the ``code`` and 
 ``explore`` commands have support for importing the CSV file as a Pandas 
-DataFrame). Use ``clevercsv help <command>`` for more information. Below are 
-some examples for each command.
+DataFrame). Use ``clevercsv help <command>`` or ``man clevercsv <command>`` 
+for more information. Below are some examples for each command.
 
 Note that each command accepts the ``-n`` or ``--num-chars`` flag to set the 
 number of characters used to detect the dialect. This can be especially 
