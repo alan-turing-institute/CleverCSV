@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.3
+
+* Release to build wheels for Python 3.10
+
 ## Version 0.7.2
 
 * Re-implement command line interface using Wilderness
