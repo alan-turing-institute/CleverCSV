@@ -232,3 +232,38 @@ class WrappersTestCase(unittest.TestCase):
 
         with self.subTest(name="encoding_2"):
             self._write_test_table(table, exp, encoding="cp1252")
+
+    def _write_test_dicts(self, items, expected, **kwargs):
+        tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
+        wrappers.write_dicts(items, tmpfname, **kwargs)
+        read_encoding = kwargs.get("encoding", None)
+        with open(tmpfname, "r", newline="", encoding=read_encoding) as fp:
+            data = fp.read()
+
+        try:
+            self.assertEqual(data, expected)
+        finally:
+            os.close(tmpfd)
+            os.unlink(tmpfname)
+
+    def test_write_dicts(self):
+        items = [{"A": 1, "B": 2, "C": 3}, {"A": 4, "B": 5, "C": 6}]
+        exp = "A,B,C\r\n1,2,3\r\n4,5,6\r\n"
+        with self.subTest(name="default"):
+            self._write_test_dicts(items, exp)
+
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        exp = "A;B;C\n1;2;3\n4;5;6\n"
+        with self.subTest(name="dialect"):
+            self._write_test_dicts(items, exp, dialect=dialect)
+
+        items = [{"Å": 1, "B": 2, "C": 3}, {"Å": 4, "B": 5, "C": 6}]
+        exp = "Å,B,C\r\n1,2,3\r\n4,5,6\r\n"
+        with self.subTest(name="encoding_1"):
+            # Not specifying an encoding here could potentially fail on
+            # Windows, due to open() defaulting to
+            # locale.getpreferredencoding() (see gh-27).
+            self._write_test_dicts(items, exp, encoding="utf-8")
+
+        with self.subTest(name="encoding_2"):
+            self._write_test_dicts(items, exp, encoding="cp1252")
