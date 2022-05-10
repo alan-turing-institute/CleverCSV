@@ -8,6 +8,7 @@ Author: Gertjan van den Burg
 """
 
 
+import csv
 import tempfile
 import unittest
 
@@ -92,6 +93,23 @@ class WriterTestCase(unittest.TestCase):
             ["a", 1, "p,q"],
             "a,1,|p,q|",
             dialect=SimpleDialect(delimiter=",", quotechar="|", escapechar=""),
+        )
+
+    def test_write_csv_dialect(self):
+        self._write_test(
+            ["a", 1, "p,q"],
+            'a,1,"p,q"',
+            dialect="excel",
+        )
+        self._write_test(
+            ["a", 1, "p,q"],
+            '"a","1","p,q"',
+            dialect=csv.unix_dialect,
+        )
+        self._write_test(
+            [1, 2, 3],
+            "1\t2\t3",
+            dialect=clevercsv.excel_tab,
         )
 
 
