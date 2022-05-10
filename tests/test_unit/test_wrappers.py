@@ -190,7 +190,7 @@ class WrappersTestCase(unittest.TestCase):
             with self.assertRaises(NoDetectionResult):
                 self._stream_test_rows(rows, exp)
 
-    def _write_test(self, table, expected, **kwargs):
+    def _write_test_table(self, table, expected, **kwargs):
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         wrappers.write_table(table, tmpfname, **kwargs)
         read_encoding = kwargs.get("encoding", None)
@@ -203,24 +203,24 @@ class WrappersTestCase(unittest.TestCase):
             os.close(tmpfd)
             os.unlink(tmpfname)
 
-    def test_write(self):
+    def test_write_table(self):
         table = [["A", "B,C", "D"], [1, 2, 3], [4, 5, 6]]
         exp = 'A,"B,C",D\r\n1,2,3\r\n4,5,6\r\n'
         with self.subTest(name="default"):
-            self._write_test(table, exp)
+            self._write_test_table(table, exp)
 
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         exp = "A;B,C;D\n1;2;3\n4;5;6\n"
         with self.subTest(name="dialect"):
-            self._write_test(table, exp, dialect=dialect)
+            self._write_test_table(table, exp, dialect=dialect)
 
         exp = "A;1;4\nB,C;2;5\nD;3;6\n"
         with self.subTest(name="transposed"):
-            self._write_test(table, exp, dialect=dialect, transpose=True)
+            self._write_test_table(table, exp, dialect=dialect, transpose=True)
 
         table[2].append(8)
         with self.assertRaises(ValueError):
-            self._write_test(table, "")
+            self._write_test_table(table, "")
 
         table = [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]]
         exp = "Å,B,C\r\n1,2,3\r\n4,5,6\r\n"
@@ -228,7 +228,7 @@ class WrappersTestCase(unittest.TestCase):
             # Not specifying an encoding here could potentially fail on
             # Windows, due to open() defaulting to
             # locale.getpreferredencoding() (see gh-27).
-            self._write_test(table, exp, encoding="utf-8")
+            self._write_test_table(table, exp, encoding="utf-8")
 
         with self.subTest(name="encoding_2"):
-            self._write_test(table, exp, encoding="cp1252")
+            self._write_test_table(table, exp, encoding="cp1252")
