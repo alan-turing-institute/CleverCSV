@@ -224,6 +224,9 @@ easier. We currently have the following helper functions:
 * `write_table <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.write_table>`_\ : 
   write a table (a list of lists) to a file using the 
   `RFC-4180 <https://tools.ietf.org/html/rfc4180>`_ dialect.
+* `write_dicts <https://clevercsv.readthedocs.io/en/latest/source/clevercsv.html#clevercsv.wrappers.write_dicts>`_\ : 
+  write a list of dictionaries to a file using the 
+  `RFC-4180 <https://tools.ietf.org/html/rfc4180>`_ dialect.
 
 Of course, you can also use the traditional way of loading a CSV file, as in 
 the Python CSV module:
@@ -282,8 +285,8 @@ dialect. The full help text is as follows:
 
 Each of the commands has further options (for instance, the ``code`` and 
 ``explore`` commands have support for importing the CSV file as a Pandas 
-DataFrame). Use ``clevercsv help <command>`` for more information. Below are 
-some examples for each command.
+DataFrame). Use ``clevercsv help <command>`` or ``man clevercsv <command>`` 
+for more information. Below are some examples for each command.
 
 Note that each command accepts the ``-n`` or ``--num-chars`` flag to set the 
 number of characters used to detect the dialect. This can be especially 
