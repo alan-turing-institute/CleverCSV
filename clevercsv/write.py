@@ -38,14 +38,21 @@ class writer(object):
             d = dialect
         elif isinstance(dialect, SimpleDialect):
             d = dialect.to_csv_dialect()
+        elif dialect in [csv.excel, csv.excel_tab, csv.unix_dialect]:
+            d = dialect
+        else:
+            raise ValueError(f"Unknown dialect type: {dialect}")
 
-        # We have to subclass the csv.Dialect
+        # Override properties from format parameters
         props = {k: getattr(d, k) for k in DIALECT_KEYS if hasattr(d, k)}
         for key, value in fmtparams.items():
             props[key] = value
+
         # lineterminator must be set
         if not "lineterminator" in props or props["lineterminator"] is None:
             props["lineterminator"] = "\n"
+
+        # We have to subclass the csv.Dialect
         newdialect = type("dialect", (csv.Dialect,), props)
         return newdialect
 

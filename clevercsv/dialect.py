@@ -12,6 +12,10 @@ import csv
 import functools
 import json
 
+excel = csv.excel
+excel_tab = csv.excel_tab
+unix_dialect = csv.unix_dialect
+
 
 @functools.total_ordering
 class SimpleDialect(object):
