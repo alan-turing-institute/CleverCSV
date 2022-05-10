@@ -13,6 +13,7 @@ import warnings
 from ._optional import import_optional_dependency
 from .detect import Detector
 from .dict_read_write import DictReader
+from .dict_read_write import DictWriter
 from .encoding import get_encoding
 from .exceptions import NoDetectionResult
 from .read import reader
@@ -363,7 +364,8 @@ def write_table(
 ):
     """Write a table (a list of lists) to a file
 
-    This is a convenience function for writing a table to a CSV file.
+    This is a convenience function for writing a table to a CSV file. If the
+    table has no rows, no output file is created.
 
     Parameters
     ----------
@@ -391,9 +393,11 @@ def write_table(
     Raises
     ------
     ValueError:
-            When the length of the rows is not constant.
+        When the length of the rows is not constant.
 
     """
+    if not table:
+        return
 
     if transpose:
         table = list(map(list, zip(*table)))
@@ -404,3 +408,40 @@ def write_table(
     with open(filename, "w", newline="", encoding=encoding) as fp:
         w = writer(fp, dialect=dialect)
         w.writerows(table)
+
+
+def write_dicts(items, filename, dialect="excel", encoding=None):
+    """Write a list of dicts to a file
+
+    This is a convenience function to write dicts to a file. The header is
+    extracted from the keys of the first item, so an OrderedDict is recommended
+    to control the order of the headers in the output. If the list of items is
+    empty, no output file is created.
+
+    Parameters
+    ----------
+    items : list
+        List of dicts to export
+
+    filename : str
+        The filename of the CSV file to write the table to
+
+    dialect : str, SimpleDialect, or csv.Dialect
+        The dialect to use. The default is the 'excel' dialect, which
+        corresponds to RFC4180.
+
+    encoding : str
+        Encoding to use to write the data to the file. Note that the default
+        encoding is platform dependent, which ensures compatibility with the
+        Python open() function. It thus defaults to
+        `locale.getpreferredencoding()`.
+
+    """
+    if not items:
+        return
+
+    fieldnames = list(items[0].keys())
+    with open(filename, "w", newline="", encoding=encoding) as fp:
+        w = DictWriter(fp, fieldnames=fieldnames, dialect=dialect)
+        w.writeheader()
+        w.writerows(items)
