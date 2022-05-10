@@ -9,6 +9,9 @@ from .__version__ import __version__
 from .cparser_util import field_size_limit
 from .detect import Detector
 from .detect import Detector as Sniffer
+from .dialect import excel
+from .dialect import excel_tab
+from .dialect import unix_dialect
 from .dict_read_write import DictReader
 from .dict_read_write import DictWriter
 from .exceptions import Error
