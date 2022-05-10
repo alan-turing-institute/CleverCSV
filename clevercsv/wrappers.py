@@ -363,7 +363,8 @@ def write_table(
 ):
     """Write a table (a list of lists) to a file
 
-    This is a convenience function for writing a table to a CSV file.
+    This is a convenience function for writing a table to a CSV file. If the
+    table has no rows, no output file is created.
 
     Parameters
     ----------
@@ -391,9 +392,11 @@ def write_table(
     Raises
     ------
     ValueError:
-            When the length of the rows is not constant.
+        When the length of the rows is not constant.
 
     """
+    if not table:
+        return
 
     if transpose:
         table = list(map(list, zip(*table)))
