@@ -2,6 +2,14 @@
 Changelog
 =========
 
+Version 0.7.4
+-------------
+
+
+* Add wrapper for writing a list of dictionaries (write_dicts)
+* Fix bug when writing CSVs using the ``csv`` module dialects
+* Add the builtin dialects to CleverCSV (e.g., ``clevercsv.excel``\ )
+
 Version 0.7.3
 -------------
 
