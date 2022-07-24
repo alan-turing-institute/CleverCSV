@@ -28,8 +28,8 @@ from ._utils import parse_int
 class ViewCommand(Command):
 
     _description = (
-        "The view command is useful to quickly inspect a messy CSV file "
-        "on the command line."
+        "The view command is useful to quickly inspect a messy CSV file on "
+        "the command line."
     )
 
     def __init__(self):

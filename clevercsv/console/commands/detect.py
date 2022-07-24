@@ -30,15 +30,15 @@ class DetectCommand(Command):
             action="store_true",
             help="Only use the consistency measure for detection.",
             description=(
-                "By default, the dialect of CSV files is detected using a "
-                "two-step process. First, a strict set of checks is used to "
+                "By default, the dialect of CSV files is detected using "
+                "atwo-step process. First, a strict set of checks is used to "
                 "see if the file adheres to a very basic format (for example, "
                 "when all cells in the file are integers). If none of these "
-                "checks succeed, the data consistency measure of "
-                "Van den Burg, et al. (2019) is used to detect the dialect. "
-                "With this option, you can force the detection to always use "
-                "the data consistency measure. This can be useful for testing "
-                "or research purposes, for instance."
+                "checks succeed, the data consistency measure of Van den "
+                "Burg, et al. (2019) is used to detect the dialect. With this "
+                "option, you can force the detection to always use the data "
+                "consistency measure. This can be useful for testing or "
+                "research purposes, for instance."
             ),
         )
         self.add_argument(
@@ -73,15 +73,14 @@ class DetectCommand(Command):
             help="Don't skip type detection for dialects with a low pattern score",
             description=(
                 "The data consistency score used for dialect detection "
-                "consists of two components: a pattern score and a "
-                "type score. The type score lies between 0 and 1. When "
-                "computing the data consistency measures for different "
-                "dialects, we skip the computation of the type score "
-                "if we see that the pattern score is lower than the best "
-                "data consistency score we've seen so far. This option "
-                "can be used to disable this behaviour and compute the "
-                "type score for all dialects. This is mainly useful for "
-                "debugging and testing purposes."
+                "consists of two components: a pattern score and a type "
+                "score. The type score lies between 0 and 1. When computing "
+                "the data consistency measures for different dialects, we "
+                "skip the computation of the type score if we see that the "
+                "pattern score is lower than the best data consistency score "
+                "we've seen so far. This option can be used to disable this "
+                "behaviour and compute the type score for all dialects. This "
+                "is mainly useful for debugging and testing purposes."
             ),
         )
 

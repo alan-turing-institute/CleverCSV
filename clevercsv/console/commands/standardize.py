@@ -21,10 +21,10 @@ from ._utils import parse_int
 class StandardizeCommand(Command):
 
     _description = (
-        "The standardize command can be used to convert a non-standard CSV "
-        "file to the standard RFC-4180 format [1]. "
-        "When using the --in-place option, the return code of CleverCSV can "
-        "be used to check whether a file was altered or not. The return code "
+        "The standardize command can be used to convert a non-standard "
+        "CSVfile to the standard RFC-4180 format [1]. When using the "
+        "--in-place option, the return code of CleverCSV can be used to check "
+        "whether a file was altered or not. The return code"
         "will be 2 when the file was altered and 0 otherwise.\n\n"
         "[1]: https://tools.ietf.org/html/rfc4180"
     )
@@ -81,8 +81,8 @@ class StandardizeCommand(Command):
             description=(
                 "The output files to write the standardized input files to. "
                 "The order of the input files and the order of the output "
-                "files should match if this option is used with more than "
-                "one input file."
+                "files should match if this option is used with more than one "
+                "input file."
             ),
             default=[],
         )

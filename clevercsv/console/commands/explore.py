@@ -16,9 +16,9 @@ from ._utils import parse_int
 class ExploreCommand(Command):
 
     _description = (
-        "The explore command allows you to quickly explore a CSV file in "
-        "an interactive Python shell. This command detects the dialect of "
-        "the CSV file and drops you into a Python interactive shell (REPL), "
+        "The explore command allows you to quickly explore a CSV file in an "
+        "interactive Python shell. This command detects the dialect of the "
+        "CSV file and drops you into a Python interactive shell (REPL), "
         "with the CSV file already loaded. Simply run:\n\n"
         "\tclevercsv explore FILE\n\n"
         "to start working with the file loaded as a list of lists. "
@@ -56,10 +56,10 @@ class ExploreCommand(Command):
             action="store_true",
             help="Read the file into a Pandas DataFrame",
             description=(
-                "By default, this command imports the CSV file as a list "
-                "of lists. By enabling this option the script will be "
-                "written such that the file will be read as a Pandas "
-                "DataFrame instead."
+                "By default, this command imports the CSV file as a list of "
+                "lists. By enabling this option the script will be written "
+                "such that the file will be read as a Pandas DataFrame "
+                "instead."
             ),
         )
 

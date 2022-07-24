@@ -53,8 +53,8 @@ class CodeCommand(Command):
             description=(
                 "By default, this command writes a small Python script to "
                 "import the CSV file as a list of lists. By enabling this "
-                "option the script will be written such that the file will "
-                "be read as a Pandas DataFrame instead."
+                "option the script will be written such that the file will be "
+                "read as a Pandas DataFrame instead."
             ),
         )
 
