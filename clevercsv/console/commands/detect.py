@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import json
 import sys
+import time
 
 from wilderness import Command
 
@@ -66,6 +68,13 @@ class DetectCommand(Command):
             "--json",
             action="store_true",
             help="Print the components of the dialect as a JSON object",
+            description=(
+                "Print the dialect to standard output in the form of a JSON "
+                "object. This object will always have the 'delimiter', "
+                "'quotechar', 'escapechar', and 'strict' keys. If "
+                "--add-runtime is specified, it will also have a 'runtime' "
+                "key."
+            ),
         )
         self.add_argument(
             "--no-skip",
@@ -83,6 +92,11 @@ class DetectCommand(Command):
                 "is mainly useful for debugging and testing purposes."
             ),
         )
+        self.add_argument(
+            "--add-runtime",
+            action="store_true",
+            help="Add the runtime of the detection to the detection output.",
+        )
 
     def handle(self):
         verbose = self.args.verbose
@@ -90,6 +104,7 @@ class DetectCommand(Command):
         method = "consistency" if self.args.consistency else "auto"
         skip = not self.args.no_skip
 
+        t_start = time.time()
         dialect = detect_dialect(
             self.args.path,
             num_chars=num_chars,
@@ -98,6 +113,8 @@ class DetectCommand(Command):
             method=method,
             skip=skip,
         )
+        runtime = time.time() - t_start
+
         if dialect is None:
             print("Error: Dialect detection failed.", file=sys.stderr)
             return 1
@@ -106,8 +123,15 @@ class DetectCommand(Command):
             print(f"delimiter = {dialect.delimiter}".strip())
             print(f"quotechar = {dialect.quotechar}".strip())
             print(f"escapechar = {dialect.escapechar}".strip())
+            if self.args.add_runtime:
+                print(f"runtime = {runtime}")
         elif self.args.json:
-            print(dialect.serialize())
+            dialect_dict = dialect.to_dict()
+            if self.args.add_runtime:
+                dialect_dict["runtime"] = runtime
+            print(json.dumps(dialect_dict))
         else:
             print("Detected: " + str(dialect))
+            if self.args.add_runtime:
+                print(f"Runtime: {runtime:.6f} seconds")
         return 0

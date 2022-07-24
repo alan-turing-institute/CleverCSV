@@ -6,6 +6,7 @@ Unit tests for the console application.
 Author: Gertjan van den Burg
 """
 
+import json
 import os
 import tempfile
 import unittest
@@ -116,6 +117,25 @@ escapechar ="""
         try:
             output = tester.get_stdout().strip()
             self.assertEqual(exp, output)
+        finally:
+            os.unlink(tmpfname)
+
+    def test_detect_opts_4(self):
+        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        tmpfname = self._build_file(table, dialect)
+
+        application = build_application()
+        tester = Tester(application)
+        tester.test_command("detect", ["--json", "--add-runtime", tmpfname])
+
+        try:
+            output = tester.get_stdout().strip()
+            data = json.loads(output)
+            self.assertEqual(data["delimiter"], ";")
+            self.assertEqual(data["quotechar"], "")
+            self.assertEqual(data["escapechar"], "")
+            self.assertIsInstance(data["runtime"], float)
         finally:
             os.unlink(tmpfname)
 
