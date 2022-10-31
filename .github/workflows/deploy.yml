@@ -27,7 +27,7 @@ jobs:
         with:
           platforms: all
 
-      - uses: pypa/cibuildwheel@v2.11.1
+      - uses: pypa/cibuildwheel@v2.11.2
         env:
           CIBW_TEST_COMMAND: "python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
           CIBW_TEST_EXTRAS: "full"
