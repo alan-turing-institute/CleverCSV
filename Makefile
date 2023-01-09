@@ -10,6 +10,7 @@ MAKEFLAGS += --no-builtin-rules
 PACKAGE=clevercsv
 DOC_DIR=./docs/
 VENV_DIR=/tmp/clevercsv_venv/
+PYTHON ?= python
 
 .PHONY: help
 
@@ -27,10 +28,10 @@ help:
 .PHONY: inplace install
 
 inplace:
-	python setup.py build_ext -i
+	$(PYTHON) setup.py build_ext -i
 
 install: dist ## Install for the current user using the default python command
-	python -m pip install --user ./dist/$(PACKAGE)-*.tar.gz
+	$(PYTHON) -m pip install --user ./dist/$(PACKAGE)-*.tar.gz
 
 ################
 # Distribution #
@@ -39,10 +40,10 @@ install: dist ## Install for the current user using the default python command
 .PHONY: release dist
 
 release: ## Make a release
-	python make_release.py
+	$(PYTHON) make_release.py
 
 dist: man ## Make Python source distribution
-	python setup.py sdist
+	$(PYTHON) setup.py sdist
 
 ###########
 # Testing #
@@ -90,8 +91,8 @@ man: venv ## Build man pages using Wilderness
 venv: $(VENV_DIR)/bin/activate
 
 $(VENV_DIR)/bin/activate:
-	test -d $(VENV_DIR) || python -m venv $(VENV_DIR)
-	source $(VENV_DIR)/bin/activate && pip install -e .[dev]
+	test -d $(VENV_DIR) || $(PYTHON) -m venv $(VENV_DIR)
+	source $(VENV_DIR)/bin/activate && python -m pip install -e .[dev]
 	touch $(VENV_DIR)/bin/activate
 
 clean_venv:
