@@ -25,6 +25,7 @@ VERSION = None
 REQUIRED = [
     "chardet>=3.0",
     "regex>=2018.11",
+    "packaging>=23.0",
 ]
 
 # When these are changed, update clevercsv/_optional.py accordingly
