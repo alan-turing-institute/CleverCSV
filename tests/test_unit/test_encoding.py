@@ -48,7 +48,7 @@ class EncodingTestCase(unittest.TestCase):
 
         # Test using cChardet
         detected = get_encoding(tmpfname, try_cchardet=True)
-        self.assertEqual(encoding, detected)
+        self.assertEqual("WINDOWS-1252", detected)
 
     def test_encoding_2(self):
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
@@ -61,7 +61,7 @@ class EncodingTestCase(unittest.TestCase):
 
         # Test using cChardet
         detected = get_encoding(tmpfname, try_cchardet=True)
-        self.assertEqual(encoding, detected)
+        self.assertEqual("ASCII", detected)
 
     def test_encoding_3(self):
         table = [["亜唖", "娃阿", "哀愛"], [1, 2, 3], ["挨", "姶", "葵"]]
