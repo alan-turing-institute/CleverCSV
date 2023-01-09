@@ -11,8 +11,9 @@ License: See LICENSE file.
 
 """
 
-import distutils.version
 import importlib
+
+from packaging.version import Version
 
 # update this when changing setup.py
 VERSIONS = {
@@ -69,7 +70,7 @@ def import_optional_dependency(name, raise_on_missing=True):
     version = getattr(module, "__version__", None)
     if version is None:
         return
-    if distutils.version.LooseVersion(version) < min_version:
+    if Version(version) < Version(min_version):
         msg = (
             f"CleverCSV requires version '{min_version}' or newer for "
             "optional dependency '{name}'. Please update the package "
