@@ -2,12 +2,12 @@
 .\"     Title: clevercsv-detect
 .\"    Author: G.J.J. van den Burg
 .\" Generator: Wilderness <https://pypi.org/project/wilderness>
-.\"      Date: 2022-05-12
+.\"      Date: 2023-01-09
 .\"    Manual: clevercsv Manual
 .\"    Source: clevercsv 0.7.4
 .\"  Language: English
 .\"
-.TH "CLEVERCSV-DETECT" "1" "2022\-05\-12" "Clevercsv 0\&.7\&.4" "Clevercsv Manual"
+.TH "CLEVERCSV-DETECT" "1" "2023\-01\-09" "Clevercsv 0\&.7\&.4" "Clevercsv Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -34,7 +34,7 @@ clevercsv-detect \- Detect the dialect of a CSV file
 .nf
 \fIclevercsv detect [\-c | \-\-consistency] [\-e ENCODING | \-\-encoding=ENCODING]
                  [\-n NUM_CHARS | \-\-num\-chars=NUM_CHARS] [ \-p | \-\-plain |
-                 \-j | \-\-json ] [\-\-no\-skip] <path>
+                 \-j | \-\-json ] [\-\-no\-skip] [\-\-add\-runtime] <path>
 .fi
 .sp
 .SH "DESCRIPTION"
@@ -51,7 +51,7 @@ show this help message and exit
 .PP
 \-c, \-\-consistency
 .RS 4
-By default, the dialect of CSV files is detected using a two\-step process. First, a strict set of checks is used to see if the file adheres to a very basic format (for example, when all cells in the file are integers). If none of these checks succeed, the data consistency measure of Van den Burg, et al. (2019) is used to detect the dialect. With this option, you can force the detection to always use the data consistency measure. This can be useful for testing or research purposes, for instance.
+By default, the dialect of CSV files is detected using atwo\-step process. First, a strict set of checks is used to see if the file adheres to a very basic format (for example, when all cells in the file are integers). If none of these checks succeed, the data consistency measure of Van den Burg, et al. (2019) is used to detect the dialect. With this option, you can force the detection to always use the data consistency measure. This can be useful for testing or research purposes, for instance.
 .RE
 .PP
 \-e, \-\-encoding
@@ -73,12 +73,17 @@ Print the components of the dialect on separate lines
 .PP
 \-j, \-\-json
 .RS 4
-Print the components of the dialect as a JSON object
+Print the dialect to standard output in the form of a JSON object. This object will always have the 'delimiter', 'quotechar', 'escapechar', and 'strict' keys. If \-\-add\-runtime is specified, it will also have a 'runtime' key.
 .RE
 .PP
 \-\-no\-skip
 .RS 4
 The data consistency score used for dialect detection consists of two components: a pattern score and a type score. The type score lies between 0 and 1. When computing the data consistency measures for different dialects, we skip the computation of the type score if we see that the pattern score is lower than the best data consistency score we've seen so far. This option can be used to disable this behaviour and compute the type score for all dialects. This is mainly useful for debugging and testing purposes.
+.RE
+.PP
+\-\-add\-runtime
+.RS 4
+Add the runtime of the detection to the detection output.
 .RE
 .PP
 <path>
