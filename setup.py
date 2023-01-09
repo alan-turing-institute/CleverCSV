@@ -5,10 +5,10 @@ import glob
 import io
 import os
 
+from setuptools import Command
 from setuptools import Extension
 from setuptools import find_packages
 from setuptools import setup
-from setuptools import Command
 
 # Package meta-data.
 AUTHOR = "Gertjan van den Burg"
@@ -29,9 +29,10 @@ REQUIRED = [
 
 # When these are changed, update clevercsv/_optional.py accordingly
 full_require = [
+    "cchardet>=2.1.7; python_version<'3.11'",
+    "faust-cchardet>=2.1.14; platform_system!='Windows'",
     "pandas>=1.0.0",
     "tabview>=1.4",
-    "cchardet>=2.1.7",
     "wilderness>=0.1.5",
 ]
 
