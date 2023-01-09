@@ -79,14 +79,14 @@ class SimpleDialect(object):
     @classmethod
     def from_csv_dialect(cls, d):
         delimiter = "" if d.delimiter is None else d.delimiter
-        quotechar = "" if d.quotechar is None else d.quotechar
+        quotechar = "" if d.quoting == csv.QUOTE_NONE else d.quotechar
         escapechar = "" if d.escapechar is None else d.escapechar
         return cls(delimiter, quotechar, escapechar, strict=d.strict)
 
     def to_csv_dialect(self):
         class dialect(csv.Dialect):
             delimiter = self.delimiter
-            quotechar = self.quotechar
+            quotechar = '"' if self.quotechar == "" else self.quotechar
             escapechar = None if self.escapechar == "" else self.escapechar
             doublequote = True
             quoting = (
