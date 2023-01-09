@@ -8,7 +8,7 @@ import os
 from setuptools import Extension
 from setuptools import find_packages
 from setuptools import setup
-from setuptools._distutils.core import Command
+from setuptools import Command
 
 # Package meta-data.
 AUTHOR = "Gertjan van den Burg"
