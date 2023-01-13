@@ -2,6 +2,20 @@
 Changelog
 =========
 
+Version 0.7.5
+-------------
+
+
+* Add support for Python 3.11 by fixing a bug regarding empty strings in 
+  dialects (thanks to @stefanor!)
+* Fix installation error due to change in internals at setuptools (thanks to 
+  @mweinelt!)
+* Migrate to `faust-cchardet <https://github.com/faust-streaming/cChardet/>`_ as 
+  cChardet fails to install on Python 3.11 (on Windows, currently only chardet 
+  will work for Python 3.11)
+* Migrate to `packaging <https://github.com/pypa/packaging>`_ for version 
+  comparison
+
 Version 0.7.4
 -------------
 
