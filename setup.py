@@ -41,6 +41,7 @@ test_require = full_require + []
 dev_require = [
     "green",
     # "pythonfuzz",
+    "pytest>=2.6",
     "termcolor",
     "sphinx_rtd_theme",
 ]
