@@ -30,8 +30,7 @@ REQUIRED = [
 
 # When these are changed, update clevercsv/_optional.py accordingly
 full_require = [
-    "cchardet>=2.1.7; python_version<'3.11'",
-    "faust-cchardet>=2.1.14; platform_system!='Windows'",
+    "faust-cchardet>=2.1.18",
     "pandas>=1.0.0",
     "tabview>=1.4",
     "wilderness>=0.1.5",
