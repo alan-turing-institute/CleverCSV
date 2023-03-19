@@ -51,8 +51,13 @@ dist: man ## Make Python source distribution
 
 .PHONY: test integration integration_partial
 
-test: venv ## Run unit tests
+test: green pytest
+
+green: venv ## Run unit tests
 	source $(VENV_DIR)/bin/activate && green -a -vv ./tests/test_unit
+
+pytest: venv ## Run unit tests with PyTest
+	source $(VENV_DIR)/bin/activate && pytest -ra -m 'not network'
 
 integration: venv ## Run integration tests
 	source $(VENV_DIR)/bin/activate && python ./tests/test_integration/test_dialect_detection.py -v
