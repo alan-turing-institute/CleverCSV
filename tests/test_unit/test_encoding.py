@@ -10,10 +10,10 @@ This file is part of CleverCSV.
 """
 
 import os
-import platform
 import tempfile
 import unittest
 
+from clevercsv._optional import import_optional_dependency
 from clevercsv.encoding import get_encoding
 from clevercsv.write import writer
 
@@ -66,13 +66,12 @@ class EncodingTestCase(unittest.TestCase):
                 detected = get_encoding(tmpfname, try_cchardet=False)
                 self.assertEqual(encoding, detected)
 
-    # Temporarily, until https://github.com/faust-streaming/cChardet/pull/15 is
-    # resolved.
-    @unittest.skipIf(
-        platform.system() == "Windows",
-        reason="No faust-cchardet wheels for Windows (yet)",
-    )
     def test_encoding_cchardet(self):
+        try:
+            _ = import_optional_dependency("cchardet")
+        except ImportError:
+            self.skipTest("Failed to import cchardet, skipping this test")
+
         for case in self.cases:
             table = case["table"]
             encoding = case["encoding"]
