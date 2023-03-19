@@ -13,15 +13,26 @@ License: See LICENSE file.
 
 import importlib
 
+from typing import Dict
+from typing import List
+from typing import NamedTuple
+
 from packaging.version import Version
 
+
+class OptionalDependency(NamedTuple):
+    import_name: str
+    package_name: str
+    min_version: str
+
+
 # update this when changing setup.py
-VERSIONS = {
-    "tabview": "1.4",
-    "pandas": "0.24.1",
-    "faust-cchardet": "2.1.14",
-    "wilderness": "0.1.5",
-}
+OPTIONAL_DEPENDENCIES: List[OptionalDependency] = [
+    OptionalDependency("tabview", "tabview", "1.4"),
+    OptionalDependency("pandas", "pandas", "0.24.1"),
+    OptionalDependency("cchardet", "faust-cchardet", "2.1.18"),
+    OptionalDependency("wilderness", "wilderness", "0.1.5"),
+]
 
 
 def import_optional_dependency(name, raise_on_missing=True):
@@ -64,18 +75,24 @@ def import_optional_dependency(name, raise_on_missing=True):
         else:
             return None
 
-    min_version = VERSIONS.get(name)
-    if not min_version:
-        return module
+    opt_dependencies: Dict[str, OptionalDependency] = {
+        d.import_name: d for d in OPTIONAL_DEPENDENCIES
+    }
+
+    dependency = opt_dependencies.get(name)
+    if dependency is None:
+        raise ImportError(f"No known optional dependency with name: {name}")
+
     version = getattr(module, "__version__", None)
     if version is None:
-        return
-    if Version(version) < Version(min_version):
+        return module
+
+    if Version(version) < Version(dependency.min_version):
         msg = (
-            f"CleverCSV requires version '{min_version}' or newer for "
-            "optional dependency '{name}'. Please update the package "
-            "or install CleverCSV with all its optional dependencies "
-            "using: pip install clevercsv[full]"
+            f"CleverCSV requires version '{dependency.min_version}' or newer "
+            f"for optional dependency '{dependency.package_name}'. Please "
+            "update the package or install CleverCSV with all its optional "
+            "dependencies using: pip install clevercsv[full]"
         )
         raise ImportError(msg)
 
