@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.6
+
+* Simplify faust-cchardet import for Windows builds
+
 ## Version 0.7.5
 
 * Add support for Python 3.11 by fixing a bug regarding empty strings in 

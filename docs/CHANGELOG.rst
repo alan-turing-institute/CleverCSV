@@ -2,6 +2,12 @@
 Changelog
 =========
 
+Version 0.7.6
+-------------
+
+
+* Simplify faust-cchardet import for Windows builds
+
 Version 0.7.5
 -------------
 
