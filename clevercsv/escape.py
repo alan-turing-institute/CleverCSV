@@ -15,7 +15,7 @@ def is_potential_escapechar(char, encoding, block_char=None):
     """Check if a character is a potential escape character.
 
     A character is considered a potential escape character if it is in the
-    "Punctuation, Other" Unicode category and in the list of blocked
+    "Punctuation, Other" Unicode category and not in the list of blocked
     characters.
 
     Parameters
