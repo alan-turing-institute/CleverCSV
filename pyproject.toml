@@ -1,3 +1,60 @@
+[project]
+name = "clevercsv"
+authors = [
+    {name = "Gertjan van den Burg", email = "gertjanvandenburg@gmail.com"},
+]
+description = "A Python package for handling messy CSV files"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["csv"]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "chardet>=3.0",
+    "regex>=2018.11",
+    "packaging>=23.0",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+full = [
+    "faust-cchardet>=2.1.18",
+    "pandas>=1.0.0",
+    "tabview>=1.4",
+    "wilderness>=0.1.5",
+]
+docs = [
+    "sphinx",
+    "m2r2",
+]
+test = [
+    "clevercsv[full]",
+    "green",
+    "pytest>=2.6",
+]
+dev = [
+    "clevercsv[docs]",
+    "clevercsv[test]",
+    "termcolor",
+    "sphinx_rtd_theme",
+]
+
+[project.urls]
+homepage = "https://github.com/alan-turing-institute/CleverCSV/"
+documentation = "https://clevercsv.readthedocs.io/en/latest/"
+changelog = "https://github.com/alan-turing-institute/CleverCSV/blob/master/CHANGELOG.md"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
 [tool.black]
 line-length=79
 
@@ -30,3 +87,6 @@ disallow_untyped_defs = false
 [[tool.mypy.overrides]]
 packages = ["stubs", "clevercsv"]
 disallow_incomplete_defs = true
+
+[tool.setuptools.dynamic]
+version = {attr = "clevercsv.__version__"}
