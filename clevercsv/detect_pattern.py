@@ -8,11 +8,16 @@ Author: Gertjan van den Burg
 """
 
 import collections
+import re
+
+from typing import Pattern
 
 from .cabstraction import base_abstraction
 from .cabstraction import c_merge_with_quotechar
 
 DEFAULT_EPS_PAT = 1e-3
+
+RE_MULTI_C: Pattern = re.compile(r"C{2,}")
 
 
 def pattern_score(data, dialect, eps=DEFAULT_EPS_PAT):
@@ -127,8 +132,7 @@ def fill_empties(abstract):
     while "RD" in abstract:
         abstract = abstract.replace("RD", "RCD")
 
-    while "CC" in abstract:
-        abstract = abstract.replace("CC", "C")
+    abstract = RE_MULTI_C.sub("C", abstract)
 
     if abstract.startswith("D"):
         abstract = "C" + abstract
