@@ -11,6 +11,8 @@
 
 #define MODULE_VERSION "1.0"
 
+#include <stdbool.h>
+
 #include "Python.h"
 
 static int _set_char(const char *name, Py_UCS4 *target, PyObject *src, Py_UCS4 dflt)
@@ -136,6 +138,139 @@ err:
 	return stack_obj;
 }
 
+PyObject *c_merge_with_quotechar(PyObject *self, PyObject *args)
+{
+	int kind;
+	void *data;
+
+	bool in_quotes = false;
+	size_t *quote_idx_l = NULL;
+	size_t *quote_idx_r = NULL;
+	size_t *quote_idx_l_new = NULL;
+	size_t *quote_idx_r_new = NULL;
+	size_t i, j, len, quote_idx, quote_idx_size = 4;
+	char *new_S = NULL;
+
+	// single characters
+	Py_UCS4 s, t;
+
+	// retrieve the string from the function arguments
+	PyObject *S = NULL;
+	if (!PyArg_ParseTuple(args, "O", &S)) {
+		printf("Error parsing arguments.\n");
+		return NULL;
+	}
+
+	// check that the string is ready
+	if (PyUnicode_READY(S) == -1) {
+		printf("Unicode object not ready.\n");
+		return NULL;
+	}
+
+	// extract kind, data, and length
+	kind = PyUnicode_KIND(S);
+	data = PyUnicode_DATA(S);
+	len = PyUnicode_GET_LENGTH(S);
+
+	// empty string means return
+	if (len == 0)
+		return S;
+
+	// initialize the arrays that'll hold the start and end indices of the
+	// quoted parts of the string.
+	quote_idx_l = malloc(sizeof(size_t) * quote_idx_size);
+	if (quote_idx_l == NULL) {
+		PyErr_NoMemory();
+		return NULL;
+	}
+	quote_idx_r = malloc(sizeof(size_t) * quote_idx_size);
+	if (quote_idx_r == NULL) {
+		PyErr_NoMemory();
+		return NULL;
+	}
+
+	// allocate and populate the output array
+	new_S = malloc(sizeof(char) * len);
+	if (new_S == NULL) {
+		PyErr_NoMemory();
+		return NULL;
+	}
+	for (i=0; i<len; i++) {
+		new_S[i] = '\0';
+	}
+
+	i = 0;
+	quote_idx = 0;
+	while (i < len) {
+		s = PyUnicode_READ(kind, data, i);
+		new_S[i] = s;
+
+		if (s != 'Q') {
+			i++;
+			continue;
+		}
+
+		// record that we're starting a quoted bit
+		if (!in_quotes) {
+			in_quotes = true;
+			quote_idx_l[quote_idx] = i;
+			i += 1;
+			continue;
+		}
+
+		// read the next character if we can
+		if (i + 1 < len) {
+			t = PyUnicode_READ(kind, data, i + 1);
+		}
+		if (i + 1 < len && t == 'Q') {
+			i++;
+		} else {
+			quote_idx_r[quote_idx] = i;
+			quote_idx++;
+			in_quotes = false;
+
+			// reallocate if we need to
+			if (quote_idx == quote_idx_size) {
+				quote_idx_size *= 2;
+				quote_idx_l_new = quote_idx_l;
+				quote_idx_l_new = realloc(quote_idx_l_new, sizeof(size_t)*quote_idx_size);
+				if (quote_idx_l_new == NULL) {
+					PyErr_NoMemory();
+					return NULL;
+				}
+				quote_idx_r_new = quote_idx_r;
+				quote_idx_r_new = realloc(quote_idx_r_new, sizeof(size_t)*quote_idx_size);
+				if (quote_idx_r_new == NULL) {
+					PyErr_NoMemory();
+					return NULL;
+				}
+				quote_idx_l = quote_idx_l_new;
+				quote_idx_r = quote_idx_r_new;
+			}
+		}
+		i++;
+	}
+
+	// overwrite the part of the output string that's in quotes
+	for (j=0; j<quote_idx; j++) {
+		for (i=quote_idx_l[j]; i<=quote_idx_r[j]; i++) {
+			new_S[i] = 'C';
+		}
+	}
+
+	// convert to Python object
+	PyObject *new_S_obj = PyUnicode_FromStringAndSize(new_S, (Py_ssize_t)len);
+	if (new_S_obj == NULL)
+		goto merge_err;
+	Py_INCREF(new_S_obj);
+
+merge_err:
+	free(new_S);
+	free(quote_idx_l);
+	free(quote_idx_r);
+	return new_S_obj;
+}
+
 /*
  * MODULE
  */
@@ -143,10 +278,13 @@ err:
 PyDoc_STRVAR(cabstraction_module_doc,
 		"Helpers for abstraction computation in C\n");
 PyDoc_STRVAR(cabstraction_base_abstraction_doc, "");
+PyDoc_STRVAR(cabstraction_c_merge_with_quotechar_doc, "");
 
 static struct PyMethodDef cabstraction_methods[] = {
 	{ "base_abstraction", (PyCFunction)base_abstraction, METH_VARARGS,
 		cabstraction_base_abstraction_doc },
+	{ "c_merge_with_quotechar", (PyCFunction)c_merge_with_quotechar, METH_VARARGS,
+		cabstraction_c_merge_with_quotechar_doc },
 	{ NULL, NULL, 0, NULL }
 };
 

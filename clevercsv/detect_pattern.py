@@ -10,6 +10,7 @@ Author: Gertjan van den Burg
 import collections
 
 from .cabstraction import base_abstraction
+from .cabstraction import c_merge_with_quotechar
 
 DEFAULT_EPS_PAT = 1e-3
 
@@ -66,13 +67,13 @@ def make_abstraction(data, dialect):
     A = base_abstraction(
         data, dialect.delimiter, dialect.quotechar, dialect.escapechar
     )
-    A = merge_with_quotechar(A, dialect)
+    A = merge_with_quotechar(A)
     A = fill_empties(A)
     A = strip_trailing(A)
     return A
 
 
-def merge_with_quotechar(S, dialect):
+def merge_with_quotechar(S, dialect=None):
     """Merge quoted blocks in the abstraction
 
     This function takes the abstract representation and merges quoted blocks
@@ -85,7 +86,8 @@ def merge_with_quotechar(S, dialect):
         The data of a file as a string
 
     dialect : SimpleDialect
-        The dialect used to make the abstraction.
+        The dialect used to make the abstraction. This is not used but kept for
+        backwards compatibility. Will be removed in a future version.
 
     Returns
     -------
@@ -93,34 +95,7 @@ def merge_with_quotechar(S, dialect):
         A simplified version of the abstraction with quoted blocks merged.
 
     """
-    in_quotes = False
-    i = 0
-    quote_pairs = []
-    while i < len(S):
-        s = S[i]
-        if not s == "Q":
-            i += 1
-            continue
-
-        if not in_quotes:
-            in_quotes = True
-            begin_quotes = i
-        else:
-            if i + 1 < len(S) and S[i + 1] == "Q":
-                i += 1
-            else:
-                end_quotes = i
-                quote_pairs.append((begin_quotes, end_quotes))
-                in_quotes = False
-        i += 1
-
-    # replace quoted blocks by C
-    Sl = list(S)
-    for begin, end in quote_pairs:
-        for i in range(begin, end + 1):
-            Sl[i] = "C"
-    S = "".join(Sl)
-    return S
+    return c_merge_with_quotechar(S)
 
 
 def fill_empties(abstract):
