@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.7.7
+
+* Use r-prefix for regex patterns (thanks to @JakobGM!)
+* Fix documentation typo (thanks to @Aritra8438!)
+
 ## Version 0.7.6
 
 * Simplify faust-cchardet import for Windows builds
