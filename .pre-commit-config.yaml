@@ -16,3 +16,9 @@ repos:
       - id: isort
         name: isort (pyi)
         types: [pyi]
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.261'
+    hooks:
+      - id: ruff
+        name: ruff (python)
+        args: [--fix, --exit-non-zero-on-fix]
