@@ -112,7 +112,7 @@ PyObject *base_abstraction(PyObject *self,  PyObject *args)
 		} else {
 			if (escape_next)
 				escape_next = 0;
-			if (stack[len-1] != 'C')
+			if (len == 0 || stack[len-1] != 'C')
 				stack[len++] = 'C';
 		}
 		if (len == stack_size) {
