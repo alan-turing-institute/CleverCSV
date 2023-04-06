@@ -155,7 +155,7 @@ def every_row_has_delim(rows, dialect):
 
 def is_elementary(cell):
     return not (
-        regex.fullmatch("[a-zA-Z0-9\.\_\&\-\@\+\%\(\)\ \/]+", cell) is None
+        regex.fullmatch(r"[a-zA-Z0-9\.\_\&\-\@\+\%\(\)\ \/]+", cell) is None
     )
 
 
