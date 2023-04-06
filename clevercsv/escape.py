@@ -8,7 +8,35 @@ Date: 2018-11-06
 """
 
 import codecs
+import sys
 import unicodedata
+
+#: Set of default characters to *never* consider as escape character
+DEFAULT_BLOCK_CHARS = set(
+    [
+        "!",
+        "?",
+        '"',
+        "'",
+        ".",
+        ",",
+        ";",
+        ":",
+        "%",
+        "*",
+        "&",
+        "#",
+    ]
+)
+
+#: Set of characters in the Unicode "Po" category
+UNICODE_PO_CHARS = set(
+    [
+        c
+        for c in map(chr, range(sys.maxunicode + 1))
+        if unicodedata.category(c) == "Po"
+    ]
+)
 
 
 def is_potential_escapechar(char, encoding, block_char=None):
@@ -29,9 +57,7 @@ def is_potential_escapechar(char, encoding, block_char=None):
     block_char : iterable
         Characters that are in the Punctuation Other category but that should
         not be considered as escape character. If None, the default set is
-        used, equal to::
-
-        ["!", "?", '"', "'", ".", ",", ";", ":", "%", "*", "&", "#"
+        used, which is defined in :py:data:`DEFAULT_BLOCK_CHARS`.
 
     Returns
     -------
@@ -39,26 +65,14 @@ def is_potential_escapechar(char, encoding, block_char=None):
         Whether the character is considered a potential escape or not.
 
     """
-    as_unicode = codecs.decode(bytes(char, encoding), encoding=encoding)
+    if encoding.lower() in set(["utf-8", "ascii"]):
+        uchar = char
+    else:
+        uchar = codecs.decode(bytes(char, encoding), encoding=encoding)
 
-    ctr = unicodedata.category(as_unicode)
-    if block_char is None:
-        block_char = [
-            "!",
-            "?",
-            '"',
-            "'",
-            ".",
-            ",",
-            ";",
-            ":",
-            "%",
-            "*",
-            "&",
-            "#",
-        ]
-    if ctr == "Po":
-        if as_unicode in block_char:
-            return False
+    block_chars = (
+        DEFAULT_BLOCK_CHARS if block_char is None else set(block_char)
+    )
+    if uchar in UNICODE_PO_CHARS and uchar not in block_chars:
         return True
     return False

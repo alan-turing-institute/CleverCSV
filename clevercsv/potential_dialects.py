@@ -11,6 +11,8 @@ import codecs
 import itertools
 import unicodedata
 
+from typing import Dict
+
 import regex
 
 from .detect_type import PATTERNS
@@ -69,10 +71,15 @@ def get_dialects(
     for delim, quotechar in itertools.product(delims, quotechars):
         escapechars[(delim, quotechar)] = set([""])
 
+    is_escapechar_cache: Dict[str, bool] = {}
+
     # escapechars are those that precede a delimiter or quotechar
     for u, v in pairwise(data):
-        if not is_potential_escapechar(u, encoding):
+        if u not in is_escapechar_cache:
+            is_escapechar_cache[u] = is_potential_escapechar(u, encoding)
+        if not is_escapechar_cache[u]:
             continue
+
         for delim, quotechar in itertools.product(delims, quotechars):
             if v == delim or v == quotechar:
                 escapechars[(delim, quotechar)].add(u)
