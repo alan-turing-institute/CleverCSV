@@ -20,6 +20,9 @@ jobs:
 
       - name: Run black
         uses: psf/black@stable
+        with:
+          # keep in sync with .pre-commit-config.yaml
+          version: "23.3.0"
 
       - name: Run isort
         uses: jamescurtin/isort-action@master
