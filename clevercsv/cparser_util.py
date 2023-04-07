@@ -84,7 +84,7 @@ def parse_data(
 
     Raises
     ------
-    Error
+    Error : clevercsv.exceptions.Error
         When an error occurs during parsing.
 
     """

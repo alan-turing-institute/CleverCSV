@@ -136,10 +136,10 @@ class ConsistencyDetector:
 
         This function computes the consistency score for each dialect. This is
         done by first computing the pattern score for a dialect. If the class
-        is instantiated with :param:`skip` set to False, it also computes the
-        type score for each dialect. If :param:`skip` is True (the default),
-        the type score is only computed if the pattern score is larger or equal
-        to the current best combined score.
+        is instantiated with ``skip`` set to False, it also computes the type
+        score for each dialect. If ``skip`` is True (the default), the type
+        score is only computed if the pattern score is larger or equal to the
+        current best combined score.
 
         Parameters
         ----------
