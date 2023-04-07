@@ -14,7 +14,6 @@ from ._utils import parse_int
 
 
 class ExploreCommand(Command):
-
     _description = (
         "The explore command allows you to quickly explore a CSV file in an "
         "interactive Python shell. This command detects the dialect of the "

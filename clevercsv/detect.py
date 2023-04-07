@@ -98,7 +98,6 @@ class Detector(object):
                 continue  # skip rows that have irregular number of columns
 
             for col in list(columnTypes.keys()):
-
                 for thisType in [int, float, complex]:
                     try:
                         thisType(row[col])

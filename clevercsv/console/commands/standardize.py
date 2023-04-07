@@ -19,7 +19,6 @@ from ._utils import parse_int
 
 
 class StandardizeCommand(Command):
-
     _description = (
         "The standardize command can be used to convert a non-standard "
         "CSVfile to the standard RFC-4180 format [1]. When using the "

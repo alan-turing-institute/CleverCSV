@@ -13,7 +13,6 @@ from ._utils import parse_int
 
 
 class DetectCommand(Command):
-
     _description = "Detect the dialect of a CSV file."
 
     def __init__(self):

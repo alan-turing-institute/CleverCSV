@@ -16,7 +16,6 @@ import clevercsv
 
 
 class DictTestCase(unittest.TestCase):
-
     ############################
     # Start tests from CPython #
 
