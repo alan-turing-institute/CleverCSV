@@ -49,7 +49,7 @@ class writer(object):
             props[key] = value
 
         # lineterminator must be set
-        if not "lineterminator" in props or props["lineterminator"] is None:
+        if "lineterminator" not in props or props["lineterminator"] is None:
             props["lineterminator"] = "\n"
 
         # We have to subclass the csv.Dialect

@@ -47,6 +47,7 @@ class WriterTestCase(unittest.TestCase):
         self._write_error_test(
             clevercsv.Error, [None], quoting=clevercsv.QUOTE_NONE
         )
+
         # Check that exceptions are passed up the chain
         class BadList:
             def __len__(self):

@@ -15,11 +15,25 @@ jobs:
     name: Code quality checks for CleverCSV
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # NOTE: Keep versions in sync with .pre-commit-config.yaml
+
       - name: Run black
         uses: psf/black@stable
+        with:
+          version: "23.3.0"
 
       - name: Run isort
         uses: jamescurtin/isort-action@master
+        with:
+          isortVersion: "5.12.0"
+
+      - name: Run ruff
+        uses: chartboost/ruff-action@v1
+        with:
+          version: "v0.0.261"
 
   python-test:
     needs: [code-quality]
@@ -36,7 +50,7 @@ jobs:
           python-version: ${{ matrix.py }}
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install CleverCSV
         run: pip install -e .[full,tests]

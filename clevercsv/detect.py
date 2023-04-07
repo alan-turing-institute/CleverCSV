@@ -36,23 +36,27 @@ class Detector(object):
         return self.detect(sample, delimiters=delimiters, verbose=verbose)
 
     def detect(
-        self, sample, delimiters=None, verbose=False, method="auto", skip=True
+        self,
+        sample,
+        delimiters=None,
+        verbose=False,
+        method="auto",
+        skip=True,
     ):
         # method in ['auto', 'normal', 'consistency']
-        # wrapper for the print function
-        log = lambda *a, **kw: print(*a, **kw) if verbose else None
-
         if method == "normal" or method == "auto":
-            log("Running normal form detection ...", flush=True)
+            if verbose:
+                print("Running normal form detection ...", flush=True)
             dialect = detect_dialect_normal(
                 sample, delimiters=delimiters, verbose=verbose
             )
-            if not dialect is None:
+            if dialect is not None:
                 self.method_ = "normal"
                 return dialect
 
         self.method_ = "consistency"
-        log("Running data consistency measure ...", flush=True)
+        if verbose:
+            print("Running data consistency measure ...", flush=True)
         return detect_dialect_consistency(
             sample, delimiters=delimiters, skip=skip, verbose=verbose
         )
@@ -94,7 +98,6 @@ class Detector(object):
                 continue  # skip rows that have irregular number of columns
 
             for col in list(columnTypes.keys()):
-
                 for thisType in [int, float, complex]:
                     try:
                         thisType(row[col])
@@ -117,7 +120,7 @@ class Detector(object):
         # on whether it's a header
         hasHeader = 0
         for col, colType in columnTypes.items():
-            if type(colType) == type(0):  # it's a length
+            if isinstance(colType, int):  # it's a length
                 if len(header[col]) != colType:
                     hasHeader += 1
                 else:

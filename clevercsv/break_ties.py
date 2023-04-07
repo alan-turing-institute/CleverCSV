@@ -8,6 +8,7 @@ Author: Gertjan van den Burg
 """
 
 from .cparser_util import parse_string
+from .dialect import SimpleDialect
 from .utils import pairwise
 
 
@@ -76,17 +77,26 @@ def reduce_pairwise(data, dialects):
     visited = set()
     for A, B in equal_dialects:
         ans = break_ties_two(data, A, B)
-        if not ans is None:
+        if ans is not None:
             new_dialects.add(ans)
         visited.add(A)
         visited.add(B)
 
     # and add the dialects that we didn't visit
     for d in dialects:
-        if not d in visited:
+        if d not in visited:
             new_dialects.add(d)
 
     return list(new_dialects)
+
+
+def _dialects_only_differ_in_field(
+    A: SimpleDialect, B: SimpleDialect, field: str
+) -> bool:
+    keys = ["delimiter", "quotechar", "escapechar"]
+    return all(
+        getattr(A, key) == getattr(B, key) for key in keys if key != field
+    )
 
 
 def break_ties_two(data, A, B):
@@ -127,11 +137,7 @@ def break_ties_two(data, A, B):
         The chosen dialect if the tie can be broken, None otherwise.
 
     """
-    keys = {"delimiter", "quotechar", "escapechar"}
-    diff_only_in_key = lambda key: all(
-        getattr(A, x) == getattr(B, x) for x in keys if x != key
-    )
-    if diff_only_in_key("quotechar"):
+    if _dialects_only_differ_in_field(A, B, "quotechar"):
         if A.quotechar == "" or B.quotechar == "":
             d_no = A if A.quotechar == "" else B
             d_yes = B if d_no == A else A
@@ -145,7 +151,7 @@ def break_ties_two(data, A, B):
             else:
                 # quotechar has an effect
                 return d_yes
-    elif diff_only_in_key("delimiter"):
+    elif _dialects_only_differ_in_field(A, B, "delimiter"):
         if sorted([A.delimiter, B.delimiter]) == sorted([",", " "]):
             # Artifact due to type detection (comma as radix point)
             if A.delimiter == ",":
@@ -158,7 +164,7 @@ def break_ties_two(data, A, B):
                 return B
             else:
                 return A
-    elif diff_only_in_key("escapechar"):
+    elif _dialects_only_differ_in_field(A, B, "escapechar"):
         Dnone, Descape = (A, B) if A.escapechar == "" else (B, A)
 
         X = list(parse_string(data, Dnone))
@@ -226,7 +232,7 @@ def break_ties_two(data, A, B):
             for rX, rY in zip(X, Y):
                 for x, y in zip(rX, rY):
                     if x != y:
-                        if not eq in x:
+                        if eq not in x:
                             return None
 
             # Now we know that the only cells that have the

@@ -19,7 +19,6 @@ from clevercsv.write import writer
 
 
 class EncodingTestCase(unittest.TestCase):
-
     cases = [
         {
             "table": [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]],

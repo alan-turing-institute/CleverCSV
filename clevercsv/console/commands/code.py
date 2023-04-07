@@ -13,7 +13,6 @@ from ._utils import parse_int
 
 
 class CodeCommand(Command):
-
     _description = (
         "Generate Python code for importing a given CSV file. This is "
         "especially useful if you don't want to repeatedly detect the dialect "

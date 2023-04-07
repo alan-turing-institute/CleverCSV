@@ -58,11 +58,8 @@ def detect_consistency_dialects(data, dialects, skip=True, verbose=False):
 
     This function takes a list of dialects to consider.
     """
-    log = lambda *a, **kw: print(*a, **kw) if verbose else None
-    log("Considering %i dialects." % len(dialects))
-
     old_limit = field_size_limit(len(data) + 1)
-    scores = consistency_scores(data, dialects, skip=skip, logger=log)
+    scores = consistency_scores(data, dialects, skip=skip, verbose=verbose)
     H = get_best_set(scores)
     result = break_ties(data, H)
     field_size_limit(old_limit)
@@ -70,7 +67,7 @@ def detect_consistency_dialects(data, dialects, skip=True, verbose=False):
     return result
 
 
-def consistency_scores(data, dialects, skip=True, logger=print):
+def consistency_scores(data, dialects, skip=True, verbose: bool = False):
     scores = {}
 
     Qmax = -float("inf")
@@ -78,21 +75,24 @@ def consistency_scores(data, dialects, skip=True, logger=print):
         P = pattern_score(data, dialect)
         if P < Qmax and skip:
             scores[dialect] = {"pattern": P, "type": None, "Q": None}
-            logger("%15r:\tP = %15.6f\tskip." % (dialect, P))
+            if verbose:
+                print("%15r:\tP = %15.6f\tskip." % (dialect, P))
             continue
         T = type_score(data, dialect)
         Q = P * T
         Qmax = max(Q, Qmax)
         scores[dialect] = {"pattern": P, "type": T, "Q": Q}
-        logger(
-            "%15r:\tP = %15.6f\tT = %15.6f\tQ = %15.6f" % (dialect, P, T, Q)
-        )
+        if verbose:
+            print(
+                "%15r:\tP = %15.6f\tT = %15.6f\tQ = %15.6f"
+                % (dialect, P, T, Q)
+            )
     return scores
 
 
 def get_best_set(scores):
     Qscores = [score["Q"] for score in scores.values()]
-    Qscores = filter(lambda q: not q is None, Qscores)
+    Qscores = filter(lambda q: q is not None, Qscores)
     Qmax = max(Qscores)
     return set([d for d, score in scores.items() if score["Q"] == Qmax])
 
