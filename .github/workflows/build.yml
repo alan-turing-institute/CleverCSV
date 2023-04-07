@@ -18,17 +18,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # NOTE: Keep versions in sync with .pre-commit-config.yaml
+
       - name: Run black
         uses: psf/black@stable
         with:
-          # keep in sync with .pre-commit-config.yaml
           version: "23.3.0"
 
       - name: Run isort
         uses: jamescurtin/isort-action@master
+        with:
+          isortVersion: "5.12.0"
 
       - name: Run ruff
         uses: chartboost/ruff-action@v1
+        with:
+          version: "v0.0.261"
 
   python-test:
     needs: [code-quality]
