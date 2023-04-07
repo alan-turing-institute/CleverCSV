@@ -36,14 +36,13 @@ full_require = [
     "wilderness>=0.1.5",
 ]
 
-docs_require = ["sphinx", "m2r2"]
+docs_require = ["sphinx", "m2r2", "furo"]
 test_require = full_require + []
 dev_require = [
     "green",
     # "pythonfuzz",
     "pytest>=2.6",
     "termcolor",
-    "sphinx_rtd_theme",
 ]
 
 # What packages are optional?
