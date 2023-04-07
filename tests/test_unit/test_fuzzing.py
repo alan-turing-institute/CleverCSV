@@ -16,6 +16,6 @@ class FuzzingTestCase(unittest.TestCase):
         for string in strings:
             with self.subTest(string=string):
                 try:
-                    dialect = clevercsv.Sniffer().sniff(string)
+                    _ = clevercsv.Sniffer().sniff(string)
                 except clevercsv.exceptions.Error:
                     pass

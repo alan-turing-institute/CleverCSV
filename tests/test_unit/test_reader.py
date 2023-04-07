@@ -92,8 +92,8 @@ class ReaderTestCase(unittest.TestCase):
 
     def test_with_gen(self):
         def gen(x):
-            for l in x:
-                yield l
+            for line in x:
+                yield line
 
         r = clevercsv.reader(gen(["line,1", "line,2", "line,3"]))
         self.assertEqual(next(r), ["line", "1"])

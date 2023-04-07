@@ -16,7 +16,7 @@ import clevercsv
 def fuzz(buf):
     try:
         string = buf.decode("utf-8")
-        dialect = clevercsv.Sniffer().sniff(string)
+        _ = clevercsv.Sniffer().sniff(string)
     except UnicodeDecodeError:
         pass
     except clevercsv.exceptions.Error:

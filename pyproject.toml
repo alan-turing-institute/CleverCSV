@@ -9,5 +9,5 @@ force_single_line=true
 lines_between_types=1
 
 [tool.ruff]
-# Detect invalid escape sequences in string literals
-select = ["W605"]
+# Exclude stubs directory for now
+exclude = ["stubs"]

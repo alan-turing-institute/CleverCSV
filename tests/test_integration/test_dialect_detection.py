@@ -167,8 +167,9 @@ def clear_output_files(partial):
         ],
         False: [LOG_SUCCESS, LOG_FAILED, LOG_ERROR, LOG_METHOD, LOG_RUNTIME],
     }
-    delete = lambda f: os.unlink(f) if os.path.exists(f) else None
-    any(map(delete, files[partial]))
+    for filename in files[partial]:
+        if os.path.exists(filename):
+            os.unlink(filename)
 
 
 def parse_args():

@@ -84,36 +84,163 @@ QUOTED_SPECIALS_ALLOWED = [
     "\uFE50",
 ]
 
+_RE_NUMBER_1 = (
+    r"^(?=[+-\.\d])"
+    r"[+-]?"
+    r"(?:0|[1-9]\d*)?"
+    r"("
+    r"("
+    r"(?P<dot>((?<=\d)\.|\.(?=\d)))?"
+    r"("
+    r"?(dot)(?P<yes_dot>\d*(\d*[eE][+-]?\d+)?)"
+    r"|"
+    r"(?P<no_dot>((?<=\d)[eE][+-]?\d+)?)"
+    r")"
+    r")"
+    r"|"
+    r"("
+    r"(?P<comma>,)?"
+    r"(?(comma)(?P<yes_comma>\d+(\d+[eE][+-]?\d+)?)"
+    r"|"
+    r"(?P<no_comma>((?<=\d)[eE][+-]?\d+)?)"
+    r")"
+    r")"
+    r")"
+    r"$"
+)
+
+_RE_URL = (
+    r"("
+    r"(https?|ftp):\/\/(?!\-)"
+    r")?"
+    r"("
+    r"((?:[\p{L}\p{N}-]+\.)+([a-z]{2,}|local)(\.[a-z]{2,3})?)"
+    r"|"
+    r"localhost(\:\d{1,5})?"
+    r"|"
+    r"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\:\d{1,5})?)"
+    r")"
+    r"(\/[\p{L}\p{N}_\/()~?=&%\-\#\.:]*)?"
+    r"(\.[a-z]+)?"
+)
+
+_ALPHANUM_SPECIALS = regex.escape(r"".join(SPECIALS_ALLOWED))
+
+#: Regex for alphanumeric text
+_RE_ALPHANUM = (
+    r"("
+    r"\p{N}?\p{L}+"
+    r"["
+    r"\p{N}\p{L}\ " + _ALPHANUM_SPECIALS + r"]*"
+    r"|"
+    r"\p{L}?"
+    r"["
+    r"\p{N}\p{L}\ " + _ALPHANUM_SPECIALS + r"]+"
+    r")"
+)
+
+_ALPANUM_QUOTED_SPECIALS = regex.escape(
+    r"".join(SPECIALS_ALLOWED) + r"".join(QUOTED_SPECIALS_ALLOWED)
+)
+#: Regex for alphanumeric text in quoted strings
+_RE_ALPHANUM_QUOTED = (
+    r"("
+    r"\p{N}?\p{L}+"
+    r"["
+    r"\p{N}\p{L}\ " + _ALPANUM_QUOTED_SPECIALS + r"]*"
+    r"|"
+    r"\p{L}?"
+    r"["
+    r"\p{N}\p{L}\ " + _ALPANUM_QUOTED_SPECIALS + r"]+"
+    r")"
+)
+
+_RE_TIME_HHMMSSZZ = (
+    r"(0[0-9]|1[0-9]|2[0-3])"
+    r":"
+    r"([0-5][0-9])"
+    r":"
+    r"([0-5][0-9])"
+    r"[+-]"
+    r"([0-1][0-9])"
+    r":"
+    r"([0-5][0-9])"
+)
+
+# Regex for various date formats. See
+# https://github.com/alan-turing-institute/CleverCSV/blob/master/notes/date_regex/dateregex_annotated.txt
+# for an explanation.
+_RE_DATE = (
+    r"("
+    r"(0[1-9]|1[0-2])"
+    r"("
+    r"(0[1-9]|[12]\d|3[01])"
+    r"([12]\d{3}|\d{2})"
+    r"|"
+    r"(?P<sep1>[-\/. ])"
+    r"(0?[1-9]|[12]\d|3[01])"
+    r"(?P=sep1)"
+    r"([12]\d{3}|\d{2})"
+    r")"
+    r"|"
+    r"(0[1-9]|[12]\d|3[01])"
+    r"("
+    r"(0[1-9]|1[0-2])"
+    r"([12]\d{3}|\d{2})"
+    r"|"
+    r"(?P<sep2>[-\/. ])"
+    r"(0?[1-9]|1[0-2])"
+    r"(?P=sep2)"
+    r"([12]\d{3}|\d{2})"
+    r")"
+    r"|"
+    r"([12]\d{3}|\d{2})"
+    r"("
+    r"(?P<sep3>[-\/. ])"
+    r"(0?[1-9]|1[0-2])"
+    r"(?P=sep3)"
+    r"(0?[1-9]|[12]\d|3[01])"
+    r"|"
+    r"年(0?[1-9]|1[0-2])月(0?[1-9]|[12]\d|3[01])日"
+    r"|"
+    r"년(0?[1-9]|1[0-2])월(0?[1-9]|[12]\d|3[01])일"
+    r"|"
+    r"(0[1-9]|1[0-2])"
+    r"(0[1-9]|[12]\d|3[01])"
+    r")"
+    r"|"
+    r"("
+    r"([1-9]|1[0-2])"
+    r"(?P<sep4>[-\/. ])"
+    r"(0?[1-9]|[12]\d|3[01])"
+    r"(?P=sep4)([12]\d{3}|\d{2})"
+    r"|"
+    r"([1-9]|[12]\d|3[01])"
+    r"(?P<sep5>[-\/. ])"
+    r"(0?[1-9]|1[0-2])"
+    r"(?P=sep5)([12]\d{3}|\d{2})"
+    r")"
+    r")"
+)
+
 PATTERNS = {
-    "number_1": r"^(?=[+-\.\d])[+-]?(?:0|[1-9]\d*)?(((?P<dot>((?<=\d)\.|\.(?=\d)))?(?(dot)(?P<yes_dot>\d*(\d*[eE][+-]?\d+)?)|(?P<no_dot>((?<=\d)[eE][+-]?\d+)?)))|((?P<comma>,)?(?(comma)(?P<yes_comma>\d+(\d+[eE][+-]?\d+)?)|(?P<no_comma>((?<=\d)[eE][+-]?\d+)?))))$",
+    "number_1": _RE_NUMBER_1,
     "number_2": r"[+-]?(?:[1-9]|[1-9]\d{0,2})(?:\,\d{3})+\.\d*",
     "number_3": r"[+-]?(?:[1-9]|[1-9]\d{0,2})(?:\.\d{3})+\,\d*",
-    "url": r"((https?|ftp):\/\/(?!\-))?(((?:[\p{L}\p{N}-]+\.)+([a-z]{2,}|local)(\.[a-z]{2,3})?)|localhost(\:\d{1,5})?|(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\:\d{1,5})?))(\/[\p{L}\p{N}_\/()~?=&%\-\#\.:]*)?(\.[a-z]+)?",
+    "url": _RE_URL,
     "email": r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
     "ipv4": r"(?:\d{1,3}\.){3}\d{1,3}",
-    "unicode_alphanum": r"(\p{N}?\p{L}+[\p{N}\p{L}\ "
-    + regex.escape("".join(SPECIALS_ALLOWED))
-    + r"]*|\p{L}?[\p{N}\p{L}\ "
-    + regex.escape("".join(SPECIALS_ALLOWED))
-    + r"]+)",
-    "unicode_alphanum_quoted": r"(\p{N}?\p{L}+[\p{N}\p{L}\ "
-    + regex.escape(
-        "".join(SPECIALS_ALLOWED) + "".join(QUOTED_SPECIALS_ALLOWED)
-    )
-    + r"]*|\p{L}?[\p{N}\p{L}\ "
-    + regex.escape(
-        "".join(SPECIALS_ALLOWED) + "".join(QUOTED_SPECIALS_ALLOWED)
-    )
-    + r"]+)",
+    "unicode_alphanum": _RE_ALPHANUM,
+    "unicode_alphanum_quoted": _RE_ALPHANUM_QUOTED,
     "time_hhmmss": r"(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])",
     "time_hhmm": r"(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])",
     "time_HHMM": r"(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])",
     "time_HH": r"(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])",
     "time_hmm": r"([0-9]|1[0-9]|2[0-3]):([0-5][0-9])",
-    "time_hhmmsszz": r"(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])[+-]([0-1][0-9]):([0-5][0-9])",
+    "time_hhmmsszz": _RE_TIME_HHMMSSZZ,
     "currency": r"\p{Sc}\s?(.*)",
     "unix_path": r"[~.]?(?:\/[a-zA-Z0-9\.\-\_]+)+\/?",
-    "date": r"((0[1-9]|1[0-2])((0[1-9]|[12]\d|3[01])([12]\d{3}|\d{2})|(?P<sep1>[-\/. ])(0?[1-9]|[12]\d|3[01])(?P=sep1)([12]\d{3}|\d{2}))|(0[1-9]|[12]\d|3[01])((0[1-9]|1[0-2])([12]\d{3}|\d{2})|(?P<sep2>[-\/. ])(0?[1-9]|1[0-2])(?P=sep2)([12]\d{3}|\d{2}))|([12]\d{3}|\d{2})((?P<sep3>[-\/. ])(0?[1-9]|1[0-2])(?P=sep3)(0?[1-9]|[12]\d|3[01])|年(0?[1-9]|1[0-2])月(0?[1-9]|[12]\d|3[01])日|년(0?[1-9]|1[0-2])월(0?[1-9]|[12]\d|3[01])일|(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01]))|(([1-9]|1[0-2])(?P<sep4>[-\/. ])(0?[1-9]|[12]\d|3[01])(?P=sep4)([12]\d{3}|\d{2})|([1-9]|[12]\d|3[01])(?P<sep5>[-\/. ])(0?[1-9]|1[0-2])(?P=sep5)([12]\d{3}|\d{2})))",
+    "date": _RE_DATE,
 }
 
 
@@ -151,7 +278,7 @@ class TypeDetector(object):
         return [tt[0] for tt in self._type_tests]
 
     def is_known_type(self, cell, is_quoted=False):
-        return not self.detect_type(cell, is_quoted=is_quoted) is None
+        return self.detect_type(cell, is_quoted=is_quoted) is not None
 
     def detect_type(self, cell, is_quoted=False):
         cell = cell.strip() if self.strip_whitespace else cell

@@ -130,7 +130,7 @@ def has_nested_quotes(string, quotechar):
 
 
 def maybe_has_escapechar(data, encoding, delim, quotechar):
-    if not delim in data and not quotechar in data:
+    if delim not in data and quotechar not in data:
         return False
     for u, v in pairwise(data):
         if v in [delim, quotechar] and is_potential_escapechar(u, encoding):
@@ -154,8 +154,9 @@ def every_row_has_delim(rows, dialect):
 
 
 def is_elementary(cell):
-    return not (
-        regex.fullmatch(r"[a-zA-Z0-9\.\_\&\-\@\+\%\(\)\ \/]+", cell) is None
+    return (
+        regex.fullmatch(r"[a-zA-Z0-9\.\_\&\-\@\+\%\(\)\ \/]+", cell)
+        is not None
     )
 
 
@@ -180,7 +181,7 @@ def split_file(data):
 
 def split_row(row, dialect):
     # no nested quotes
-    if dialect.quotechar == "" or not dialect.quotechar in row:
+    if dialect.quotechar == "" or dialect.quotechar not in row:
         if dialect.delimiter == "":
             return [row]
         return row.split(dialect.delimiter)

@@ -91,10 +91,10 @@ def parse_data(
     if dialect is None:
         dialect = SimpleDialect("", "", "")
 
-    delimiter_ = delimiter if not delimiter is None else dialect.delimiter
-    quotechar_ = quotechar if not quotechar is None else dialect.quotechar
-    escapechar_ = escapechar if not escapechar is None else dialect.escapechar
-    strict_ = strict if not strict is None else dialect.strict
+    delimiter_ = delimiter if delimiter is not None else dialect.delimiter
+    quotechar_ = quotechar if quotechar is not None else dialect.quotechar
+    escapechar_ = escapechar if escapechar is not None else dialect.escapechar
+    strict_ = strict if strict is not None else dialect.strict
 
     parser = Parser(
         data,
