@@ -24,4 +24,4 @@ class ConsistencyTestCase(unittest.TestCase):
             SimpleDialect("|", None, None): ConsistencyScore(P=2, T=1, Q=2),
         }
         H = ConsistencyDetector.get_best_dialects(scores)
-        self.assertEqual(H, set([SimpleDialect("|", None, None)]))
+        self.assertEqual(H, [SimpleDialect("|", None, None)])
