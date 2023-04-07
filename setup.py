@@ -43,7 +43,7 @@ dev_require = [
     # "pythonfuzz",
     "pytest>=2.6",
     "termcolor",
-    "sphinx_rtd_theme",
+    "furo",
 ]
 
 # What packages are optional?
