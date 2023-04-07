@@ -9,12 +9,12 @@ Author: Gertjan van den Burg
 
 from io import StringIO
 
-from .consistency import detect_dialect_consistency
+from .consistency import ConsistencyDetector
 from .normal_form import detect_dialect_normal
 from .read import reader
 
 
-class Detector(object):
+class Detector:
     """
     Detect the Dialect of CSV files with normal forms or the data consistency
     measure. This class provides a drop-in replacement for the Python dialect
@@ -55,11 +55,10 @@ class Detector(object):
                 return dialect
 
         self.method_ = "consistency"
+        consistency_detector = ConsistencyDetector(skip=skip, verbose=verbose)
         if verbose:
             print("Running data consistency measure ...", flush=True)
-        return detect_dialect_consistency(
-            sample, delimiters=delimiters, skip=skip, verbose=verbose
-        )
+        return consistency_detector.detect(sample, delimiters=delimiters)
 
     def has_header(self, sample):
         """Detect if a file has a header from a sample.

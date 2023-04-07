@@ -13,9 +13,7 @@ import unicodedata
 
 from typing import Dict
 
-import regex
-
-from .detect_type import PATTERNS
+from ._regexes import PATTERN_URL
 from .dialect import SimpleDialect
 from .escape import is_potential_escapechar
 from .utils import pairwise
@@ -122,8 +120,7 @@ def unicode_category(x, encoding=None):
 
 def filter_urls(data):
     """Filter URLs from the data"""
-    pat = PATTERNS["url"]
-    return regex.sub(pat, "U", data, count=0)
+    return PATTERN_URL.sub("U", data)
 
 
 def get_delimiters(

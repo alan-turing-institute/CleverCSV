@@ -9,251 +9,25 @@ Author: Gertjan van den Burg
 
 import json
 
-import regex
+from typing import Dict
+from typing import Optional
+from typing import Pattern
 
+from ._regexes import DEFAULT_TYPE_REGEXES
 from .cparser_util import parse_string
 
 DEFAULT_EPS_TYPE = 1e-10
 
-# Used this site: https://unicode-search.net/unicode-namesearch.pl
-# Specials allowed in unicode_alphanum regex if is_quoted = False
-SPECIALS_ALLOWED = [
-    "-",
-    "_",
-    # Periods
-    "\u002e",
-    "\u06d4",
-    "\u3002",
-    "\ufe52",
-    "\uff0e",
-    "\uff61",
-    # Parentheses
-    "\u0028",
-    "\u0029",
-    "\u27ee",
-    "\u27ef",
-    "\uff08",
-    "\uff09",
-    # Question marks
-    "\u003F",
-    "\u00BF",
-    "\u037E",
-    "\u055E",
-    "\u061F",
-    "\u1367",
-    "\u1945",
-    "\u2047",
-    "\u2048",
-    "\u2049",
-    "\u2CFA",
-    "\u2CFB",
-    "\u2E2E",
-    "\uA60F",
-    "\uA6F7",
-    "\uFE16",
-    "\uFE56",
-    "\uFF1F",
-    chr(69955),  # chakma question mark
-    chr(125279),  # adlam initial question mark
-    # Exclamation marks
-    "\u0021",
-    "\u00A1",
-    "\u01C3",
-    "\u055C",
-    "\u07F9",
-    "\u109F",
-    "\u1944",
-    "\u203C",
-    "\u2048",
-    "\u2049",
-    "\uAA77",
-    "\uFE15",
-    "\uFE57",
-    "\uFF01",
-    chr(125278),  # adlam initial exclamation mark
-]
-
-# Additional specials allowed in unicode_alphanum_quoted regex
-QUOTED_SPECIALS_ALLOWED = [
-    ",",
-    "\u060C",
-    "\u1363",
-    "\u1802",
-    "\u1808",
-    "\uFF0C",
-    "\uFE50",
-]
-
-_RE_NUMBER_1 = (
-    r"^(?=[+-\.\d])"
-    r"[+-]?"
-    r"(?:0|[1-9]\d*)?"
-    r"("
-    r"("
-    r"(?P<dot>((?<=\d)\.|\.(?=\d)))?"
-    r"("
-    r"?(dot)(?P<yes_dot>\d*(\d*[eE][+-]?\d+)?)"
-    r"|"
-    r"(?P<no_dot>((?<=\d)[eE][+-]?\d+)?)"
-    r")"
-    r")"
-    r"|"
-    r"("
-    r"(?P<comma>,)?"
-    r"(?(comma)(?P<yes_comma>\d+(\d+[eE][+-]?\d+)?)"
-    r"|"
-    r"(?P<no_comma>((?<=\d)[eE][+-]?\d+)?)"
-    r")"
-    r")"
-    r")"
-    r"$"
-)
-
-_RE_URL = (
-    r"("
-    r"(https?|ftp):\/\/(?!\-)"
-    r")?"
-    r"("
-    r"((?:[\p{L}\p{N}-]+\.)+([a-z]{2,}|local)(\.[a-z]{2,3})?)"
-    r"|"
-    r"localhost(\:\d{1,5})?"
-    r"|"
-    r"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\:\d{1,5})?)"
-    r")"
-    r"(\/[\p{L}\p{N}_\/()~?=&%\-\#\.:]*)?"
-    r"(\.[a-z]+)?"
-)
-
-_ALPHANUM_SPECIALS = regex.escape(r"".join(SPECIALS_ALLOWED))
-
-#: Regex for alphanumeric text
-_RE_ALPHANUM = (
-    r"("
-    r"\p{N}?\p{L}+"
-    r"["
-    r"\p{N}\p{L}\ " + _ALPHANUM_SPECIALS + r"]*"
-    r"|"
-    r"\p{L}?"
-    r"["
-    r"\p{N}\p{L}\ " + _ALPHANUM_SPECIALS + r"]+"
-    r")"
-)
-
-_ALPANUM_QUOTED_SPECIALS = regex.escape(
-    r"".join(SPECIALS_ALLOWED) + r"".join(QUOTED_SPECIALS_ALLOWED)
-)
-#: Regex for alphanumeric text in quoted strings
-_RE_ALPHANUM_QUOTED = (
-    r"("
-    r"\p{N}?\p{L}+"
-    r"["
-    r"\p{N}\p{L}\ " + _ALPANUM_QUOTED_SPECIALS + r"]*"
-    r"|"
-    r"\p{L}?"
-    r"["
-    r"\p{N}\p{L}\ " + _ALPANUM_QUOTED_SPECIALS + r"]+"
-    r")"
-)
-
-_RE_TIME_HHMMSSZZ = (
-    r"(0[0-9]|1[0-9]|2[0-3])"
-    r":"
-    r"([0-5][0-9])"
-    r":"
-    r"([0-5][0-9])"
-    r"[+-]"
-    r"([0-1][0-9])"
-    r":"
-    r"([0-5][0-9])"
-)
-
-# Regex for various date formats. See
-# https://github.com/alan-turing-institute/CleverCSV/blob/master/notes/date_regex/dateregex_annotated.txt
-# for an explanation.
-_RE_DATE = (
-    r"("
-    r"(0[1-9]|1[0-2])"
-    r"("
-    r"(0[1-9]|[12]\d|3[01])"
-    r"([12]\d{3}|\d{2})"
-    r"|"
-    r"(?P<sep1>[-\/. ])"
-    r"(0?[1-9]|[12]\d|3[01])"
-    r"(?P=sep1)"
-    r"([12]\d{3}|\d{2})"
-    r")"
-    r"|"
-    r"(0[1-9]|[12]\d|3[01])"
-    r"("
-    r"(0[1-9]|1[0-2])"
-    r"([12]\d{3}|\d{2})"
-    r"|"
-    r"(?P<sep2>[-\/. ])"
-    r"(0?[1-9]|1[0-2])"
-    r"(?P=sep2)"
-    r"([12]\d{3}|\d{2})"
-    r")"
-    r"|"
-    r"([12]\d{3}|\d{2})"
-    r"("
-    r"(?P<sep3>[-\/. ])"
-    r"(0?[1-9]|1[0-2])"
-    r"(?P=sep3)"
-    r"(0?[1-9]|[12]\d|3[01])"
-    r"|"
-    r"年(0?[1-9]|1[0-2])月(0?[1-9]|[12]\d|3[01])日"
-    r"|"
-    r"년(0?[1-9]|1[0-2])월(0?[1-9]|[12]\d|3[01])일"
-    r"|"
-    r"(0[1-9]|1[0-2])"
-    r"(0[1-9]|[12]\d|3[01])"
-    r")"
-    r"|"
-    r"("
-    r"([1-9]|1[0-2])"
-    r"(?P<sep4>[-\/. ])"
-    r"(0?[1-9]|[12]\d|3[01])"
-    r"(?P=sep4)([12]\d{3}|\d{2})"
-    r"|"
-    r"([1-9]|[12]\d|3[01])"
-    r"(?P<sep5>[-\/. ])"
-    r"(0?[1-9]|1[0-2])"
-    r"(?P=sep5)([12]\d{3}|\d{2})"
-    r")"
-    r")"
-)
-
-PATTERNS = {
-    "number_1": _RE_NUMBER_1,
-    "number_2": r"[+-]?(?:[1-9]|[1-9]\d{0,2})(?:\,\d{3})+\.\d*",
-    "number_3": r"[+-]?(?:[1-9]|[1-9]\d{0,2})(?:\.\d{3})+\,\d*",
-    "url": _RE_URL,
-    "email": r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",
-    "ipv4": r"(?:\d{1,3}\.){3}\d{1,3}",
-    "unicode_alphanum": _RE_ALPHANUM,
-    "unicode_alphanum_quoted": _RE_ALPHANUM_QUOTED,
-    "time_hhmmss": r"(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])",
-    "time_hhmm": r"(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])",
-    "time_HHMM": r"(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])",
-    "time_HH": r"(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])",
-    "time_hmm": r"([0-9]|1[0-9]|2[0-3]):([0-5][0-9])",
-    "time_hhmmsszz": _RE_TIME_HHMMSSZZ,
-    "currency": r"\p{Sc}\s?(.*)",
-    "unix_path": r"[~.]?(?:\/[a-zA-Z0-9\.\-\_]+)+\/?",
-    "date": _RE_DATE,
-}
-
 
 class TypeDetector(object):
-    def __init__(self, strip_whitespace=True):
-        self.patterns = PATTERNS.copy()
+    def __init__(
+        self,
+        patterns: Optional[Dict[str, Pattern]] = None,
+        strip_whitespace=True,
+    ):
+        self.patterns = patterns or DEFAULT_TYPE_REGEXES.copy()
         self.strip_whitespace = strip_whitespace
-        self._compile_regexes()
         self._register_type_tests()
-
-    def _compile_regexes(self):
-        for key, value in self.patterns.items():
-            self.patterns[key] = regex.compile(value)
 
     def _register_type_tests(self):
         self._type_tests = [
@@ -385,9 +159,9 @@ class TypeDetector(object):
             if "+" in parts[1]:
                 subparts = parts[1].split("+")
                 istime1 = self.is_time(subparts[0])
-                istime2 = self.is_time(subparts[1])
                 if not istime1:
                     return False
+                istime2 = self.is_time(subparts[1])
                 if istime2:
                     return True
                 if self._run_regex(subparts[1], "time_HHMM"):
@@ -397,9 +171,9 @@ class TypeDetector(object):
             elif "-" in parts[1]:
                 subparts = parts[1].split("-")
                 istime1 = self.is_time(subparts[0])
-                istime2 = self.is_time(subparts[1])
                 if not istime1:
                     return False
+                istime2 = self.is_time(subparts[1])
                 if istime2:
                     return True
                 if self._run_regex(subparts[1], "time_HHMM"):
