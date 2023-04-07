@@ -21,6 +21,9 @@ jobs:
       - name: Run isort
         uses: jamescurtin/isort-action@master
 
+      - name: Run ruff
+        uses: chartboost/ruff-action@v1
+
   python-test:
     needs: [code-quality]
     name: Unit tests for CleverCSV
