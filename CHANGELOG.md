@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 0.8.0
+
+* Improve median runtime by ~68% (~52% on average) by: 1) more caching, 2) 
+  implementing a heavy function in C.
+* Redesign computation of consistency measure to a class: 
+  `ConsistencyDetector`.
+* Fix potential memory leak in C code for base abstraction
+* Fixes to escape sequences in regexes (thanks to @JakobGM!)
+* Various improvements to code quality
+* Switch documentation style to [furo](https://pypi.org/project/furo/).
+
 ## Version 0.7.7
 
 * Use r-prefix for regex patterns (thanks to @JakobGM!)
