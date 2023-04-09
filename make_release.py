@@ -23,6 +23,7 @@ URLS = {
     "RTD": "https://readthedocs.org/projects/clevercsv/builds/",
     "CI": "https://github.com/alan-turing-institute/CleverCSV/actions",
     "dummy": "https://github.com/alan-turing-institute/CleverCSV-pre-commit",
+    "tags": "https://github.com/alan-turing-institute/CleverCSV/tags",
 }
 
 
@@ -241,6 +242,12 @@ class WaitForRTD(Step):
         )
 
 
+class GitHubRelease(Step):
+    def action(self, context):
+        webbrowser.open(URLS["tags"])
+        self.instruct("Create release from tag and embed release notes")
+
+
 class UpdatePreCommitDummy(Step):
     def action(self, context):
         self.instruct(
@@ -281,6 +288,7 @@ def main(target=None):
         # triggers Travis to build with cibw and push to PyPI
         ("push3", PushToGitHub()),
         ("ci3", WaitForCI()),
+        ("gh_release", GitHubRelease()),
         ("pre-commit", UpdatePreCommitDummy()),
     ]
     context = {}
