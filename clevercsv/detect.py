@@ -43,7 +43,51 @@ class Detector:
         method="auto",
         skip=True,
     ):
-        # method in ['auto', 'normal', 'consistency']
+        """Detect the dialect of a CSV file
+
+        This method detects the dialect of the CSV file using the specified
+        detection method.
+
+        Parameters
+        ----------
+        sample : str
+            A sample of text from the CSV file. For best results and if time
+            allows, use the entire contents of the CSV file as the sample.
+
+        delimiters : Optional[Iterable[str]]
+            Set of delimiters to consider for dialect detection. The potential
+            dialects will be constructed by analyzing the sample and these
+            delimiters. If omitted, the set of potential delimiters will be
+            constructed from the sample.
+
+        verbose : bool
+            Enable verbose mode.
+
+        method : str
+            The method to use for dialect detection. Valid options are `"auto"`
+            (the default), `"normal"`, or `"consistency"`. The `"auto"` option
+            first attempts to detect the dialect using normal-form detection,
+            and uses the consistency measure if normal-form detection is
+            inconclusive. The `"normal"` method uses normal-form detection
+            excllusively, and the `"consistency"` method uses the consistency
+            measure exclusively.
+
+        skip : bool
+            Whether to skip potential dialects that have too low a pattern
+            score in the consistency detection. See
+            :func:`ConsistencyDetector.compute_consistency_scores` for more
+            details.
+
+        Returns
+        -------
+        dialect : Optional[SimpleDialect]
+            The detected dialect. Can be `None` if dialect detection was
+            inconclusive.
+
+        """
+        if method not in ("auto", "normal", "consistency"):
+            raise ValueError(f"Unknown detection method: {method}")
+
         if method == "normal" or method == "auto":
             if verbose:
                 print("Running normal form detection ...", flush=True)
