@@ -9,6 +9,9 @@ that it uses the `reader` and `writer` classes from our package.
 Author: Gertjan van den Burg
 
 """
+
+from __future__ import annotations
+
 import warnings
 
 from collections import OrderedDict
@@ -113,7 +116,7 @@ class DictReader(
 class DictWriter(Generic[_T]):
     def __init__(
         self,
-        f: "SupportsWrite[str]",
+        f: SupportsWrite[str],
         fieldnames: Collection[_T],
         restval: Optional[Any] = "",
         extrasaction: Literal["raise", "ignore"] = "raise",
