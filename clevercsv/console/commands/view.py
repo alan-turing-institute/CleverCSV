@@ -2,19 +2,9 @@
 
 import sys
 
-try:
-    import tabview
-except ImportError:
-
-    class TabView:
-        def view(*args, **kwargs):
-            print(
-                "Error: unfortunately Tabview is not available on Windows.",
-                file=sys.stderr,
-            )
-
-    tabview = TabView()
-
+from typing import List
+from typing import Optional
+from typing import Sequence
 
 from wilderness import Command
 
@@ -61,6 +51,17 @@ class ViewCommand(Command):
             help="Transpose the columns of the input file before viewing",
         )
 
+    def _tabview(self, rows) -> None:
+        try:
+            from tabview import view
+        except ImportError:
+            print(
+                "Error: unfortunately Tabview is not available on Windows.",
+                file=sys.stderr,
+            )
+            return
+        view(rows)
+
     def handle(self) -> int:
         verbose = self.args.verbose
         num_chars = parse_int(self.args.num_chars, "num-chars")
@@ -77,7 +78,7 @@ class ViewCommand(Command):
 
         if self.args.transpose:
             max_row_length = max(map(len, rows))
-            fixed_rows = []
+            fixed_rows: List[Sequence[Optional[str]]] = []
             for row in rows:
                 if len(row) == max_row_length:
                     fixed_rows.append(row)
@@ -86,5 +87,5 @@ class ViewCommand(Command):
                         row + [None] * (max_row_length - len(row))
                     )
             rows = list(map(list, zip(*fixed_rows)))
-        tabview.view(rows)
+        self._tabview(rows)
         return 0

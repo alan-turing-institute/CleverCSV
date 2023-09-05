@@ -7,15 +7,23 @@ Python utility functions that wrap the C parser.
 
 import io
 
+from typing import Any
+from typing import Iterable
+from typing import Iterator
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
+
 from .cparser import Error as ParserError
 from .cparser import Parser
 from .dialect import SimpleDialect
 from .exceptions import Error
 
-_FIELD_SIZE_LIMIT = 128 * 1024
+_FIELD_SIZE_LIMIT: int = 128 * 1024
 
 
-def field_size_limit(*args, **kwargs):
+def field_size_limit(*args: Any, **kwargs: Any) -> int:
     """Get/Set the limit to the field size.
 
     This function is adapted from the one in the Python CSV module. See the
@@ -23,29 +31,54 @@ def field_size_limit(*args, **kwargs):
     """
     global _FIELD_SIZE_LIMIT
     old_limit = _FIELD_SIZE_LIMIT
-    args = list(args) + list(kwargs.values())
-    if not 0 <= len(args) <= 1:
+    all_args = list(args) + list(kwargs.values())
+    if not 0 <= len(all_args) <= 1:
         raise TypeError(
-            "field_size_limit expected at most 1 arguments, got %i" % len(args)
+            "field_size_limit expected at most 1 arguments, got %i"
+            % len(all_args)
         )
-    if len(args) == 0:
+    if len(all_args) == 0:
         return old_limit
-    limit = args[0]
+    limit = all_args[0]
     if not isinstance(limit, int):
         raise TypeError("limit must be an integer")
     _FIELD_SIZE_LIMIT = int(limit)
     return old_limit
 
 
+def _parse_data(
+    data: Iterable[str],
+    delimiter: str,
+    quotechar: str,
+    escapechar: str,
+    strict: bool,
+    return_quoted: bool = False,
+) -> Iterator[Union[List[str], List[Tuple[str, bool]]]]:
+    parser = Parser(
+        data,
+        delimiter=delimiter,
+        quotechar=quotechar,
+        escapechar=escapechar,
+        field_limit=field_size_limit(),
+        strict=strict,
+        return_quoted=return_quoted,
+    )
+    try:
+        for row in parser:
+            yield row
+    except ParserError as e:
+        raise Error(str(e))
+
+
 def parse_data(
-    data,
-    dialect=None,
-    delimiter=None,
-    quotechar=None,
-    escapechar=None,
-    strict=None,
-    return_quoted=False,
-):
+    data: Iterable[str],
+    dialect: Optional[SimpleDialect] = None,
+    delimiter: Optional[str] = None,
+    quotechar: Optional[str] = None,
+    escapechar: Optional[str] = None,
+    strict: Optional[bool] = None,
+    return_quoted: bool = False,
+) -> Iterator[Union[List[str], List[Tuple[str, bool]]]]:
     """Parse the data given a dialect using the C parser
 
     Parameters
@@ -96,22 +129,24 @@ def parse_data(
     escapechar_ = escapechar if escapechar is not None else dialect.escapechar
     strict_ = strict if strict is not None else dialect.strict
 
-    parser = Parser(
+    yield from _parse_data(
         data,
-        delimiter=delimiter_,
-        quotechar=quotechar_,
-        escapechar=escapechar_,
-        field_limit=field_size_limit(),
-        strict=strict_,
+        delimiter_,
+        quotechar_,
+        escapechar_,
+        strict_,
         return_quoted=return_quoted,
     )
-    try:
-        for row in parser:
-            yield row
-    except ParserError as e:
-        raise Error(str(e))
 
 
-def parse_string(data, *args, **kwargs):
+def parse_string(
+    data: str,
+    dialect: SimpleDialect,
+    return_quoted: bool = False,
+) -> Iterator[Union[List[str], List[Tuple[str, bool]]]]:
     """Utility for when the CSV file is encoded as a single string"""
-    return parse_data(io.StringIO(data, newline=""), *args, **kwargs)
+    return parse_data(
+        iter(io.StringIO(data, newline="")),
+        dialect=dialect,
+        return_quoted=return_quoted,
+    )

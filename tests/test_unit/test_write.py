@@ -18,13 +18,6 @@ from clevercsv.dialect import SimpleDialect
 
 
 class WriterTestCase(unittest.TestCase):
-    def writerAssertEqual(self, input, expected_result):
-        with tempfile.TemporaryFile("w+", newline="", prefix="ccsv_") as fp:
-            writer = clevercsv.writer(fp, dialect=self.dialect)
-            writer.writerows(input)
-            fp.seek(0)
-            self.assertEqual(fp.read(), expected_result)
-
     def _write_test(self, fields, expect, **kwargs):
         with tempfile.TemporaryFile("w+", newline="", prefix="ccsv_") as fp:
             writer = clevercsv.writer(fp, **kwargs)

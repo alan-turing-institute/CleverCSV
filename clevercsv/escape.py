@@ -11,8 +11,12 @@ import codecs
 import sys
 import unicodedata
 
+from typing import Iterable
+from typing import Optional
+from typing import Set
+
 #: Set of default characters to *never* consider as escape character
-DEFAULT_BLOCK_CHARS = set(
+DEFAULT_BLOCK_CHARS: Set[str] = set(
     [
         "!",
         "?",
@@ -30,7 +34,7 @@ DEFAULT_BLOCK_CHARS = set(
 )
 
 #: Set of characters in the Unicode "Po" category
-UNICODE_PO_CHARS = set(
+UNICODE_PO_CHARS: Set[str] = set(
     [
         c
         for c in map(chr, range(sys.maxunicode + 1))
@@ -39,7 +43,9 @@ UNICODE_PO_CHARS = set(
 )
 
 
-def is_potential_escapechar(char, encoding, block_char=None):
+def is_potential_escapechar(
+    char: str, encoding: str, block_char: Optional[Iterable[str]] = None
+) -> bool:
     """Check if a character is a potential escape character.
 
     A character is considered a potential escape character if it is in the
@@ -54,7 +60,7 @@ def is_potential_escapechar(char, encoding, block_char=None):
     encoding : str
         The encoding of the character
 
-    block_char : iterable
+    block_char : Optional[Iterable[str]]
         Characters that are in the Punctuation Other category but that should
         not be considered as escape character. If None, the default set is
         used, which is defined in :py:data:`DEFAULT_BLOCK_CHARS`.

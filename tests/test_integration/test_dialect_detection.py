@@ -47,7 +47,8 @@ def log_result(name, kind, verbose, partial):
         "success": (LOG_SUCCESS, LOG_SUCCESS_PARTIAL, "green"),
         "failure": (LOG_FAILED, LOG_FAILED_PARTIAL, "red"),
     }
-    outfull, outpartial, color = table.get(kind)
+    assert kind in table
+    outfull, outpartial, color = table[kind]
     fname = outpartial if partial else outfull
 
     with open(fname, "a") as fp:

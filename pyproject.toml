@@ -11,3 +11,10 @@ lines_between_types=1
 [tool.ruff]
 # Exclude stubs directory for now
 exclude = ["stubs"]
+
+[tool.mypy]
+python_version = 3.8
+warn_unused_configs = true
+
+# [[tool.mypy.overrides]]
+# packages = ["stubs", "clevercsv", "tests"]

@@ -9,12 +9,17 @@ This file is part of CleverCSV.
 
 """
 
+from typing import Optional
+
 import chardet
 
 from ._optional import import_optional_dependency
+from ._types import _OpenFile
 
 
-def get_encoding(filename, try_cchardet=True):
+def get_encoding(
+    filename: _OpenFile, try_cchardet: bool = True
+) -> Optional[str]:
     """Get the encoding of the file
 
     This function uses the chardet package for detecting the encoding of a

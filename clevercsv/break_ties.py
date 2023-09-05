@@ -7,12 +7,17 @@ Author: Gertjan van den Burg
 
 """
 
+from typing import List
+from typing import Optional
+
 from .cparser_util import parse_string
 from .dialect import SimpleDialect
 from .utils import pairwise
 
 
-def tie_breaker(data, dialects):
+def tie_breaker(
+    data: str, dialects: List[SimpleDialect]
+) -> Optional[SimpleDialect]:
     """
     Break ties between dialects.
 
@@ -42,7 +47,9 @@ def tie_breaker(data, dialects):
     return None
 
 
-def reduce_pairwise(data, dialects):
+def reduce_pairwise(
+    data: str, dialects: List[SimpleDialect]
+) -> Optional[List[SimpleDialect]]:
     """Reduce the set of dialects by breaking pairwise ties
 
     Parameters
@@ -62,7 +69,7 @@ def reduce_pairwise(data, dialects):
     """
     equal_delim = len(set([d.delimiter for d in dialects])) == 1
     if not equal_delim:
-        return None
+        return None  # TODO: This might be wrong, it can just return the input!
 
     # First, identify dialects that result in the same parsing result.
     equal_dialects = []
@@ -99,7 +106,9 @@ def _dialects_only_differ_in_field(
     )
 
 
-def break_ties_two(data, A, B):
+def break_ties_two(
+    data: str, A: SimpleDialect, B: SimpleDialect
+) -> Optional[SimpleDialect]:
     """Break ties between two dialects.
 
     This function breaks ties between two dialects that give the same score. We
@@ -152,7 +161,7 @@ def break_ties_two(data, A, B):
                 # quotechar has an effect
                 return d_yes
     elif _dialects_only_differ_in_field(A, B, "delimiter"):
-        if sorted([A.delimiter, B.delimiter]) == sorted([",", " "]):
+        if set([A.delimiter, B.delimiter]) == set([",", " "]):
             # Artifact due to type detection (comma as radix point)
             if A.delimiter == ",":
                 return A
@@ -175,14 +184,14 @@ def break_ties_two(data, A, B):
         # we can't break this tie (for now)
         if len(X) != len(Y):
             return None
-        for x, y in zip(X, Y):
-            if len(x) != len(y):
+        for row_X, row_Y in zip(X, Y):
+            if len(row_X) != len(row_Y):
                 return None
 
         cells_escaped = []
         cells_unescaped = []
-        for x, y in zip(X, Y):
-            for u, v in zip(x, y):
+        for row_X, row_Y in zip(X, Y):
+            for u, v in zip(row_X, row_Y):
                 if u != v:
                     cells_unescaped.append(u)
                     cells_escaped.append(v)
@@ -221,16 +230,18 @@ def break_ties_two(data, A, B):
 
             if len(X) != len(Y):
                 return None
-            for x, y in zip(X, Y):
-                if len(x) != len(y):
+            for row_X, row_Y in zip(X, Y):
+                if len(row_X) != len(row_Y):
                     return None
 
             # if we're here, then there is no effect on structure.
             # we test if the only cells that differ are those that have an
             # escapechar+quotechar combination.
+            assert isinstance(d_yes.escapechar, str)
+            assert isinstance(d_yes.quotechar, str)
             eq = d_yes.escapechar + d_yes.quotechar
-            for rX, rY in zip(X, Y):
-                for x, y in zip(rX, rY):
+            for row_X, row_Y in zip(X, Y):
+                for x, y in zip(row_X, row_Y):
                     if x != y:
                         if eq not in x:
                             return None
@@ -243,7 +254,9 @@ def break_ties_two(data, A, B):
     return None
 
 
-def break_ties_three(data, A, B, C):
+def break_ties_three(
+    data: str, A: SimpleDialect, B: SimpleDialect, C: SimpleDialect
+) -> Optional[SimpleDialect]:
     """Break ties between three dialects.
 
     If the delimiters and the escape characters are all equal, then we look for
@@ -273,7 +286,7 @@ def break_ties_three(data, A, B, C):
     Returns
     -------
 
-    dialect: SimpleDialect
+    dialect: Optional[SimpleDialect]
         The chosen dialect if the tie can be broken, None otherwise.
 
     Notes
@@ -307,6 +320,7 @@ def break_ties_three(data, A, B, C):
         )
         if p_none is None:
             return None
+        assert d_none is not None
 
         rem = [
             (p, d) for p, d in zip([pA, pB, pC], dialects) if not p == p_none
@@ -318,6 +332,8 @@ def break_ties_three(data, A, B, C):
             # the CSV paper. When fixing the delimiter to Tab, rem = [].
             # Try to reduce pairwise
             new_dialects = reduce_pairwise(data, dialects)
+            if new_dialects is None:
+                return None
             if len(new_dialects) == 1:
                 return new_dialects[0]
             return None
@@ -347,7 +363,9 @@ def break_ties_three(data, A, B, C):
     return None
 
 
-def break_ties_four(data, dialects):
+def break_ties_four(
+    data: str, dialects: List[SimpleDialect]
+) -> Optional[SimpleDialect]:
     """Break ties between four dialects.
 
     This function works by breaking the ties between pairs of dialects that
@@ -368,7 +386,7 @@ def break_ties_four(data, dialects):
 
     Returns
     -------
-    dialect: SimpleDialect
+    dialect: Optional[SimpleDialect]
         The chosen dialect if the tie can be broken, None otherwise.
 
     Notes
@@ -378,19 +396,22 @@ def break_ties_four(data, dialects):
     examples are found.
 
     """
+    # TODO: Check for length 4, handle more than 4 too?
 
     equal_delim = len(set([d.delimiter for d in dialects])) == 1
     if not equal_delim:
         return None
 
-    dialects = reduce_pairwise(data, dialects)
+    reduced_dialects = reduce_pairwise(data, dialects)
+    if reduced_dialects is None:
+        return None
 
     # Defer to other functions if the number of dialects was reduced
-    if len(dialects) == 1:
-        return dialects[0]
-    elif len(dialects) == 2:
-        return break_ties_two(data, *dialects)
-    elif len(dialects) == 3:
-        return break_ties_three(data, *dialects)
+    if len(reduced_dialects) == 1:
+        return reduced_dialects[0]
+    elif len(reduced_dialects) == 2:
+        return break_ties_two(data, *reduced_dialects)
+    elif len(reduced_dialects) == 3:
+        return break_ties_three(data, *reduced_dialects)
 
     return None

@@ -89,7 +89,7 @@ class ConsistencyDetector:
 
     def detect(
         self, data: str, delimiters: Optional[Iterable[str]] = None
-    ) -> None:
+    ) -> Optional[SimpleDialect]:
         """Detect the dialect using the consistency measure
 
         Parameters
@@ -184,8 +184,11 @@ class ConsistencyDetector:
     ) -> List[SimpleDialect]:
         """Identify the dialects with the highest consistency score"""
         Qscores = [score.Q for score in scores.values()]
-        Qscores = list(filter(lambda q: q is not None, Qscores))
-        Qmax = max(Qscores)
+        Qmax = -float("inf")
+        for q in Qscores:
+            if q is None:
+                continue
+            Qmax = max(Qmax, q)
         return [d for d, score in scores.items() if score.Q == Qmax]
 
     def compute_type_score(
@@ -194,6 +197,7 @@ class ConsistencyDetector:
         """Compute the type score"""
         total = known = 0
         for row in parse_string(data, dialect, return_quoted=True):
+            assert all(isinstance(cell, tuple) for cell in row)
             for cell, is_quoted in row:
                 total += 1
                 known += self._cached_is_known_type(cell, is_quoted=is_quoted)
@@ -203,7 +207,10 @@ class ConsistencyDetector:
 
 
 def detect_dialect_consistency(
-    data, delimiters=None, skip=True, verbose=False
+    data: str,
+    delimiters: Optional[Iterable[str]] = None,
+    skip: bool = True,
+    verbose: bool = False,
 ):
     """Helper function that wraps ConsistencyDetector"""
     # Mostly kept for backwards compatibility

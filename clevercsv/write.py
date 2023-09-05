@@ -8,7 +8,19 @@ Author: Gertjan van den Burg
 
 """
 
+from __future__ import annotations
+
 import csv
+
+from typing import TYPE_CHECKING
+from typing import Any
+from typing import Iterable
+from typing import Type
+
+if TYPE_CHECKING:
+    from clevercsv._types import SupportsWrite
+
+from clevercsv._types import _DialectLike
 
 from .dialect import SimpleDialect
 from .exceptions import Error
@@ -25,13 +37,23 @@ DIALECT_KEYS = [
 ]
 
 
-class writer(object):
-    def __init__(self, csvfile, dialect="excel", **fmtparams):
+class writer:
+    def __init__(
+        self,
+        csvfile: SupportsWrite,
+        dialect: _DialectLike = "excel",
+        **fmtparams,
+    ):
         self.original_dialect = dialect
-        self.dialect = self._make_python_dialect(dialect, **fmtparams)
+        self.dialect: Type[csv.Dialect] = self._make_python_dialect(
+            dialect, **fmtparams
+        )
         self._writer = csv.writer(csvfile, dialect=self.dialect)
 
-    def _make_python_dialect(self, dialect, **fmtparams):
+    def _make_python_dialect(
+        self, dialect: _DialectLike, **fmtparams
+    ) -> Type[csv.Dialect]:
+        d: _DialectLike = ""
         if isinstance(dialect, str):
             d = csv.get_dialect(dialect)
         elif isinstance(dialect, csv.Dialect):
@@ -56,13 +78,13 @@ class writer(object):
         newdialect = type("dialect", (csv.Dialect,), props)
         return newdialect
 
-    def writerow(self, row):
+    def writerow(self, row: Iterable[Any]) -> Any:
         try:
             return self._writer.writerow(row)
         except csv.Error as e:
             raise Error(str(e))
 
-    def writerows(self, rows):
+    def writerows(self, rows: Iterable[Iterable[Any]]) -> Any:
         try:
             return self._writer.writerows(rows)
         except csv.Error as e:

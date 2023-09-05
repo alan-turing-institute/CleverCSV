@@ -9,6 +9,8 @@ Author: Gertjan van den Burg
 
 import unittest
 
+from typing import List
+
 from clevercsv.detect_type import TypeDetector
 from clevercsv.detect_type import type_score
 from clevercsv.dialect import SimpleDialect
@@ -21,7 +23,7 @@ class TypeDetectorTestCase(unittest.TestCase):
     # NUMBERS
 
     def test_number(self):
-        yes_number = [
+        yes_number: List[str] = [
             "1",
             "2",
             "34",
@@ -87,7 +89,7 @@ class TypeDetectorTestCase(unittest.TestCase):
         for num in yes_number:
             with self.subTest(num=num):
                 self.assertTrue(self.td.is_number(num))
-        no_number = [
+        no_number: List[str] = [
             "0000.213654",
             "123.465.798",
             "0.5e0.5",
@@ -111,7 +113,7 @@ class TypeDetectorTestCase(unittest.TestCase):
     # DATES
 
     def test_date(self):
-        yes_date = [
+        yes_date: List[str] = [
             "031219",
             "03122019",
             "03-12-19",
@@ -162,7 +164,7 @@ class TypeDetectorTestCase(unittest.TestCase):
         for date in yes_date:
             with self.subTest(date=date):
                 self.assertTrue(self.td.is_date(date))
-        no_date = [
+        no_date: List[str] = [
             "2018|01|02",
             "30/07-88",
             "12.01-99",
@@ -177,11 +179,14 @@ class TypeDetectorTestCase(unittest.TestCase):
     # DATETIME
 
     def test_datetime(self):
-        yes_dt = ["2019-01-12T04:01:23Z", "2021-09-26T12:13:31+01:00"]
+        yes_dt: List[str] = [
+            "2019-01-12T04:01:23Z",
+            "2021-09-26T12:13:31+01:00",
+        ]
         for dt in yes_dt:
             with self.subTest(dt=dt):
                 self.assertTrue(self.td.is_datetime(dt))
-        no_date = []
+        no_date: List[str] = []
         for date in no_date:
             with self.subTest(date=date):
                 self.assertFalse(self.td.is_datetime(dt))
@@ -190,7 +195,7 @@ class TypeDetectorTestCase(unittest.TestCase):
 
     def test_url(self):
         # Some cases copied from https://mathiasbynens.be/demo/url-regex
-        yes_url = [
+        yes_url: List[str] = [
             "Cocoal.icio.us",
             "Websquash.com",
             "bbc.co.uk",
@@ -262,7 +267,7 @@ class TypeDetectorTestCase(unittest.TestCase):
             with self.subTest(url=url):
                 self.assertTrue(self.td.is_url(url))
 
-        no_url = [
+        no_url: List[str] = [
             "//",
             "///",
             "///a",
@@ -305,7 +310,7 @@ class TypeDetectorTestCase(unittest.TestCase):
         # These tests are by no means inclusive and ought to be extended in the
         # future.
 
-        yes_alphanum = ["this is a cell", "1231 pounds"]
+        yes_alphanum: List[str] = ["this is a cell", "1231 pounds"]
         for unicode_alphanum in yes_alphanum:
             with self.subTest(unicode_alphanum=unicode_alphanum):
                 self.assertTrue(self.td.is_unicode_alphanum(unicode_alphanum))
@@ -315,7 +320,7 @@ class TypeDetectorTestCase(unittest.TestCase):
                     )
                 )
 
-        no_alphanum = ["https://www.gertjan.dev"]
+        no_alphanum: List[str] = ["https://www.gertjan.dev"]
         for unicode_alpanum in no_alphanum:
             with self.subTest(unicode_alpanum=unicode_alpanum):
                 self.assertFalse(self.td.is_unicode_alphanum(unicode_alpanum))
@@ -325,7 +330,7 @@ class TypeDetectorTestCase(unittest.TestCase):
                     )
                 )
 
-        only_quoted = ["this string, with a comma"]
+        only_quoted: List[str] = ["this string, with a comma"]
         for unicode_alpanum in only_quoted:
             with self.subTest(unicode_alpanum=unicode_alpanum):
                 self.assertFalse(
@@ -340,12 +345,12 @@ class TypeDetectorTestCase(unittest.TestCase):
                 )
 
     def test_bytearray(self):
-        yes_bytearray = [
+        yes_bytearray: List[str] = [
             "bytearray(b'')",
             "bytearray(b'abc,*&@\"')",
             "bytearray(b'bytearray(b'')')",
         ]
-        no_bytearray = [
+        no_bytearray: List[str] = [
             "bytearray(b'abc",
             "bytearray(b'abc'",
             "bytearray('abc')",
@@ -363,7 +368,7 @@ class TypeDetectorTestCase(unittest.TestCase):
     # Unix path
 
     def test_unix_path(self):
-        yes_path = [
+        yes_path: List[str] = [
             "/Users/person/abc/def-ghi/blabla.csv.test",
             "/home/username/share/a/_b/c_d/e.py",
             "/home/username/share",

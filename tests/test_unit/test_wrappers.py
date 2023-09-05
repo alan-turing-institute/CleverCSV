@@ -12,6 +12,9 @@ import tempfile
 import types
 import unittest
 
+from typing import List
+from typing import Union
+
 import pandas as pd
 
 from clevercsv import wrappers
@@ -204,7 +207,11 @@ class WrappersTestCase(unittest.TestCase):
             os.unlink(tmpfname)
 
     def test_write_table(self):
-        table = [["A", "B,C", "D"], [1, 2, 3], [4, 5, 6]]
+        table: List[List[Union[str, int]]] = [
+            ["A", "B,C", "D"],
+            [1, 2, 3],
+            [4, 5, 6],
+        ]
         exp = 'A,"B,C",D\r\n1,2,3\r\n4,5,6\r\n'
         with self.subTest(name="default"):
             self._write_test_table(table, exp)

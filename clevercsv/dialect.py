@@ -12,13 +12,19 @@ import csv
 import functools
 import json
 
+from typing import Any
+from typing import Dict
+from typing import Optional
+from typing import Type
+from typing import Union
+
 excel = csv.excel
 excel_tab = csv.excel_tab
 unix_dialect = csv.unix_dialect
 
 
 @functools.total_ordering
-class SimpleDialect(object):
+class SimpleDialect:
     """
     The simplified dialect object.
 
@@ -42,13 +48,19 @@ class SimpleDialect(object):
 
     """
 
-    def __init__(self, delimiter, quotechar, escapechar, strict=False):
+    def __init__(
+        self,
+        delimiter: Optional[str],
+        quotechar: Optional[str],
+        escapechar: Optional[str],
+        strict: bool = False,
+    ):
         self.delimiter = delimiter
         self.quotechar = quotechar
         self.escapechar = escapechar
         self.strict = strict
 
-    def validate(self):
+    def validate(self) -> None:
         if self.delimiter is None or len(self.delimiter) > 1:
             raise ValueError(
                 "Delimiter should be zero or one characters, got: %r"
@@ -70,21 +82,26 @@ class SimpleDialect(object):
             )
 
     @classmethod
-    def from_dict(cls, d):
-        d = cls(
+    def from_dict(
+        cls: Type["SimpleDialect"], d: Dict[str, Any]
+    ) -> "SimpleDialect":
+        dialect = cls(
             d["delimiter"], d["quotechar"], d["escapechar"], strict=d["strict"]
         )
-        return d
+        return dialect
 
     @classmethod
-    def from_csv_dialect(cls, d):
+    def from_csv_dialect(
+        cls: Type["SimpleDialect"], d: csv.Dialect
+    ) -> "SimpleDialect":
         delimiter = "" if d.delimiter is None else d.delimiter
         quotechar = "" if d.quoting == csv.QUOTE_NONE else d.quotechar
         escapechar = "" if d.escapechar is None else d.escapechar
         return cls(delimiter, quotechar, escapechar, strict=d.strict)
 
-    def to_csv_dialect(self):
+    def to_csv_dialect(self) -> csv.Dialect:
         class dialect(csv.Dialect):
+            assert self.delimiter is not None
             delimiter = self.delimiter
             quotechar = '"' if self.quotechar == "" else self.quotechar
             escapechar = None if self.escapechar == "" else self.escapechar
@@ -93,10 +110,13 @@ class SimpleDialect(object):
                 csv.QUOTE_NONE if self.quotechar == "" else csv.QUOTE_MINIMAL
             )
             skipinitialspace = False
+            # TODO: We need to set this because it can't be None anymore in
+            # recent versions of Python
+            lineterminator = "\n"
 
-        return dialect
+        return dialect()
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Union[str, bool, None]]:
         self.validate()
         d = dict(
             delimiter=self.delimiter,
@@ -106,16 +126,16 @@ class SimpleDialect(object):
         )
         return d
 
-    def serialize(self):
+    def serialize(self) -> str:
         """Serialize dialect to a JSON object"""
         return json.dumps(self.to_dict())
 
     @classmethod
-    def deserialize(cls, obj):
+    def deserialize(cls: Type["SimpleDialect"], obj: str) -> "SimpleDialect":
         """Deserialize dialect from a JSON object"""
         return cls.from_dict(json.loads(obj))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "SimpleDialect(%r, %r, %r)" % (
             self.delimiter,
             self.quotechar,
@@ -125,7 +145,7 @@ class SimpleDialect(object):
     def __key(self):
         return (self.delimiter, self.quotechar, self.escapechar, self.strict)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.__key())
 
     def __eq__(self, other):

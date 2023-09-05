@@ -6,12 +6,23 @@ Wrappers for some loading/saving functionality.
 Author: Gertjan van den Burg
 
 """
+from __future__ import annotations
 
 import os
 import warnings
 
+from typing import TYPE_CHECKING
+from typing import Any
+from typing import Iterable
+from typing import Iterator
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import TypeVar
+
 from ._optional import import_optional_dependency
 from .detect import Detector
+from .dialect import SimpleDialect
 from .dict_read_write import DictReader
 from .dict_read_write import DictWriter
 from .encoding import get_encoding
@@ -19,10 +30,23 @@ from .exceptions import NoDetectionResult
 from .read import reader
 from .write import writer
 
+if TYPE_CHECKING:
+    import pandas as pd
+
+    from ._types import FileDescriptorOrPath
+    from ._types import _DialectLike
+    from ._types import _DictReadMapping
+
+_T = TypeVar("_T")
+
 
 def stream_dicts(
-    filename, dialect=None, encoding=None, num_chars=None, verbose=False
-):
+    filename: FileDescriptorOrPath,
+    dialect: Optional[_DialectLike] = None,
+    encoding: Optional[str] = None,
+    num_chars: Optional[int] = None,
+    verbose: bool = False,
+) -> Iterator["_DictReadMapping"]:
     """Read a CSV file as a generator over dictionaries
 
     This function streams the rows of the CSV file as dictionaries. The keys of
@@ -71,14 +95,18 @@ def stream_dicts(
             data = fid.read(num_chars) if num_chars else fid.read()
             dialect = Detector().detect(data, verbose=verbose)
             fid.seek(0)
-        r = DictReader(fid, dialect=dialect)
-        for row in r:
+        reader: DictReader = DictReader(fid, dialect=dialect)
+        for row in reader:
             yield row
 
 
 def read_dicts(
-    filename, dialect=None, encoding=None, num_chars=None, verbose=False
-):
+    filename: "FileDescriptorOrPath",
+    dialect: Optional["_DialectLike"] = None,
+    encoding: Optional[str] = None,
+    num_chars: Optional[int] = None,
+    verbose: bool = False,
+) -> List["_DictReadMapping"]:
     """Read a CSV file as a list of dictionaries
 
     This function returns the rows of the CSV file as a list of dictionaries.
@@ -132,12 +160,12 @@ def read_dicts(
 
 
 def read_table(
-    filename,
-    dialect=None,
-    encoding=None,
-    num_chars=None,
-    verbose=False,
-):
+    filename: "FileDescriptorOrPath",
+    dialect: Optional["_DialectLike"] = None,
+    encoding: Optional[str] = None,
+    num_chars: Optional[int] = None,
+    verbose: bool = False,
+) -> List[List[str]]:
     """Read a CSV file as a table (a list of lists)
 
     This is a convenience function that reads a CSV file and returns the data
@@ -191,12 +219,12 @@ def read_table(
 
 
 def stream_table(
-    filename,
-    dialect=None,
-    encoding=None,
-    num_chars=None,
-    verbose=False,
-):
+    filename: "FileDescriptorOrPath",
+    dialect: Optional["_DialectLike"] = None,
+    encoding: Optional[str] = None,
+    num_chars: Optional[int] = None,
+    verbose: bool = False,
+) -> Iterator[List[str]]:
     """Read a CSV file as a generator over rows of a table
 
     This is a convenience function that reads a CSV file and returns the data
@@ -251,7 +279,12 @@ def stream_table(
         yield from r
 
 
-def read_dataframe(filename, *args, num_chars=None, **kwargs):
+def read_dataframe(
+    filename: "FileDescriptorOrPath",
+    *args: Any,
+    num_chars: Optional[int] = None,
+    **kwargs: Any,
+) -> pd.DataFrame:
     """Read a CSV file to a Pandas dataframe
 
     This function uses CleverCSV to detect the dialect, and then passes this to
@@ -284,6 +317,7 @@ def read_dataframe(filename, *args, num_chars=None, **kwargs):
     if not (os.path.exists(filename) and os.path.isfile(filename)):
         raise ValueError("Filename must be a regular file")
     pd = import_optional_dependency("pandas")
+    assert pd is not None
 
     # Use provided encoding or detect it, and record it for pandas
     enc = kwargs.get("encoding") or get_encoding(filename)
@@ -306,13 +340,13 @@ def read_dataframe(filename, *args, num_chars=None, **kwargs):
 
 
 def detect_dialect(
-    filename,
-    num_chars=None,
-    encoding=None,
-    verbose=False,
-    method="auto",
-    skip=True,
-):
+    filename: "FileDescriptorOrPath",
+    num_chars: Optional[int] = None,
+    encoding: Optional[str] = None,
+    verbose: bool = False,
+    method: str = "auto",
+    skip: bool = True,
+) -> SimpleDialect:
     """Detect the dialect of a CSV file
 
     This is a utility function that simply returns the detected dialect of a
@@ -360,8 +394,12 @@ def detect_dialect(
 
 
 def write_table(
-    table, filename, dialect="excel", transpose=False, encoding=None
-):
+    table: Iterable[Iterable[Any]],
+    filename: "FileDescriptorOrPath",
+    dialect: "_DialectLike" = "excel",
+    transpose: bool = False,
+    encoding: Optional[str] = None,
+) -> None:
     """Write a table (a list of lists) to a file
 
     This is a convenience function for writing a table to a CSV file. If the
@@ -400,17 +438,24 @@ def write_table(
         return
 
     if transpose:
-        table = list(map(list, zip(*table)))
+        list_table = list(map(list, zip(*table)))
+    else:
+        list_table = list(map(list, table))
 
-    if len(set(map(len, table))) > 1:
+    if len(set(map(len, list_table))) > 1:
         raise ValueError("Table doesn't have constant row length.")
 
     with open(filename, "w", newline="", encoding=encoding) as fp:
         w = writer(fp, dialect=dialect)
-        w.writerows(table)
+        w.writerows(list_table)
 
 
-def write_dicts(items, filename, dialect="excel", encoding=None):
+def write_dicts(
+    items: Iterable[Mapping[_T, Any]],
+    filename: "FileDescriptorOrPath",
+    dialect: "_DialectLike" = "excel",
+    encoding: Optional[str] = None,
+) -> None:
     """Write a list of dicts to a file
 
     This is a convenience function to write dicts to a file. The header is
@@ -440,8 +485,15 @@ def write_dicts(items, filename, dialect="excel", encoding=None):
     if not items:
         return
 
-    fieldnames = list(items[0].keys())
+    iterator = iter(items)
+    try:
+        first = next(iterator)
+    except StopIteration:
+        return
+
+    fieldnames = list(first.keys())
     with open(filename, "w", newline="", encoding=encoding) as fp:
         w = DictWriter(fp, fieldnames=fieldnames, dialect=dialect)
         w.writeheader()
-        w.writerows(items)
+        w.writerow(first)
+        w.writerows(iterator)
