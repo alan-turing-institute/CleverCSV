@@ -14,7 +14,7 @@ from typing import Union
 
 from clevercsv.dialect import SimpleDialect
 
-AnyPath = Union[str, bytes, os.PathLike[str], os.PathLike[bytes]]
+AnyPath = Union[str, bytes, "os.PathLike[str]", "os.PathLike[bytes]"]
 _OpenFile = Union[AnyPath, int]
 _DictRow = Mapping[str, Any]
 _DialectLike = Union[str, csv.Dialect, Type[csv.Dialect], SimpleDialect]
