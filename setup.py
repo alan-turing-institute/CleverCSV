@@ -28,16 +28,21 @@ REQUIRED = [
     "packaging>=23.0",
 ]
 
-# When these are changed, update clevercsv/_optional.py accordingly
-full_require = [
-    "faust-cchardet>=2.1.18",
-    "pandas>=1.0.0",
-    "tabview>=1.4",
+# Dependencies only needed for pre-commit
+precommit_require = [
     "wilderness>=0.1.5",
 ]
 
+# When these are changed, update clevercsv/_optional.py accordingly
+full_require = [
+    *precommit_require,
+    "faust-cchardet>=2.1.18",
+    "pandas>=1.0.0",
+    "tabview>=1.4",
+]
+
 docs_require = ["sphinx", "m2r2", "furo"]
-test_require = full_require + []
+test_require = full_require
 dev_require = [
     "green",
     # "pythonfuzz",
@@ -51,6 +56,7 @@ EXTRAS = {
     "docs": docs_require,
     "tests": test_require,
     "dev": docs_require + test_require + dev_require,
+    "precommit": precommit_require,
 }
 
 
