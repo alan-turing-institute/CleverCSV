@@ -10,24 +10,28 @@ Author: Gertjan van den Burg
 import collections
 import re
 
+from typing import Optional
 from typing import Pattern
 
 from .cabstraction import base_abstraction
 from .cabstraction import c_merge_with_quotechar
+from .dialect import SimpleDialect
 
-DEFAULT_EPS_PAT = 1e-3
+DEFAULT_EPS_PAT: float = 1e-3
 
 RE_MULTI_C: Pattern = re.compile(r"C{2,}")
 
 
-def pattern_score(data, dialect, eps=DEFAULT_EPS_PAT):
+def pattern_score(
+    data: str, dialect: SimpleDialect, eps: float = DEFAULT_EPS_PAT
+) -> float:
     """
     Compute the pattern score for given data and a dialect.
 
     Parameters
     ----------
 
-    data : string
+    data : str
         The data of the file as a raw character string
 
     dialect: dialect.Dialect
@@ -41,7 +45,7 @@ def pattern_score(data, dialect, eps=DEFAULT_EPS_PAT):
     """
     A = make_abstraction(data, dialect)
     row_patterns = collections.Counter(A.split("R"))
-    P = 0
+    P = 0.0
     for pat_k, Nk in row_patterns.items():
         Lk = len(pat_k.split("D"))
         P += Nk * (max(eps, Lk - 1) / Lk)
@@ -49,7 +53,7 @@ def pattern_score(data, dialect, eps=DEFAULT_EPS_PAT):
     return P
 
 
-def make_abstraction(data, dialect):
+def make_abstraction(data: str, dialect: SimpleDialect) -> str:
     """Create an abstract representation of the CSV file based on the dialect.
 
     This function constructs the basic abstraction used to compute the row
@@ -78,7 +82,9 @@ def make_abstraction(data, dialect):
     return A
 
 
-def merge_with_quotechar(S, dialect=None):
+def merge_with_quotechar(
+    S: str, dialect: Optional[SimpleDialect] = None
+) -> str:
     """Merge quoted blocks in the abstraction
 
     This function takes the abstract representation and merges quoted blocks
@@ -103,7 +109,7 @@ def merge_with_quotechar(S, dialect=None):
     return c_merge_with_quotechar(S)
 
 
-def fill_empties(abstract):
+def fill_empties(abstract: str) -> str:
     """Fill empty cells in the abstraction
 
     The way the row patterns are constructed assumes that empty cells are
@@ -143,7 +149,7 @@ def fill_empties(abstract):
     return abstract
 
 
-def strip_trailing(abstract):
+def strip_trailing(abstract: str) -> str:
     """Strip trailing row separator from abstraction."""
     while abstract.endswith("R"):
         abstract = abstract[:-1]

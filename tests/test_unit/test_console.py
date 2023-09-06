@@ -11,6 +11,9 @@ import os
 import tempfile
 import unittest
 
+from typing import List
+from typing import Union
+
 from wilderness import Tester
 
 from clevercsv import __version__
@@ -20,7 +23,7 @@ from clevercsv.write import writer
 
 
 class ConsoleTestCase(unittest.TestCase):
-    def _build_file(self, table, dialect, encoding=None, newline=None):
+    def _build_file(self, table, dialect, encoding=None, newline=None) -> str:
         tmpfd, tmpfname = tempfile.mkstemp(
             prefix="ccsv_",
             suffix=".csv",
@@ -40,7 +43,10 @@ class ConsoleTestCase(unittest.TestCase):
         tester.test_command("detect", [tmpfname])
 
         try:
-            output = tester.get_stdout().strip()
+            stdout = tester.get_stdout()
+            self.assertIsNotNone(stdout)
+            assert stdout is not None
+            output = stdout.strip()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -79,7 +85,10 @@ class ConsoleTestCase(unittest.TestCase):
         exp = "Detected: " + str(dialect)
 
         try:
-            output = tester.get_stdout().strip()
+            stdout = tester.get_stdout()
+            self.assertIsNotNone(stdout)
+            assert stdout is not None
+            output = stdout.strip()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -96,7 +105,10 @@ class ConsoleTestCase(unittest.TestCase):
         exp = "Detected: " + str(dialect)
 
         try:
-            output = tester.get_stdout().strip()
+            stdout = tester.get_stdout()
+            self.assertIsNotNone(stdout)
+            assert stdout is not None
+            output = stdout.strip()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -115,7 +127,10 @@ delimiter = ;
 quotechar =
 escapechar ="""
         try:
-            output = tester.get_stdout().strip()
+            stdout = tester.get_stdout()
+            self.assertIsNotNone(stdout)
+            assert stdout is not None
+            output = stdout.strip()
             self.assertEqual(exp, output)
         finally:
             os.unlink(tmpfname)
@@ -130,7 +145,10 @@ escapechar ="""
         tester.test_command("detect", ["--json", "--add-runtime", tmpfname])
 
         try:
-            output = tester.get_stdout().strip()
+            stdout = tester.get_stdout()
+            self.assertIsNotNone(stdout)
+            assert stdout is not None
+            output = stdout.strip()
             data = json.loads(output)
             self.assertEqual(data["delimiter"], ";")
             self.assertEqual(data["quotechar"], "")
@@ -442,7 +460,11 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
             os.unlink(tmpfname)
 
     def test_standardize_multi(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        table: List[List[Union[str, int]]] = [
+            ["A", "B", "C"],
+            [1, 2, 3],
+            [4, 5, 6],
+        ]
         dialects = ["excel", "unix", "excel-tab"]
         tmpfnames = [self._build_file(table, D, newline="") for D in dialects]
 
@@ -476,7 +498,11 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
             any(map(os.unlink, tmpoutnames))
 
     def test_standardize_multi_errors(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        table: List[List[Union[str, int]]] = [
+            ["A", "B", "C"],
+            [1, 2, 3],
+            [4, 5, 6],
+        ]
         dialects = ["excel", "unix", "excel-tab"]
         tmpfnames = [self._build_file(table, D, newline="") for D in dialects]
 
@@ -507,7 +533,11 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         any(map(os.unlink, tmpoutnames))
 
     def test_standardize_multi_encoding(self):
-        table = [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        table: List[List[Union[str, int]]] = [
+            ["Å", "B", "C"],
+            [1, 2, 3],
+            [4, 5, 6],
+        ]
         dialects = ["excel", "unix", "excel-tab"]
         encoding = "ISO-8859-1"
         tmpfnames = [
@@ -547,7 +577,11 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
             any(map(os.unlink, tmpoutnames))
 
     def test_standardize_in_place_multi(self):
-        table = [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        table: List[List[Union[str, int]]] = [
+            ["Å", "B", "C"],
+            [1, 2, 3],
+            [4, 5, 6],
+        ]
         dialects = ["excel", "unix", "excel-tab"]
         encoding = "ISO-8859-1"
         tmpfnames = [
@@ -572,7 +606,11 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
             any(map(os.unlink, tmpfnames))
 
     def test_standardize_in_place_multi_noop(self):
-        table = [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]]
+        table: List[List[Union[str, int]]] = [
+            ["Å", "B", "C"],
+            [1, 2, 3],
+            [4, 5, 6],
+        ]
         dialects = ["excel", "excel", "excel"]
         tmpfnames = [self._build_file(table, D, newline="") for D in dialects]
 

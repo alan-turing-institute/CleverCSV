@@ -9,6 +9,10 @@ Author: Gertjan van den Burg
 
 from io import StringIO
 
+from typing import Dict
+from typing import Optional
+from typing import Union
+
 from .consistency import ConsistencyDetector
 from .normal_form import detect_dialect_normal
 from .read import reader
@@ -27,9 +31,6 @@ class Detector:
     import Sniffer`` nonetheless.
 
     """
-
-    def __init__(self):
-        pass
 
     def sniff(self, sample, delimiters=None, verbose=False):
         # Compatibility method for Python
@@ -126,10 +127,11 @@ class Detector:
         header = next(rdr)  # assume first row is header
 
         columns = len(header)
-        columnTypes = {}
+        columnTypes: Dict[int, Optional[Union[int, type]]] = {}
         for i in range(columns):
             columnTypes[i] = None
 
+        thisType: Union[int, type]
         checked = 0
         for row in rdr:
             # arbitrary number of rows to check, to keep it sane
@@ -169,6 +171,10 @@ class Detector:
                 else:
                     hasHeader -= 1
             else:  # attempt typecast
+                if colType is None:
+                    hasHeader += 1
+                    continue
+
                 try:
                     colType(header[col])
                 except (ValueError, TypeError):

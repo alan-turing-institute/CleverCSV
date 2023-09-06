@@ -4,6 +4,9 @@ import json
 import sys
 import time
 
+from typing import Any
+from typing import Dict
+
 from wilderness import Command
 
 from clevercsv.wrappers import detect_dialect
@@ -125,7 +128,7 @@ class DetectCommand(Command):
             if self.args.add_runtime:
                 print(f"runtime = {runtime}")
         elif self.args.json:
-            dialect_dict = dialect.to_dict()
+            dialect_dict: Dict[str, Any] = dialect.to_dict()
             if self.args.add_runtime:
                 dialect_dict["runtime"] = runtime
             print(json.dumps(dialect_dict))

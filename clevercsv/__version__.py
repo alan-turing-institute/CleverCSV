@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
-VERSION = (0, 8, 0)
+from typing import Tuple
 
-__version__ = ".".join(map(str, VERSION))
+VERSION: Tuple[int, int, int] = (0, 8, 0)
+
+__version__: str = ".".join(map(str, VERSION))

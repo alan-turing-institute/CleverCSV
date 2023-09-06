@@ -17,7 +17,7 @@ EMAIL = "gertjanvandenburg@gmail.com"
 LICENSE = "MIT"
 LICENSE_TROVE = "License :: OSI Approved :: MIT License"
 NAME = "clevercsv"
-REQUIRES_PYTHON = ">=3.6.0"
+REQUIRES_PYTHON = ">=3.8.0"
 URL = "https://github.com/alan-turing-institute/CleverCSV"
 VERSION = None
 
@@ -113,6 +113,7 @@ setup(
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
+    package_data={"clevercsv": ["py.typed"]},
     license=LICENSE,
     ext_modules=[
         Extension("clevercsv.cparser", sources=["src/cparser.c"]),

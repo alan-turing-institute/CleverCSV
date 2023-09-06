@@ -10,6 +10,7 @@ Author: Gertjan van den Burg
 import json
 
 from typing import Dict
+from typing import List
 from typing import Optional
 from typing import Pattern
 
@@ -19,7 +20,7 @@ from .cparser_util import parse_string
 DEFAULT_EPS_TYPE = 1e-10
 
 
-class TypeDetector(object):
+class TypeDetector:
     def __init__(
         self,
         patterns: Optional[Dict[str, Pattern]] = None,
@@ -48,26 +49,27 @@ class TypeDetector(object):
             ("json", self.is_json_obj),
         ]
 
-    def list_known_types(self):
+    def list_known_types(self) -> List[str]:
         return [tt[0] for tt in self._type_tests]
 
-    def is_known_type(self, cell, is_quoted=False):
+    def is_known_type(self, cell: str, is_quoted: bool = False) -> bool:
         return self.detect_type(cell, is_quoted=is_quoted) is not None
 
-    def detect_type(self, cell, is_quoted=False):
+    def detect_type(self, cell: str, is_quoted: bool = False):
         cell = cell.strip() if self.strip_whitespace else cell
         for name, func in self._type_tests:
             if func(cell, is_quoted=is_quoted):
                 return name
         return None
 
-    def _run_regex(self, cell, patname):
+    def _run_regex(self, cell: str, patname: str) -> bool:
         cell = cell.strip() if self.strip_whitespace else cell
         pat = self.patterns.get(patname, None)
+        assert pat is not None
         match = pat.fullmatch(cell)
         return match is not None
 
-    def is_number(self, cell, **kwargs):
+    def is_number(self, cell: str, is_quoted: bool = False) -> bool:
         if cell == "":
             return False
         if self._run_regex(cell, "number_1"):
@@ -78,21 +80,21 @@ class TypeDetector(object):
             return True
         return False
 
-    def is_ipv4(self, cell, **kwargs):
+    def is_ipv4(self, cell: str, is_quoted: bool = False) -> bool:
         return self._run_regex(cell, "ipv4")
 
-    def is_url(self, cell, **kwargs):
+    def is_url(self, cell: str, is_quoted: bool = False) -> bool:
         return self._run_regex(cell, "url")
 
-    def is_email(self, cell, **kwargs):
+    def is_email(self, cell: str, is_quoted: bool = False) -> bool:
         return self._run_regex(cell, "email")
 
-    def is_unicode_alphanum(self, cell, is_quoted=False, **kwargs):
+    def is_unicode_alphanum(self, cell: str, is_quoted: bool = False) -> bool:
         if is_quoted:
             return self._run_regex(cell, "unicode_alphanum_quoted")
         return self._run_regex(cell, "unicode_alphanum")
 
-    def is_date(self, cell, **kwargs):
+    def is_date(self, cell: str, is_quoted: bool = False) -> bool:
         # This function assumes the cell is not a number.
         cell = cell.strip() if self.strip_whitespace else cell
         if not cell:
@@ -101,7 +103,7 @@ class TypeDetector(object):
             return False
         return self._run_regex(cell, "date")
 
-    def is_time(self, cell, **kwargs):
+    def is_time(self, cell: str, is_quoted: bool = False) -> bool:
         cell = cell.strip() if self.strip_whitespace else cell
         if not cell:
             return False
@@ -114,14 +116,15 @@ class TypeDetector(object):
             or self._run_regex(cell, "time_hhmmsszz")
         )
 
-    def is_empty(self, cell, **kwargs):
+    def is_empty(self, cell: str, is_quoted: bool = False) -> bool:
         return cell == ""
 
-    def is_percentage(self, cell, **kwargs):
+    def is_percentage(self, cell: str, is_quoted: bool = False) -> bool:
         return cell.endswith("%") and self.is_number(cell.rstrip("%"))
 
-    def is_currency(self, cell, **kwargs):
+    def is_currency(self, cell: str, is_quoted: bool = False) -> bool:
         pat = self.patterns.get("currency", None)
+        assert pat is not None
         m = pat.fullmatch(cell)
         if m is None:
             return False
@@ -130,7 +133,7 @@ class TypeDetector(object):
             return False
         return True
 
-    def is_datetime(self, cell, **kwargs):
+    def is_datetime(self, cell: str, is_quoted: bool = False) -> bool:
         # Takes care of cells with '[date] [time]' and '[date]T[time]' (iso)
         if not cell:
             return False
@@ -182,18 +185,18 @@ class TypeDetector(object):
                     return True
         return False
 
-    def is_nan(self, cell, **kwargs):
+    def is_nan(self, cell: str, is_quoted: bool = False) -> bool:
         if cell.lower() in ["n/a", "na", "nan"]:
             return True
         return False
 
-    def is_unix_path(self, cell, **kwargs):
+    def is_unix_path(self, cell: str, is_quoted: bool = False) -> bool:
         return self._run_regex(cell, "unix_path")
 
-    def is_bytearray(self, cell: str, **kwargs) -> bool:
+    def is_bytearray(self, cell: str, is_quoted: bool = False) -> bool:
         return cell.startswith("bytearray(b") and cell.endswith(")")
 
-    def is_json_obj(self, cell: str, **kwargs) -> bool:
+    def is_json_obj(self, cell: str, is_quoted: bool = False) -> bool:
         if not (cell.startswith("{") and cell.endswith("}")):
             return False
         try:

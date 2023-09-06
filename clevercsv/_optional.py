@@ -13,9 +13,12 @@ License: See LICENSE file.
 
 import importlib
 
+from types import ModuleType
+
 from typing import Dict
 from typing import List
 from typing import NamedTuple
+from typing import Optional
 
 from packaging.version import Version
 
@@ -35,7 +38,9 @@ OPTIONAL_DEPENDENCIES: List[OptionalDependency] = [
 ]
 
 
-def import_optional_dependency(name, raise_on_missing=True):
+def import_optional_dependency(
+    name: str, raise_on_missing: bool = True
+) -> Optional[ModuleType]:
     """
     Import an optional dependency.
 

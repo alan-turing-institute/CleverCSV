@@ -9,7 +9,7 @@ MAKEFLAGS += --no-builtin-rules
 
 PACKAGE=clevercsv
 DOC_DIR=./docs/
-VENV_DIR=/tmp/clevercsv_venv/
+VENV_DIR=/tmp/clevercsv_venv
 PYTHON ?= python
 
 .PHONY: help
@@ -51,13 +51,17 @@ dist: man ## Make Python source distribution
 
 .PHONY: test integration integration_partial
 
-test: green pytest
+test: mypy green pytest
 
 green: venv ## Run unit tests
 	source $(VENV_DIR)/bin/activate && green -a -vv ./tests/test_unit
 
 pytest: venv ## Run unit tests with PyTest
 	source $(VENV_DIR)/bin/activate && pytest -ra -m 'not network'
+
+mypy: venv ## Run type checks
+	source $(VENV_DIR)/bin/activate && \
+		mypy --check-untyped-defs ./stubs $(PACKAGE) ./tests
 
 integration: venv ## Run integration tests
 	source $(VENV_DIR)/bin/activate && python ./tests/test_integration/test_dialect_detection.py -v
