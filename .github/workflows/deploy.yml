@@ -31,7 +31,7 @@ jobs:
         env:
           CIBW_TEST_COMMAND: "python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
           CIBW_TEST_EXTRAS: "full"
-          CIBW_SKIP: "pp* cp27-* cp33-* cp34-* cp35-* cp36-* cp37-* cp310-win32 *-musllinux_* *-manylinux_i686"
+          CIBW_SKIP: "pp* cp27-* cp33-* cp34-* cp35-* cp36-* cp37-* *-win32 *-musllinux_* *-manylinux_i686"
           CIBW_ARCHS_MACOS: x86_64 arm64 universal2
           CIBW_ARCHS_LINUX: auto aarch64
 
