@@ -8,6 +8,7 @@ from typing import Sequence
 
 from wilderness import Command
 
+from clevercsv._optional import import_optional_dependency
 from clevercsv.exceptions import NoDetectionResult
 from clevercsv.wrappers import read_table
 
@@ -52,14 +53,17 @@ class ViewCommand(Command):
         )
 
     def _tabview(self, rows) -> None:
-        try:
-            from tabview import view
-        except ImportError:
+        if sys.platform == "win32":
             print(
-                "Error: unfortunately Tabview is not available on Windows.",
+                "Error: unfortunately Tabview is not available on Windows, so "
+                "the clevercsv view command is not available",
                 file=sys.stderr,
             )
             return
+
+        import_optional_dependency("tabview", raise_on_missing=True)
+        from tabview import view
+
         view(rows)
 
     def handle(self) -> int:
