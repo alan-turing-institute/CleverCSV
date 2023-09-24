@@ -37,7 +37,7 @@ jobs:
 
   python-test:
     needs: [code-quality]
-    name: Unit tests for CleverCSV
+    name: Tests
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
