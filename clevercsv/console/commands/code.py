@@ -21,7 +21,7 @@ class CodeCommand(Command):
         "and copy the generated code to a Python script."
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             name="code",
             title="Generate Python code to import a CSV file",
@@ -29,7 +29,7 @@ class CodeCommand(Command):
             extra_sections={"CleverCSV": "Part of the CleverCSV suite"},
         )
 
-    def register(self):
+    def register(self) -> None:
         self.add_argument("path", help="Path to the CSV file")
         self.add_argument(
             "-e",

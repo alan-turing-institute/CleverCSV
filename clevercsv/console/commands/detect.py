@@ -18,7 +18,7 @@ from ._utils import parse_int
 class DetectCommand(Command):
     _description = "Detect the dialect of a CSV file."
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             name="detect",
             title="Detect the dialect of a CSV file",
@@ -26,7 +26,7 @@ class DetectCommand(Command):
             extra_sections={"CleverCSV": "Part of the CleverCSV suite"},
         )
 
-    def register(self):
+    def register(self) -> None:
         self.add_argument("path", help="Path to the CSV file")
         self.add_argument(
             "-c",
@@ -100,7 +100,7 @@ class DetectCommand(Command):
             help="Add the runtime of the detection to the detection output.",
         )
 
-    def handle(self):
+    def handle(self) -> int:
         verbose = self.args.verbose
         num_chars = parse_int(self.args.num_chars, "num-chars")
         method = "consistency" if self.args.consistency else "auto"

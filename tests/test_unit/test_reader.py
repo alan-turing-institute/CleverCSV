@@ -9,16 +9,23 @@ Author: Gertjan van den Burg
 
 import unittest
 
+from typing import Any
+from typing import Iterable
+from typing import Iterator
+from typing import List
+
 import clevercsv
 
 
 class ReaderTestCase(unittest.TestCase):
-    def _read_test(self, input, expect, **kwargs):
+    def _read_test(
+        self, input: Iterable[str], expect: List[List[str]], **kwargs: Any
+    ) -> None:
         reader = clevercsv.reader(input, **kwargs)
         result = list(reader)
         self.assertEqual(result, expect)
 
-    def test_read_oddinputs(self):
+    def test_read_oddinputs(self) -> None:
         self._read_test([], [])
         self._read_test([""], [[]])
         self.assertRaises(
@@ -34,7 +41,7 @@ class ReaderTestCase(unittest.TestCase):
         # self._read_test(['"ab"c'], [["abc"]], doublequote=0)
         self.assertRaises(clevercsv.Error, self._read_test, [b"ab\0c"], None)
 
-    def test_read_eol(self):
+    def test_read_eol(self) -> None:
         self._read_test(["a,b"], [["a", "b"]])
         self._read_test(["a,b\n"], [["a", "b"]])
         self._read_test(["a,b\r\n"], [["a", "b"]])
@@ -44,13 +51,13 @@ class ReaderTestCase(unittest.TestCase):
         self.assertRaises(clevercsv.Error, self._read_test, ["a,b\rc,d"], [])
         self.assertRaises(clevercsv.Error, self._read_test, ["a,b\rc,d"], [])
 
-    def test_read_eof(self):
+    def test_read_eof(self) -> None:
         self._read_test(['a,"'], [["a", ""]])
         self._read_test(['"a'], [["a"]])
         # we're not using escape characters in the same way.
         # self._read_test("^", [["\n"]], escapechar="^")
 
-    def test_read_escape(self):
+    def test_read_escape(self) -> None:
         # we don't drop the escapechar if it serves no purpose
         # so instead of this:
         # self._read_test("a,\\b,c", [["a", "b", "c"]], escapechar="\\")
@@ -61,7 +68,7 @@ class ReaderTestCase(unittest.TestCase):
         # the next test also differs from Python
         self._read_test(['a,"b,c"\\'], [["a", "b,c"]], escapechar="\\")
 
-    def test_read_bigfield(self):
+    def test_read_bigfield(self) -> None:
         limit = clevercsv.field_size_limit()
         try:
             size = 500
@@ -78,7 +85,7 @@ class ReaderTestCase(unittest.TestCase):
         finally:
             clevercsv.field_size_limit(limit)
 
-    def test_read_linenum(self):
+    def test_read_linenum(self) -> None:
         r = clevercsv.reader(["line,1", "line,2", "line,3"])
         self.assertEqual(r.line_num, 0)
         self.assertEqual(next(r), ["line", "1"])
@@ -90,8 +97,8 @@ class ReaderTestCase(unittest.TestCase):
         self.assertRaises(StopIteration, next, r)
         self.assertEqual(r.line_num, 3)
 
-    def test_with_gen(self):
-        def gen(x):
+    def test_with_gen(self) -> None:
+        def gen(x: Iterable[str]) -> Iterator[str]:
             for line in x:
                 yield line
 
@@ -100,7 +107,7 @@ class ReaderTestCase(unittest.TestCase):
         self.assertEqual(next(r), ["line", "2"])
         self.assertEqual(next(r), ["line", "3"])
 
-    def test_simple(self):
+    def test_simple(self) -> None:
         self._read_test(
             ["A,B,C,D,E"],
             [["A", "B", "C", "D", "E"]],
@@ -139,7 +146,7 @@ class ReaderTestCase(unittest.TestCase):
             quotechar="",
         )
 
-    def test_no_delim(self):
+    def test_no_delim(self) -> None:
         self._read_test(
             ['A"B"C', 'A"B""C""D"'],
             [['A"B"C'], ['A"B""C""D"']],

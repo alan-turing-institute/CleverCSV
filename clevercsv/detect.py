@@ -7,15 +7,35 @@ Author: Gertjan van den Burg
 
 """
 
+from enum import Enum
 from io import StringIO
 
 from typing import Dict
+from typing import Iterable
 from typing import Optional
 from typing import Union
 
 from .consistency import ConsistencyDetector
+from .dialect import SimpleDialect
+from .exceptions import NoDetectionResult
 from .normal_form import detect_dialect_normal
 from .read import reader
+
+
+class DetectionMethod(str, Enum):
+    """Possible detection methods
+
+    Valid options are `"auto"` (the default for :class:`Detector.detect`),
+    `"normal"`, or `"consistency"`.  The `"auto"` option first attempts to
+    detect the dialect using normal-form detection, and uses the consistency
+    measure if normal-form detection is inconclusive. The `"normal"` method
+    uses normal-form detection excllusively, and the `"consistency"` method
+    uses the consistency measure exclusively.
+    """
+
+    AUTO = "auto"
+    NORMAL = "normal"
+    CONSISTENCY = "consistency"
 
 
 class Detector:
@@ -32,18 +52,23 @@ class Detector:
 
     """
 
-    def sniff(self, sample, delimiters=None, verbose=False):
+    def sniff(
+        self,
+        sample: str,
+        delimiters: Optional[Iterable[str]] = None,
+        verbose: bool = False,
+    ) -> Optional[SimpleDialect]:
         # Compatibility method for Python
         return self.detect(sample, delimiters=delimiters, verbose=verbose)
 
     def detect(
         self,
-        sample,
-        delimiters=None,
-        verbose=False,
-        method="auto",
-        skip=True,
-    ):
+        sample: str,
+        delimiters: Optional[Iterable[str]] = None,
+        verbose: bool = False,
+        method: Union[DetectionMethod, str] = DetectionMethod.AUTO,
+        skip: bool = True,
+    ) -> Optional[SimpleDialect]:
         """Detect the dialect of a CSV file
 
         This method detects the dialect of the CSV file using the specified
@@ -64,14 +89,10 @@ class Detector:
         verbose : bool
             Enable verbose mode.
 
-        method : str
-            The method to use for dialect detection. Valid options are `"auto"`
-            (the default), `"normal"`, or `"consistency"`. The `"auto"` option
-            first attempts to detect the dialect using normal-form detection,
-            and uses the consistency measure if normal-form detection is
-            inconclusive. The `"normal"` method uses normal-form detection
-            excllusively, and the `"consistency"` method uses the consistency
-            measure exclusively.
+        method : Union[DetectionMethod, str]
+            The method to use for dialect detection. Possible values are
+            :class:`DetectionMethod` instances or strings that can be cast to
+            as such an enum.
 
         skip : bool
             Whether to skip potential dialects that have too low a pattern
@@ -86,10 +107,10 @@ class Detector:
             inconclusive.
 
         """
-        if method not in ("auto", "normal", "consistency"):
-            raise ValueError(f"Unknown detection method: {method}")
-
-        if method == "normal" or method == "auto":
+        method = DetectionMethod(method) if isinstance(method, str) else method
+        if delimiters is not None:
+            delimiters = list(delimiters)
+        if method == DetectionMethod.NORMAL or method == DetectionMethod.AUTO:
             if verbose:
                 print("Running normal form detection ...", flush=True)
             dialect = detect_dialect_normal(
@@ -99,7 +120,7 @@ class Detector:
                 self.method_ = "normal"
                 return dialect
 
-        self.method_ = "consistency"
+        self.method_ = DetectionMethod.CONSISTENCY
         consistency_detector = ConsistencyDetector(skip=skip, verbose=verbose)
         if verbose:
             print("Running data consistency measure ...", flush=True)
@@ -122,7 +143,11 @@ class Detector:
         # Finally, a 'vote' is taken at the end for each column, adding or
         # subtracting from the likelihood of the first row being a header.
 
-        rdr = reader(StringIO(sample), self.sniff(sample))
+        dialect = self.sniff(sample)
+        if dialect is None:
+            raise NoDetectionResult
+
+        rdr = reader(StringIO(sample), dialect)
 
         header = next(rdr)  # assume first row is header
 

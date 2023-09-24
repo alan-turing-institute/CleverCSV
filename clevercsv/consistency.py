@@ -88,7 +88,7 @@ class ConsistencyDetector:
         self._cached_is_known_type = cached_is_known_type
 
     def detect(
-        self, data: str, delimiters: Optional[Iterable[str]] = None
+        self, data: str, delimiters: Optional[List[str]] = None
     ) -> Optional[SimpleDialect]:
         """Detect the dialect using the consistency measure
 
@@ -192,7 +192,7 @@ class ConsistencyDetector:
         return [d for d, score in scores.items() if score.Q == Qmax]
 
     def compute_type_score(
-        self, data: str, dialect: SimpleDialect, eps=DEFAULT_EPS_TYPE
+        self, data: str, dialect: SimpleDialect, eps: float = DEFAULT_EPS_TYPE
     ) -> float:
         """Compute the type score"""
         total = known = 0
@@ -211,8 +211,10 @@ def detect_dialect_consistency(
     delimiters: Optional[Iterable[str]] = None,
     skip: bool = True,
     verbose: bool = False,
-):
+) -> Optional[SimpleDialect]:
     """Helper function that wraps ConsistencyDetector"""
     # Mostly kept for backwards compatibility
     consistency_detector = ConsistencyDetector(skip=skip, verbose=verbose)
+    if delimiters is not None:
+        delimiters = list(delimiters)
     return consistency_detector.detect(data, delimiters=delimiters)

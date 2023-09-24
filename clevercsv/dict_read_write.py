@@ -61,7 +61,7 @@ class DictReader(
         self.dialect = dialect
         self.line_num = 0
 
-    def __iter__(self) -> "DictReader":
+    def __iter__(self) -> "DictReader[_T]":
         return self
 
     @property

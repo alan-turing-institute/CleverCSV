@@ -10,7 +10,7 @@ import sys
 from ._optional import import_optional_dependency
 
 
-def main():
+def main() -> None:
     # Check that necessary dependencies are available
     import_optional_dependency("wilderness")
 

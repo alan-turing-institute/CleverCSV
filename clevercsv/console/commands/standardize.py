@@ -1,18 +1,28 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import annotations
+
 import io
 import os
 import shutil
 import sys
 import tempfile
 
+from typing import TYPE_CHECKING
+from typing import Optional
+
 from wilderness import Command
 
+from clevercsv._types import StrPath
+from clevercsv.dialect import SimpleDialect
 from clevercsv.encoding import get_encoding
 from clevercsv.read import reader
 from clevercsv.utils import sha1sum
 from clevercsv.wrappers import detect_dialect
 from clevercsv.write import writer
+
+if TYPE_CHECKING:
+    from clevercsv._types import SupportsWrite
 
 from ._docs import FLAG_DESCRIPTIONS
 from ._utils import parse_int
@@ -28,7 +38,7 @@ class StandardizeCommand(Command):
         "[1]: https://tools.ietf.org/html/rfc4180"
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             name="standardize",
             title="Convert a CSV file to one that conforms to RFC-4180",
@@ -36,7 +46,7 @@ class StandardizeCommand(Command):
             extra_sections={"CleverCSV": "Part of the CleverCSV suite"},
         )
 
-    def register(self):
+    def register(self) -> None:
         self.add_argument(
             "path", help="Path to one or more CSV file(s)", nargs="+"
         )
@@ -152,7 +162,12 @@ class StandardizeCommand(Command):
         return global_retval
 
     def handle_path(
-        self, path, output, encoding=None, num_chars=None, verbose=False
+        self,
+        path: StrPath,
+        output: Optional[StrPath],
+        encoding: Optional[str] = None,
+        num_chars: Optional[int] = None,
+        verbose: bool = False,
     ) -> int:
         encoding = encoding or get_encoding(path)
         dialect = detect_dialect(
@@ -168,7 +183,13 @@ class StandardizeCommand(Command):
             return self._to_stdout(path, dialect, encoding)
         return self._to_file(path, output, dialect, encoding)
 
-    def _write_transposed(self, path, stream, dialect, encoding):
+    def _write_transposed(
+        self,
+        path: StrPath,
+        stream: SupportsWrite[str],
+        dialect: SimpleDialect,
+        encoding: Optional[str],
+    ) -> None:
         with open(path, "r", newline="", encoding=encoding) as fp:
             read = reader(fp, dialect=dialect)
             rows = list(read)
@@ -177,20 +198,34 @@ class StandardizeCommand(Command):
         for row in rows:
             write.writerow(row)
 
-    def _write_direct(self, path, stream, dialect, encoding):
+    def _write_direct(
+        self,
+        path: StrPath,
+        stream: SupportsWrite[str],
+        dialect: SimpleDialect,
+        encoding: Optional[str],
+    ) -> None:
         with open(path, "r", newline="", encoding=encoding) as fp:
             read = reader(fp, dialect=dialect)
             write = writer(stream, dialect="excel")
             for row in read:
                 write.writerow(row)
 
-    def _write_to_stream(self, path, stream, dialect, encoding):
+    def _write_to_stream(
+        self,
+        path: StrPath,
+        stream: SupportsWrite[str],
+        dialect: SimpleDialect,
+        encoding: Optional[str],
+    ) -> None:
         if self.args.transpose:
             self._write_transposed(path, stream, dialect, encoding)
         else:
             self._write_direct(path, stream, dialect, encoding)
 
-    def _in_place(self, path, dialect, encoding):
+    def _in_place(
+        self, path: StrPath, dialect: SimpleDialect, encoding: Optional[str]
+    ) -> int:
         """In-place mode overwrites the input file, if necessary
 
         The return value of this method is to be used as the status code of
@@ -213,14 +248,22 @@ class StandardizeCommand(Command):
         shutil.move(tmpfname, path)
         return 2
 
-    def _to_stdout(self, path, dialect, encoding):
+    def _to_stdout(
+        self, path: StrPath, dialect: SimpleDialect, encoding: Optional[str]
+    ) -> int:
         stream = io.StringIO(newline="")
         self._write_to_stream(path, stream, dialect, encoding)
         print(stream.getvalue(), end="")
         stream.close()
         return 0
 
-    def _to_file(self, path, output, dialect, encoding):
+    def _to_file(
+        self,
+        path: StrPath,
+        output: StrPath,
+        dialect: SimpleDialect,
+        encoding: Optional[str],
+    ) -> int:
         with open(output, "w", newline="", encoding=encoding) as fp:
             self._write_to_stream(path, fp, dialect, encoding)
         return 0

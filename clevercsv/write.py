@@ -40,10 +40,10 @@ DIALECT_KEYS = [
 class writer:
     def __init__(
         self,
-        csvfile: SupportsWrite,
+        csvfile: SupportsWrite[str],
         dialect: _DialectLike = "excel",
-        **fmtparams,
-    ):
+        **fmtparams: Any,
+    ) -> None:
         self.original_dialect = dialect
         self.dialect: Type[csv.Dialect] = self._make_python_dialect(
             dialect, **fmtparams
@@ -51,7 +51,7 @@ class writer:
         self._writer = csv.writer(csvfile, dialect=self.dialect)
 
     def _make_python_dialect(
-        self, dialect: _DialectLike, **fmtparams
+        self, dialect: _DialectLike, **fmtparams: Any
     ) -> Type[csv.Dialect]:
         d: _DialectLike = ""
         if isinstance(dialect, str):

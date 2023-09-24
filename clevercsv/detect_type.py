@@ -16,21 +16,22 @@ from typing import Pattern
 
 from ._regexes import DEFAULT_TYPE_REGEXES
 from .cparser_util import parse_string
+from .dialect import SimpleDialect
 
-DEFAULT_EPS_TYPE = 1e-10
+DEFAULT_EPS_TYPE: float = 1e-10
 
 
 class TypeDetector:
     def __init__(
         self,
-        patterns: Optional[Dict[str, Pattern]] = None,
-        strip_whitespace=True,
-    ):
+        patterns: Optional[Dict[str, Pattern[str]]] = None,
+        strip_whitespace: bool = True,
+    ) -> None:
         self.patterns = patterns or DEFAULT_TYPE_REGEXES.copy()
         self.strip_whitespace = strip_whitespace
         self._register_type_tests()
 
-    def _register_type_tests(self):
+    def _register_type_tests(self) -> None:
         self._type_tests = [
             ("empty", self.is_empty),
             ("url", self.is_url),
@@ -55,7 +56,7 @@ class TypeDetector:
     def is_known_type(self, cell: str, is_quoted: bool = False) -> bool:
         return self.detect_type(cell, is_quoted=is_quoted) is not None
 
-    def detect_type(self, cell: str, is_quoted: bool = False):
+    def detect_type(self, cell: str, is_quoted: bool = False) -> Optional[str]:
         cell = cell.strip() if self.strip_whitespace else cell
         for name, func in self._type_tests:
             if func(cell, is_quoted=is_quoted):
@@ -216,7 +217,9 @@ def gen_known_type(cells):
         yield td.is_known_type(cell)
 
 
-def type_score(data, dialect, eps=DEFAULT_EPS_TYPE):
+def type_score(
+    data: str, dialect: SimpleDialect, eps: float = DEFAULT_EPS_TYPE
+) -> float:
     """
     Compute the type score as the ratio of cells with a known type.
 
@@ -230,6 +233,11 @@ def type_score(data, dialect, eps=DEFAULT_EPS_TYPE):
 
     eps: float
         the minimum value of the type score
+
+    Returns
+    -------
+    type_score: float
+        The computed type score
 
     """
     total = 0

@@ -17,12 +17,12 @@ from clevercsv.dialect import SimpleDialect
 
 
 class TypeDetectorTestCase(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.td = TypeDetector()
 
     # NUMBERS
 
-    def test_number(self):
+    def test_number(self) -> None:
         yes_number: List[str] = [
             "1",
             "2",
@@ -112,7 +112,7 @@ class TypeDetectorTestCase(unittest.TestCase):
 
     # DATES
 
-    def test_date(self):
+    def test_date(self) -> None:
         yes_date: List[str] = [
             "031219",
             "03122019",
@@ -178,7 +178,7 @@ class TypeDetectorTestCase(unittest.TestCase):
 
     # DATETIME
 
-    def test_datetime(self):
+    def test_datetime(self) -> None:
         yes_dt: List[str] = [
             "2019-01-12T04:01:23Z",
             "2021-09-26T12:13:31+01:00",
@@ -193,7 +193,7 @@ class TypeDetectorTestCase(unittest.TestCase):
 
     # URLs
 
-    def test_url(self):
+    def test_url(self) -> None:
         # Some cases copied from https://mathiasbynens.be/demo/url-regex
         yes_url: List[str] = [
             "Cocoal.icio.us",
@@ -306,7 +306,7 @@ class TypeDetectorTestCase(unittest.TestCase):
 
     # Unicode_alphanum
 
-    def test_unicode_alphanum(self):
+    def test_unicode_alphanum(self) -> None:
         # These tests are by no means inclusive and ought to be extended in the
         # future.
 
@@ -344,7 +344,7 @@ class TypeDetectorTestCase(unittest.TestCase):
                     )
                 )
 
-    def test_bytearray(self):
+    def test_bytearray(self) -> None:
         yes_bytearray: List[str] = [
             "bytearray(b'')",
             "bytearray(b'abc,*&@\"')",
@@ -367,7 +367,7 @@ class TypeDetectorTestCase(unittest.TestCase):
 
     # Unix path
 
-    def test_unix_path(self):
+    def test_unix_path(self) -> None:
         yes_path: List[str] = [
             "/Users/person/abc/def-ghi/blabla.csv.test",
             "/home/username/share/a/_b/c_d/e.py",
@@ -389,7 +389,7 @@ class TypeDetectorTestCase(unittest.TestCase):
     Type Score tests
     """
 
-    def test_type_score_1(self):
+    def test_type_score_1(self) -> None:
         # theta_1 from paper
         cells = [
             ["7", "5; Mon", " Jan 12;6", "40"],
@@ -404,7 +404,7 @@ class TypeDetectorTestCase(unittest.TestCase):
         exp = 8 / 17
         self.assertAlmostEqual(exp, out)
 
-    def test_type_score_2(self):
+    def test_type_score_2(self) -> None:
         # theta_2 from paper
         cells = [
             ["7,5", " Mon, Jan 12", "6,40"],
@@ -419,7 +419,7 @@ class TypeDetectorTestCase(unittest.TestCase):
         exp = 10 / 15
         self.assertAlmostEqual(exp, out)
 
-    def test_type_score_3(self):
+    def test_type_score_3(self) -> None:
         # theta_3 from paper
         cells = [
             ["7,5", " Mon, Jan 12", "6,40"],

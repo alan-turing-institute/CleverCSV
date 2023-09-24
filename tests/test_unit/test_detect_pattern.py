@@ -19,14 +19,14 @@ class PatternTestCase(unittest.TestCase):
     Abstraction tests
     """
 
-    def test_abstraction_1(self):
+    def test_abstraction_1(self) -> None:
         out = detect_pattern.make_abstraction(
             "A,B,C", SimpleDialect(delimiter=",", quotechar="", escapechar="")
         )
         exp = "CDCDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_2(self):
+    def test_abstraction_2(self) -> None:
         out = detect_pattern.make_abstraction(
             "A,\rA,A,A\r",
             SimpleDialect(delimiter=",", quotechar="", escapechar=""),
@@ -34,7 +34,7 @@ class PatternTestCase(unittest.TestCase):
         exp = "CDCRCDCDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_3(self):
+    def test_abstraction_3(self) -> None:
         out = detect_pattern.make_abstraction(
             "a,a,\n,a,a\ra,a,a\r\n",
             SimpleDialect(delimiter=",", quotechar="", escapechar=""),
@@ -42,7 +42,7 @@ class PatternTestCase(unittest.TestCase):
         exp = "CDCDCRCDCDCRCDCDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_4(self):
+    def test_abstraction_4(self) -> None:
         out = detect_pattern.make_abstraction(
             'a,"bc""d""e""f""a",\r\n',
             SimpleDialect(delimiter=",", quotechar='"', escapechar=""),
@@ -50,7 +50,7 @@ class PatternTestCase(unittest.TestCase):
         exp = "CDCDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_5(self):
+    def test_abstraction_5(self) -> None:
         out = detect_pattern.make_abstraction(
             'a,"bc""d"",|"f|""',
             SimpleDialect(delimiter=",", quotechar='"', escapechar="|"),
@@ -58,21 +58,21 @@ class PatternTestCase(unittest.TestCase):
         exp = "CDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_6(self):
+    def test_abstraction_6(self) -> None:
         out = detect_pattern.make_abstraction(
             ",,,", SimpleDialect(delimiter=",", quotechar="", escapechar="")
         )
         exp = "CDCDCDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_7(self):
+    def test_abstraction_7(self) -> None:
         out = detect_pattern.make_abstraction(
             ',"",,', SimpleDialect(delimiter=",", quotechar='"', escapechar="")
         )
         exp = "CDCDCDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_8(self):
+    def test_abstraction_8(self) -> None:
         out = detect_pattern.make_abstraction(
             ',"",,\r\n',
             SimpleDialect(delimiter=",", quotechar='"', escapechar=""),
@@ -84,7 +84,7 @@ class PatternTestCase(unittest.TestCase):
     Escape char tests
     """
 
-    def test_abstraction_9(self):
+    def test_abstraction_9(self) -> None:
         out = detect_pattern.make_abstraction(
             "A,B|,C",
             SimpleDialect(delimiter=",", quotechar="", escapechar="|"),
@@ -92,7 +92,7 @@ class PatternTestCase(unittest.TestCase):
         exp = "CDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_10(self):
+    def test_abstraction_10(self) -> None:
         out = detect_pattern.make_abstraction(
             'A,"B,C|"D"',
             SimpleDialect(delimiter=",", quotechar='"', escapechar="|"),
@@ -100,7 +100,7 @@ class PatternTestCase(unittest.TestCase):
         exp = "CDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_11(self):
+    def test_abstraction_11(self) -> None:
         out = detect_pattern.make_abstraction(
             "a,|b,c",
             SimpleDialect(delimiter=",", quotechar="", escapechar="|"),
@@ -108,7 +108,7 @@ class PatternTestCase(unittest.TestCase):
         exp = "CDCDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_12(self):
+    def test_abstraction_12(self) -> None:
         out = detect_pattern.make_abstraction(
             "a,b|,c",
             SimpleDialect(delimiter=",", quotechar="", escapechar="|"),
@@ -116,7 +116,7 @@ class PatternTestCase(unittest.TestCase):
         exp = "CDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_13(self):
+    def test_abstraction_13(self) -> None:
         out = detect_pattern.make_abstraction(
             'a,"b,c|""',
             SimpleDialect(delimiter=",", quotechar='"', escapechar="|"),
@@ -124,7 +124,7 @@ class PatternTestCase(unittest.TestCase):
         exp = "CDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_14(self):
+    def test_abstraction_14(self) -> None:
         out = detect_pattern.make_abstraction(
             "a,b||c",
             SimpleDialect(delimiter=",", quotechar="", escapechar="|"),
@@ -132,7 +132,7 @@ class PatternTestCase(unittest.TestCase):
         exp = "CDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_15(self):
+    def test_abstraction_15(self) -> None:
         out = detect_pattern.make_abstraction(
             'a,"b|"c||d|"e"',
             SimpleDialect(delimiter=",", quotechar='"', escapechar="|"),
@@ -140,7 +140,7 @@ class PatternTestCase(unittest.TestCase):
         exp = "CDC"
         self.assertEqual(exp, out)
 
-    def test_abstraction_16(self):
+    def test_abstraction_16(self) -> None:
         out = detect_pattern.make_abstraction(
             'a,"b|"c||d","e"',
             SimpleDialect(delimiter=",", quotechar='"', escapechar="|"),
@@ -152,7 +152,7 @@ class PatternTestCase(unittest.TestCase):
     Fill empties
     """
 
-    def test_fill_empties_1(self):
+    def test_fill_empties_1(self) -> None:
         out = detect_pattern.fill_empties("DDD")
         exp = "CDCDCDC"
         self.assertEqual(exp, out)
@@ -161,7 +161,7 @@ class PatternTestCase(unittest.TestCase):
     Pattern Score tests
     """
 
-    def test_pattern_score_1(self):
+    def test_pattern_score_1(self) -> None:
         # theta_1 from paper
         data = (
             "7,5; Mon, Jan 12;6,40\n100; Fri, Mar 21;8,23\n8,2; Thu, Sep 17;"
@@ -172,7 +172,7 @@ class PatternTestCase(unittest.TestCase):
         exp = 7 / 4
         self.assertAlmostEqual(exp, out)
 
-    def test_pattern_score_2(self):
+    def test_pattern_score_2(self) -> None:
         # theta_2 from paper
         data = (
             "7,5; Mon, Jan 12;6,40\n100; Fri, Mar 21;8,23\n8,2; Thu, Sep 17;"
@@ -183,7 +183,7 @@ class PatternTestCase(unittest.TestCase):
         exp = 10 / 3
         self.assertAlmostEqual(exp, out)
 
-    def test_pattern_score_3(self):
+    def test_pattern_score_3(self) -> None:
         # theta_3 from paper
         data = (
             "7,5; Mon, Jan 12;6,40\n100; Fri, Mar 21;8,23\n8,2; Thu, Sep 17;"
