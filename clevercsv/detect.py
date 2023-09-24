@@ -126,7 +126,7 @@ class Detector:
             print("Running data consistency measure ...", flush=True)
         return consistency_detector.detect(sample, delimiters=delimiters)
 
-    def has_header(self, sample):
+    def has_header(self, sample: str, max_rows_to_check: int = 20) -> bool:
         """Detect if a file has a header from a sample.
 
         This function is copied from CPython! The only change we've made is to
@@ -160,7 +160,7 @@ class Detector:
         checked = 0
         for row in rdr:
             # arbitrary number of rows to check, to keep it sane
-            if checked > 20:
+            if checked > max_rows_to_check:
                 break
             checked += 1
 
