@@ -2,6 +2,15 @@
 Changelog
 =========
 
+Version 0.8.2
+-------------
+
+
+* Add more type hints to CleverCSV
+* Move the import of the optional tabview dependency to where it's needed (for 
+  #101)
+* Allow inspecting more rows for header detection (fixes #98)
+
 Version 0.8.1
 -------------
 
