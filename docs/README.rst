@@ -39,6 +39,7 @@ import it.*
 
 * `CleverCSV on Github <https://github.com/alan-turing-institute/CleverCSV>`_
 * `CleverCSV on PyPI <https://pypi.org/project/clevercsv/>`_
+* `Documentation on ReadTheDocs <https://clevercsv.readthedocs.io/en/latest/>`_
 * `Demo of CleverCSV on Binder (interactive!) <https://mybinder.org/v2/gh/alan-turing-institute/CleverCSVDemo/master?filepath=CSV_dialect_detection_with_CleverCSV.ipynb>`_
 * `Research Paper on CSV dialect detection 
   (PDF) <https://gertjanvandenburg.com/papers/VandenBurg_Nazabal_Sutton_-_Wrangling_Messy_CSV_Files_by_Detecting_Row_and_Type_Patterns_2019.pdf>`_ 

@@ -2,6 +2,15 @@
 Changelog
 =========
 
+Version 0.8.1
+-------------
+
+
+* Add type hints to CleverCSV
+* Disable 32-bit builds on Windows and Linux
+* Bump minimal Python version to 3.8
+* Minor documentation improvements
+
 Version 0.8.0
 -------------
 
