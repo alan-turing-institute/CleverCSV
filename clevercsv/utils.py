@@ -9,8 +9,17 @@ Author: Gertjan van den Burg
 
 import hashlib
 
+from typing import Iterable
+from typing import Iterator
+from typing import Tuple
+from typing import TypeVar
 
-def pairwise(iterable):
+from clevercsv._types import AnyPath
+
+T = TypeVar("T")
+
+
+def pairwise(iterable: Iterable[T]) -> Iterator[Tuple[T, T]]:
     "s - > (s0, s1), (s1, s2), (s2, s3), ..."
     a = iter(iterable)
     b = iter(iterable)
@@ -18,7 +27,7 @@ def pairwise(iterable):
     return zip(a, b)
 
 
-def sha1sum(filename):
+def sha1sum(filename: AnyPath) -> str:
     """Compute the SHA1 checksum of a given file
 
     Parameters

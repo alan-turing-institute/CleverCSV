@@ -15,7 +15,7 @@ from clevercsv.dialect import SimpleDialect
 
 
 class ConsistencyTestCase(unittest.TestCase):
-    def test_get_best_set_1(self):
+    def test_get_best_set_1(self) -> None:
         scores = {
             SimpleDialect(",", None, None): ConsistencyScore(P=1, T=1, Q=1),
             SimpleDialect(";", None, None): ConsistencyScore(

@@ -11,7 +11,7 @@ import clevercsv
 
 
 class FuzzingTestCase(unittest.TestCase):
-    def test_sniffer_fuzzing(self):
+    def test_sniffer_fuzzing(self) -> None:
         strings = ['"""', "```", "\"'", "'@'", "'\"", "'''", "O##P~`"]
         for string in strings:
             with self.subTest(string=string):

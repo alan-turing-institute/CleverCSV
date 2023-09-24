@@ -22,7 +22,7 @@ from clevercsv.detect_pattern import strip_trailing
 
 
 class AbstractionTestCase(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         here = Path(__file__)
         this_dir = here.parent
         data_dir = this_dir / "data"
@@ -40,7 +40,7 @@ class AbstractionTestCase(unittest.TestCase):
                 cases.append(json.loads(line))
         return cases
 
-    def test_abstraction_multi(self):
+    def test_abstraction_multi(self) -> None:
         if not self._cases:
             self.skipTest("no abstraction test cases found")
 

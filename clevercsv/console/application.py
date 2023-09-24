@@ -64,7 +64,7 @@ class CleverCSVApplication(Application):
         ),
     }
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             "clevercsv",
             version=__version__,
@@ -74,7 +74,7 @@ class CleverCSVApplication(Application):
             extra_sections=self._extra,
         )
 
-    def register(self):
+    def register(self) -> None:
         self.add_argument(
             "-V",
             "--version",

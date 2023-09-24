@@ -16,24 +16,24 @@ from clevercsv.potential_dialects import masked_by_quotechar
 
 
 class PotentialDialectTestCase(unittest.TestCase):
-    def test_masked_by_quotechar(self):
+    def test_masked_by_quotechar(self) -> None:
         self.assertTrue(masked_by_quotechar('A"B&C"A', '"', "", "&"))
         self.assertFalse(masked_by_quotechar('A"B&C"A&A', '"', "", "&"))
         self.assertFalse(masked_by_quotechar('A|"B&C"A', '"', "|", "&"))
         self.assertFalse(masked_by_quotechar('A"B"C', '"', "", ""))
 
-    def test_filter_urls(self):
+    def test_filter_urls(self) -> None:
         data = "A,B\nwww.google.com,10\nhttps://gertjanvandenburg.com,25\n"
         exp = "A,B\nU,10\nU,25\n"
         self.assertEqual(exp, filter_urls(data))
 
-    def test_get_quotechars(self):
+    def test_get_quotechars(self) -> None:
         data = "A,B,'A',B\"D\"E"
         exp = set(['"', "'", ""])
         out = get_quotechars(data)
         self.assertEqual(out, exp)
 
-    def test_get_delimiters(self):
+    def test_get_delimiters(self) -> None:
         data = "A,B|CD,E;F\tD123£123€10.,0"
         exp = set([",", "|", ";", "\t", "€", "£", ""])
         out = get_delimiters(data, "UTF-8")

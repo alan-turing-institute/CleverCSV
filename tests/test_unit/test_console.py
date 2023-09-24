@@ -11,19 +11,29 @@ import os
 import tempfile
 import unittest
 
+from typing import Any
 from typing import List
-from typing import Union
+from typing import Optional
 
 from wilderness import Tester
 
 from clevercsv import __version__
+from clevercsv._types import _DialectLike
 from clevercsv.console import build_application
 from clevercsv.dialect import SimpleDialect
 from clevercsv.write import writer
 
+TableType = List[List[Any]]
+
 
 class ConsoleTestCase(unittest.TestCase):
-    def _build_file(self, table, dialect, encoding=None, newline=None) -> str:
+    def _build_file(
+        self,
+        table: TableType,
+        dialect: _DialectLike,
+        encoding: Optional[str] = None,
+        newline: Optional[str] = None,
+    ) -> str:
         tmpfd, tmpfname = tempfile.mkstemp(
             prefix="ccsv_",
             suffix=".csv",
@@ -34,7 +44,9 @@ class ConsoleTestCase(unittest.TestCase):
         tmpid.close()
         return tmpfname
 
-    def _detect_test_wrap(self, table, dialect):
+    def _detect_test_wrap(
+        self, table: TableType, dialect: _DialectLike
+    ) -> None:
         tmpfname = self._build_file(table, dialect)
         exp = "Detected: " + str(dialect)
 
@@ -51,8 +63,8 @@ class ConsoleTestCase(unittest.TestCase):
         finally:
             os.unlink(tmpfname)
 
-    def test_detect_base(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_detect_base(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         with self.subTest(name="simple"):
             self._detect_test_wrap(table, dialect)
@@ -72,8 +84,8 @@ class ConsoleTestCase(unittest.TestCase):
         with self.subTest(name="double"):
             self._detect_test_wrap(table, dialect)
 
-    def test_detect_opts_1(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_detect_opts_1(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         encoding = "windows-1252"
         tmpfname = self._build_file(table, dialect, encoding=encoding)
@@ -93,8 +105,8 @@ class ConsoleTestCase(unittest.TestCase):
         finally:
             os.unlink(tmpfname)
 
-    def test_detect_opts_2(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_detect_opts_2(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         tmpfname = self._build_file(table, dialect)
 
@@ -113,8 +125,8 @@ class ConsoleTestCase(unittest.TestCase):
         finally:
             os.unlink(tmpfname)
 
-    def test_detect_opts_3(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_detect_opts_3(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         tmpfname = self._build_file(table, dialect)
 
@@ -135,8 +147,8 @@ escapechar ="""
         finally:
             os.unlink(tmpfname)
 
-    def test_detect_opts_4(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_detect_opts_4(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         tmpfname = self._build_file(table, dialect)
 
@@ -157,8 +169,8 @@ escapechar ="""
         finally:
             os.unlink(tmpfname)
 
-    def test_code_1(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_code_1(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
 
         tmpfname = self._build_file(table, dialect)
@@ -198,8 +210,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         finally:
             os.unlink(tmpfname)
 
-    def test_code_2(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_code_2(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         tmpfname = self._build_file(table, dialect)
 
@@ -222,8 +234,8 @@ df = clevercsv.read_dataframe("{tmpfname}", delimiter=";", quotechar="", escapec
         finally:
             os.unlink(tmpfname)
 
-    def test_code_3(self):
-        table = [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_code_3(self) -> None:
+        table: TableType = [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         encoding = "ISO-8859-1"
         tmpfname = self._build_file(table, dialect, encoding=encoding)
@@ -263,8 +275,8 @@ with open("{tmpfname}", "r", newline="", encoding="WINDOWS-1252") as fp:
         finally:
             os.unlink(tmpfname)
 
-    def test_code_4(self):
-        table = [["Å", "B,D", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_code_4(self) -> None:
+        table: TableType = [["Å", "B,D", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=",", quotechar="", escapechar="\\")
         encoding = "ISO-8859-1"
         tmpfname = self._build_file(table, dialect, encoding=encoding)
@@ -304,8 +316,8 @@ with open("{tmpfname}", "r", newline="", encoding="WINDOWS-1252") as fp:
         finally:
             os.unlink(tmpfname)
 
-    def test_code_5(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_code_5(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter="\t", quotechar="", escapechar="")
 
         tmpfname = self._build_file(table, dialect)
@@ -346,8 +358,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         finally:
             os.unlink(tmpfname)
 
-    def test_standardize_1(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_standardize_1(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         tmpfname = self._build_file(table, dialect)
 
@@ -366,8 +378,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         finally:
             os.unlink(tmpfname)
 
-    def test_standardize_2(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_standardize_2(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         tmpfname = self._build_file(table, dialect)
 
@@ -390,8 +402,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
             os.unlink(tmpfname)
             os.unlink(tmpoutname)
 
-    def test_standardize_3(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_standardize_3(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         tmpfname = self._build_file(table, dialect)
 
@@ -411,8 +423,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         finally:
             os.unlink(tmpfname)
 
-    def test_standardize_in_place(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_standardize_in_place(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         tmpfname = self._build_file(table, dialect)
 
@@ -435,8 +447,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         finally:
             os.unlink(tmpfname)
 
-    def test_standardize_in_place_noop(self):
-        table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
+    def test_standardize_in_place_noop(self) -> None:
+        table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = "excel"
         tmpfname = self._build_file(table, dialect, newline="")
 
@@ -459,8 +471,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         finally:
             os.unlink(tmpfname)
 
-    def test_standardize_multi(self):
-        table: List[List[Union[str, int]]] = [
+    def test_standardize_multi(self) -> None:
+        table: TableType = [
             ["A", "B", "C"],
             [1, 2, 3],
             [4, 5, 6],
@@ -497,8 +509,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
             any(map(os.unlink, tmpfnames))
             any(map(os.unlink, tmpoutnames))
 
-    def test_standardize_multi_errors(self):
-        table: List[List[Union[str, int]]] = [
+    def test_standardize_multi_errors(self) -> None:
+        table: TableType = [
             ["A", "B", "C"],
             [1, 2, 3],
             [4, 5, 6],
@@ -532,8 +544,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         any(map(os.unlink, tmpfnames))
         any(map(os.unlink, tmpoutnames))
 
-    def test_standardize_multi_encoding(self):
-        table: List[List[Union[str, int]]] = [
+    def test_standardize_multi_encoding(self) -> None:
+        table: TableType = [
             ["Å", "B", "C"],
             [1, 2, 3],
             [4, 5, 6],
@@ -576,8 +588,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
             any(map(os.unlink, tmpfnames))
             any(map(os.unlink, tmpoutnames))
 
-    def test_standardize_in_place_multi(self):
-        table: List[List[Union[str, int]]] = [
+    def test_standardize_in_place_multi(self) -> None:
+        table: TableType = [
             ["Å", "B", "C"],
             [1, 2, 3],
             [4, 5, 6],
@@ -591,7 +603,7 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
 
         application = build_application()
         tester = Tester(application)
-        tester.test_command("standardize", ["-i", "-e", encoding] + tmpfnames)
+        tester.test_command("standardize", ["-i", "-e", encoding, *tmpfnames])
 
         self.assertEqual(tester.get_return_code(), 2)
 
@@ -605,8 +617,8 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         finally:
             any(map(os.unlink, tmpfnames))
 
-    def test_standardize_in_place_multi_noop(self):
-        table: List[List[Union[str, int]]] = [
+    def test_standardize_in_place_multi_noop(self) -> None:
+        table: TableType = [
             ["Å", "B", "C"],
             [1, 2, 3],
             [4, 5, 6],
@@ -616,7 +628,7 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
 
         application = build_application()
         tester = Tester(application)
-        tester.test_command("standardize", ["-i"] + tmpfnames)
+        tester.test_command("standardize", ["-i", *tmpfnames])
 
         self.assertEqual(tester.get_return_code(), 0)
 

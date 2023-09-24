@@ -26,7 +26,7 @@ class ExploreCommand(Command):
         "to read the file as a Pandas dataframe."
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             name="explore",
             title="Explore the CSV file in an interactive Python shell",
@@ -34,7 +34,7 @@ class ExploreCommand(Command):
             extra_sections={"CleverCSV": "Part of the CleverCSV suite"},
         )
 
-    def register(self):
+    def register(self) -> None:
         self.add_argument("path", help="Path to the CSV file")
         self.add_argument(
             "-e",

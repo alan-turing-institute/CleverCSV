@@ -3,6 +3,6 @@
 from .application import build_application
 
 
-def main():
+def main() -> int:
     app = build_application()
     return app.run()

@@ -19,7 +19,7 @@ from .dialect import SimpleDialect
 
 DEFAULT_EPS_PAT: float = 1e-3
 
-RE_MULTI_C: Pattern = re.compile(r"C{2,}")
+RE_MULTI_C: Pattern[str] = re.compile(r"C{2,}")
 
 
 def pattern_score(

@@ -15,6 +15,7 @@ import json
 from typing import Any
 from typing import Dict
 from typing import Optional
+from typing import Tuple
 from typing import Type
 from typing import Union
 
@@ -142,18 +143,20 @@ class SimpleDialect:
             self.escapechar,
         )
 
-    def __key(self):
+    def __key(
+        self,
+    ) -> Tuple[Optional[str], Optional[str], Optional[str], bool]:
         return (self.delimiter, self.quotechar, self.escapechar, self.strict)
 
     def __hash__(self) -> int:
         return hash(self.__key())
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if not isinstance(other, SimpleDialect):
             return False
         return self.__key() == other.__key()
 
-    def __lt__(self, other):
+    def __lt__(self, other: Any) -> bool:
         # This provides a partial order on dialect objects with the goal of
         # speeding up the consistency measure.
         if not isinstance(other, SimpleDialect):

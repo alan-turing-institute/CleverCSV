@@ -13,38 +13,50 @@ import os
 import tempfile
 import unittest
 
+from dataclasses import dataclass
+
+from typing import Any
+from typing import List
+
 from clevercsv._optional import import_optional_dependency
+from clevercsv._types import AnyPath
 from clevercsv.encoding import get_encoding
 from clevercsv.write import writer
 
 
 class EncodingTestCase(unittest.TestCase):
-    cases = [
-        {
-            "table": [["Å", "B", "C"], [1, 2, 3], [4, 5, 6]],
-            "encoding": "ISO-8859-1",
-            "cchardet_encoding": "WINDOWS-1252",
-        },
-        {
-            "table": [["A", "B", "C"], [1, 2, 3], [4, 5, 6]],
-            "encoding": "ascii",
-            "cchardet_encoding": "ASCII",
-        },
-        {
-            "table": [["亜唖", "娃阿", "哀愛"], [1, 2, 3], ["挨", "姶", "葵"]],
-            "encoding": "ISO-2022-JP",
-            "cchardet_encoding": "ISO-2022-JP",
-        },
+    @dataclass
+    class Instance:
+        table: List[List[Any]]
+        encoding: str
+        cchardet_encoding: str
+
+    cases: List[Instance] = [
+        Instance(
+            table=[["Å", "B", "C"], [1, 2, 3], [4, 5, 6]],
+            encoding="ISO-8859-1",
+            cchardet_encoding="WINDOWS-1252",
+        ),
+        Instance(
+            table=[["A", "B", "C"], [1, 2, 3], [4, 5, 6]],
+            encoding="ascii",
+            cchardet_encoding="ASCII",
+        ),
+        Instance(
+            table=[["亜唖", "娃阿", "哀愛"], [1, 2, 3], ["挨", "姶", "葵"]],
+            encoding="ISO-2022-JP",
+            cchardet_encoding="ISO-2022-JP",
+        ),
     ]
 
-    def setUp(self):
-        self._tmpfiles = []
+    def setUp(self) -> None:
+        self._tmpfiles: List[AnyPath] = []
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         for f in self._tmpfiles:
             os.unlink(f)
 
-    def _build_file(self, table, encoding):
+    def _build_file(self, table: List[List[str]], encoding: str) -> str:
         tmpfd, tmpfname = tempfile.mkstemp(
             prefix="ccsv_",
             suffix=".csv",
@@ -56,26 +68,26 @@ class EncodingTestCase(unittest.TestCase):
         self._tmpfiles.append(tmpfname)
         return tmpfname
 
-    def test_encoding_chardet(self):
+    def test_encoding_chardet(self) -> None:
         for case in self.cases:
-            table = case["table"]
-            encoding = case["encoding"]
+            table = case.table
+            encoding = case.encoding
             with self.subTest(encoding=encoding):
                 tmpfname = self._build_file(table, encoding)
                 detected = get_encoding(tmpfname, try_cchardet=False)
                 self.assertEqual(encoding, detected)
 
-    def test_encoding_cchardet(self):
+    def test_encoding_cchardet(self) -> None:
         try:
             _ = import_optional_dependency("cchardet")
         except ImportError:
             self.skipTest("Failed to import cchardet, skipping this test")
 
         for case in self.cases:
-            table = case["table"]
-            encoding = case["encoding"]
+            table = case.table
+            encoding = case.encoding
             with self.subTest(encoding=encoding):
-                out_encoding = case["cchardet_encoding"]
+                out_encoding = case.cchardet_encoding
                 tmpfname = self._build_file(table, encoding)
                 detected = get_encoding(tmpfname, try_cchardet=True)
                 self.assertEqual(out_encoding, detected)

@@ -12,6 +12,9 @@ import tempfile
 import types
 import unittest
 
+from typing import Any
+from typing import Dict
+from typing import Iterable
 from typing import List
 from typing import Union
 
@@ -24,7 +27,9 @@ from clevercsv.exceptions import NoDetectionResult
 
 
 class WrappersTestCase(unittest.TestCase):
-    def _df_test(self, table, dialect, **kwargs):
+    def _df_test(
+        self, table: List[List[Any]], dialect: SimpleDialect, **kwargs: Any
+    ) -> None:
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         tmpid = os.fdopen(tmpfd, "w", encoding=kwargs.get("encoding"))
         w = writer(tmpid, dialect=dialect)
@@ -39,7 +44,9 @@ class WrappersTestCase(unittest.TestCase):
         finally:
             os.unlink(tmpfname)
 
-    def _write_tmpfile(self, table, dialect):
+    def _write_tmpfile(
+        self, table: Iterable[Iterable[Any]], dialect: SimpleDialect
+    ) -> str:
         """Write a table to a temporary file using specified dialect"""
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         tmpid = os.fdopen(tmpfd, "w")
@@ -48,7 +55,9 @@ class WrappersTestCase(unittest.TestCase):
         tmpid.close()
         return tmpfname
 
-    def _read_test(self, table, dialect):
+    def _read_test(
+        self, table: Iterable[Iterable[Any]], dialect: SimpleDialect
+    ) -> None:
         tmpfname = self._write_tmpfile(table, dialect)
         exp = [list(map(str, r)) for r in table]
         try:
@@ -56,7 +65,9 @@ class WrappersTestCase(unittest.TestCase):
         finally:
             os.unlink(tmpfname)
 
-    def _stream_test(self, table, dialect):
+    def _stream_test(
+        self, table: Iterable[Iterable[str]], dialect: SimpleDialect
+    ) -> None:
         tmpfname = self._write_tmpfile(table, dialect)
         exp = [list(map(str, r)) for r in table]
         try:
@@ -66,7 +77,9 @@ class WrappersTestCase(unittest.TestCase):
         finally:
             os.unlink(tmpfname)
 
-    def _read_test_rows(self, rows, expected):
+    def _read_test_rows(
+        self, rows: List[str], expected: List[List[str]]
+    ) -> None:
         contents = "\n".join(rows)
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         tmpid = os.fdopen(tmpfd, "w")
@@ -78,7 +91,9 @@ class WrappersTestCase(unittest.TestCase):
         finally:
             os.unlink(tmpfname)
 
-    def _stream_test_rows(self, rows, expected):
+    def _stream_test_rows(
+        self, rows: Iterable[str], expected: List[List[str]]
+    ) -> None:
         contents = "\n".join(rows)
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         tmpid = os.fdopen(tmpfd, "w")
@@ -92,7 +107,9 @@ class WrappersTestCase(unittest.TestCase):
         finally:
             os.unlink(tmpfname)
 
-    def test_read_dataframe(self):
+    def test_read_dataframe(self) -> None:
+        table: List[List[Any]]
+
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         with self.subTest(name="simple"):
@@ -123,7 +140,9 @@ class WrappersTestCase(unittest.TestCase):
         with self.subTest(name="simple_encoding"):
             self._df_test(table, dialect, num_char=10, encoding="latin1")
 
-    def test_read_table(self):
+    def test_read_table(self) -> None:
+        table: List[List[Any]]
+
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         with self.subTest(name="simple"):
@@ -158,7 +177,9 @@ class WrappersTestCase(unittest.TestCase):
             with self.assertRaises(NoDetectionResult):
                 self._read_test_rows(rows, exp)
 
-    def test_stream_table(self):
+    def test_stream_table(self) -> None:
+        table: List[List[Any]]
+
         table = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         with self.subTest(name="simple"):
@@ -193,7 +214,9 @@ class WrappersTestCase(unittest.TestCase):
             with self.assertRaises(NoDetectionResult):
                 self._stream_test_rows(rows, exp)
 
-    def _write_test_table(self, table, expected, **kwargs):
+    def _write_test_table(
+        self, table: Iterable[Iterable[Any]], expected: str, **kwargs: Any
+    ) -> None:
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         wrappers.write_table(table, tmpfname, **kwargs)
         read_encoding = kwargs.get("encoding", None)
@@ -206,7 +229,7 @@ class WrappersTestCase(unittest.TestCase):
             os.close(tmpfd)
             os.unlink(tmpfname)
 
-    def test_write_table(self):
+    def test_write_table(self) -> None:
         table: List[List[Union[str, int]]] = [
             ["A", "B,C", "D"],
             [1, 2, 3],
@@ -240,7 +263,9 @@ class WrappersTestCase(unittest.TestCase):
         with self.subTest(name="encoding_2"):
             self._write_test_table(table, exp, encoding="cp1252")
 
-    def _write_test_dicts(self, items, expected, **kwargs):
+    def _write_test_dicts(
+        self, items: Iterable[Dict[str, Any]], expected: str, **kwargs: Any
+    ) -> None:
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         wrappers.write_dicts(items, tmpfname, **kwargs)
         read_encoding = kwargs.get("encoding", None)
@@ -253,7 +278,7 @@ class WrappersTestCase(unittest.TestCase):
             os.close(tmpfd)
             os.unlink(tmpfname)
 
-    def test_write_dicts(self):
+    def test_write_dicts(self) -> None:
         items = [{"A": 1, "B": 2, "C": 3}, {"A": 4, "B": 5, "C": 6}]
         exp = "A,B,C\r\n1,2,3\r\n4,5,6\r\n"
         with self.subTest(name="default"):

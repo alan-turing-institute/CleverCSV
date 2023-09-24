@@ -15,10 +15,18 @@ import os
 import time
 import warnings
 
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Tuple
+
 import chardet
 import termcolor
 
 import clevercsv
+
+from clevercsv.dialect import SimpleDialect
 
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 SOURCE_DIR = os.path.join(THIS_DIR, "data")
@@ -41,7 +49,7 @@ TIMEOUT = 5 * 60
 N_BYTES_PARTIAL = 10000
 
 
-def log_result(name, kind, verbose, partial):
+def log_result(name: str, kind: str, verbose: int, partial: bool) -> None:
     table = {
         "error": (LOG_ERROR, LOG_ERROR_PARTIAL, "yellow"),
         "success": (LOG_SUCCESS, LOG_SUCCESS_PARTIAL, "green"),
@@ -57,19 +65,21 @@ def log_result(name, kind, verbose, partial):
         termcolor.cprint(name, color=color)
 
 
-def log_method(name, method, partial):
+def log_method(name: str, method: str, partial: bool) -> None:
     fname = LOG_METHOD_PARTIAL if partial else LOG_METHOD
     with open(fname, "a") as fp:
         fp.write(f"{name},{method}\n")
 
 
-def log_runtime(name, runtime, partial):
+def log_runtime(name: str, runtime: float, partial: bool) -> None:
     fname = LOG_RUNTIME_PARTIAL if partial else LOG_RUNTIME
     with open(fname, "a") as fp:
         fp.write(f"{name},{runtime}\n")
 
 
-def worker(args, return_dict, **kwargs):
+def worker(
+    args: List[Any], return_dict: Dict[str, Any], **kwargs: Any
+) -> None:
     det = clevercsv.Detector()
     filename, encoding, partial = args
     return_dict["error"] = False
@@ -87,7 +97,9 @@ def worker(args, return_dict, **kwargs):
             return_dict["error"] = True
 
 
-def run_with_timeout(args, kwargs, limit):
+def run_with_timeout(
+    args: Tuple[Any, ...], kwargs: Dict[str, Any], limit: Optional[int]
+) -> Tuple[Optional[SimpleDialect], bool, Optional[str], float]:
     manager = multiprocessing.Manager()
     return_dict = manager.dict()
     p = multiprocessing.Process(
@@ -106,7 +118,13 @@ def run_with_timeout(args, kwargs, limit):
     )
 
 
-def run_test(name, gz_filename, annotation, verbose=1, partial=False):
+def run_test(
+    name: str,
+    gz_filename: str,
+    annotation: Dict[str, Any],
+    verbose: int = 1,
+    partial: bool = False,
+) -> None:
     if "encoding" in annotation:
         enc = annotation["encoding"]
     else:
@@ -131,11 +149,12 @@ def run_test(name, gz_filename, annotation, verbose=1, partial=False):
     else:
         log_result(name, "success", verbose, partial)
 
+    assert method is not None
     log_method(name, method, partial)
     log_runtime(name, runtime, partial)
 
 
-def load_test_cases():
+def load_test_cases() -> List[Tuple[str, str, Dict[str, Any]]]:
     cases = []
     for f in sorted(os.listdir(TEST_FILES)):
         base = f[: -len(".csv.gz")]
@@ -157,7 +176,7 @@ def load_test_cases():
     return cases
 
 
-def clear_output_files(partial):
+def clear_output_files(partial: bool) -> None:
     files = {
         True: [
             LOG_SUCCESS_PARTIAL,
@@ -173,7 +192,7 @@ def clear_output_files(partial):
             os.unlink(filename)
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--partial",
@@ -184,7 +203,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     args = parse_args()
     clear_output_files(args.partial)
     cases = load_test_cases()

@@ -22,7 +22,7 @@ class ViewCommand(Command):
         "the command line."
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             name="view",
             title="View the CSV file on the command line using TabView",
@@ -30,7 +30,7 @@ class ViewCommand(Command):
             extra_sections={"CleverCSV": "Part of the CleverCSV suite"},
         )
 
-    def register(self):
+    def register(self) -> None:
         self.add_argument("path", help="Path to the CSV file")
         self.add_argument(
             "-e",
@@ -52,7 +52,7 @@ class ViewCommand(Command):
             help="Transpose the columns of the input file before viewing",
         )
 
-    def _tabview(self, rows) -> None:
+    def _tabview(self, rows: List[List[str]]) -> None:
         if sys.platform == "win32":
             print(
                 "Error: unfortunately Tabview is not available on Windows, so "

@@ -10,7 +10,7 @@ import regex
 # Regular expressions for number formats #
 ##########################################
 
-PATTERN_NUMBER_1: Pattern = regex.compile(
+PATTERN_NUMBER_1: Pattern[str] = regex.compile(
     r"^(?=[+-\.\d])"
     r"[+-]?"
     r"(?:0|[1-9]\d*)?"
@@ -35,11 +35,11 @@ PATTERN_NUMBER_1: Pattern = regex.compile(
     r"$"
 )
 
-PATTERN_NUMBER_2: Pattern = regex.compile(
+PATTERN_NUMBER_2: Pattern[str] = regex.compile(
     r"[+-]?(?:[1-9]|[1-9]\d{0,2})(?:\,\d{3})+\.\d*"
 )
 
-PATTERN_NUMBER_3: Pattern = regex.compile(
+PATTERN_NUMBER_3: Pattern[str] = regex.compile(
     r"[+-]?(?:[1-9]|[1-9]\d{0,2})(?:\.\d{3})+\,\d*"
 )
 
@@ -47,7 +47,7 @@ PATTERN_NUMBER_3: Pattern = regex.compile(
 # Regular expressions for url, email, and ip #
 ##############################################
 
-PATTERN_URL: Pattern = regex.compile(
+PATTERN_URL: Pattern[str] = regex.compile(
     r"("
     r"(https?|ftp):\/\/(?!\-)"
     r")?"
@@ -62,17 +62,17 @@ PATTERN_URL: Pattern = regex.compile(
     r"(\.[a-z]+)?"
 )
 
-PATTERN_EMAIL: Pattern = regex.compile(
+PATTERN_EMAIL: Pattern[str] = regex.compile(
     r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 )
 
-PATTERN_IPV4: Pattern = regex.compile(r"(?:\d{1,3}\.){3}\d{1,3}")
+PATTERN_IPV4: Pattern[str] = regex.compile(r"(?:\d{1,3}\.){3}\d{1,3}")
 
 #################################################
 # Regular expressions related to time notations #
 #################################################
 
-PATTERN_TIME_HHMMSSZZ: Pattern = regex.compile(
+PATTERN_TIME_HHMMSSZZ: Pattern[str] = regex.compile(
     r"(0[0-9]|1[0-9]|2[0-3])"
     r":"
     r"([0-5][0-9])"
@@ -84,21 +84,23 @@ PATTERN_TIME_HHMMSSZZ: Pattern = regex.compile(
     r"([0-5][0-9])"
 )
 
-PATTERN_TIME_HHMMSS: Pattern = regex.compile(
+PATTERN_TIME_HHMMSS: Pattern[str] = regex.compile(
     r"(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])"
 )
 
-PATTERN_TIME_HHMM_1: Pattern = regex.compile(
+PATTERN_TIME_HHMM_1: Pattern[str] = regex.compile(
     r"(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])"
 )
 
-PATTERN_TIME_HHMM_2: Pattern = regex.compile(
+PATTERN_TIME_HHMM_2: Pattern[str] = regex.compile(
     r"(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])"
 )
 
-PATTERN_TIME_HH: Pattern = regex.compile(r"(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])")
+PATTERN_TIME_HH: Pattern[str] = regex.compile(
+    r"(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])"
+)
 
-PATTERN_TIME_HMM: Pattern = regex.compile(
+PATTERN_TIME_HMM: Pattern[str] = regex.compile(
     r"([0-9]|1[0-9]|2[0-3]):([0-5][0-9])"
 )
 
@@ -109,7 +111,7 @@ PATTERN_TIME_HMM: Pattern = regex.compile(
 # Regex for various date formats. See
 # https://github.com/alan-turing-institute/CleverCSV/blob/master/notes/date_regex/dateregex_annotated.txt
 # for an explanation.
-PATTERN_DATE: Pattern = regex.compile(
+PATTERN_DATE: Pattern[str] = regex.compile(
     r"("
     r"(0[1-9]|1[0-2])"
     r"("
@@ -238,7 +240,7 @@ QUOTED_SPECIALS_ALLOWED: List[str] = [
 ALPHANUM_SPECIALS: str = regex.escape(r"".join(SPECIALS_ALLOWED))
 
 # Regex for alphanumeric text
-PATTERN_ALPHANUM: Pattern = regex.compile(
+PATTERN_ALPHANUM: Pattern[str] = regex.compile(
     r"("
     r"\p{N}?\p{L}+"
     r"["
@@ -254,7 +256,7 @@ ALPANUM_QUOTED_SPECIALS: str = regex.escape(
     r"".join(SPECIALS_ALLOWED) + r"".join(QUOTED_SPECIALS_ALLOWED)
 )
 # Regex for alphanumeric text in quoted strings
-PATTERN_ALPHANUM_QUOTED: Pattern = regex.compile(
+PATTERN_ALPHANUM_QUOTED: Pattern[str] = regex.compile(
     r"("
     r"\p{N}?\p{L}+"
     r"["
@@ -270,13 +272,13 @@ PATTERN_ALPHANUM_QUOTED: Pattern = regex.compile(
 # Regular expression for currency #
 ###################################
 
-PATTERN_CURRENCY: Pattern = regex.compile(r"\p{Sc}\s?(.*)")
+PATTERN_CURRENCY: Pattern[str] = regex.compile(r"\p{Sc}\s?(.*)")
 
 #####################################
 # Regular expression for unix paths #
 #####################################
 
-PATTERN_UNIX_PATH: Pattern = regex.compile(
+PATTERN_UNIX_PATH: Pattern[str] = regex.compile(
     r"[~.]?(?:\/[a-zA-Z0-9\.\-\_]+)+\/?"
 )
 
@@ -284,7 +286,7 @@ PATTERN_UNIX_PATH: Pattern = regex.compile(
 # Map of regular expresions for type detection #
 ################################################
 
-DEFAULT_TYPE_REGEXES: Dict[str, Pattern] = {
+DEFAULT_TYPE_REGEXES: Dict[str, Pattern[str]] = {
     "number_1": PATTERN_NUMBER_1,
     "number_2": PATTERN_NUMBER_2,
     "number_3": PATTERN_NUMBER_3,

@@ -12,6 +12,10 @@ import itertools
 import unicodedata
 
 from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Set
 
 from ._regexes import PATTERN_URL
 from .dialect import SimpleDialect
@@ -20,8 +24,11 @@ from .utils import pairwise
 
 
 def get_dialects(
-    data, encoding="UTF-8", delimiters=None, test_masked_by_quotes=False
-):
+    data: str,
+    encoding: str = "UTF-8",
+    delimiters: Optional[List[str]] = None,
+    test_masked_by_quotes: bool = False,
+) -> List[SimpleDialect]:
     """Return the possible dialects for the given data.
 
     We consider as escape characters those characters for which
@@ -56,7 +63,7 @@ def get_dialects(
 
     Returns
     -------
-    dialects: list
+    dialects: List[SimpleDialect]
         List of SimpleDialect objects that are considered potential dialects.
 
     """
@@ -97,7 +104,7 @@ def get_dialects(
     return dialects
 
 
-def unicode_category(x, encoding=None):
+def unicode_category(x: str, encoding: str) -> str:
     """Return the Unicode category of a character
 
     Parameters
@@ -118,14 +125,18 @@ def unicode_category(x, encoding=None):
     return unicodedata.category(as_unicode)
 
 
-def filter_urls(data):
+def filter_urls(data: str) -> str:
     """Filter URLs from the data"""
     return PATTERN_URL.sub("U", data)
 
 
 def get_delimiters(
-    data, encoding, delimiters=None, block_cat=None, block_char=None
-):
+    data: str,
+    encoding: str,
+    delimiters: Optional[List[str]] = None,
+    block_cat: Optional[List[str]] = None,
+    block_char: Optional[List[str]] = None,
+) -> Set[str]:
     """Get potential delimiters
 
     The set of potential delimiters is constructed as follows. For each unique
@@ -200,7 +211,9 @@ def get_delimiters(
     return D
 
 
-def get_quotechars(data, quote_chars=None):
+def get_quotechars(
+    data: str, quote_chars: Optional[Iterable[str]] = None
+) -> Set[str]:
     """Get potential quote characters
 
     Quote characters are those that occur in the ``quote_chars`` set and are
@@ -233,7 +246,9 @@ def get_quotechars(data, quote_chars=None):
     return Q
 
 
-def masked_by_quotechar(data, quotechar, escapechar, test_char):
+def masked_by_quotechar(
+    data: str, quotechar: str, escapechar: str, test_char: str
+) -> bool:
     """Test if a character is always masked by quote characters
 
     This function tests if a given character is always within quoted segments

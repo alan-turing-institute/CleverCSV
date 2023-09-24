@@ -95,6 +95,10 @@ def stream_dicts(
             data = fid.read(num_chars) if num_chars else fid.read()
             dialect = Detector().detect(data, verbose=verbose)
             fid.seek(0)
+
+        if dialect is None:
+            raise NoDetectionResult
+
         reader: DictReader = DictReader(fid, dialect=dialect)
         for row in reader:
             yield row
@@ -326,6 +330,10 @@ def read_dataframe(
     with open(filename, "r", newline="", encoding=enc) as fid:
         data = fid.read(num_chars) if num_chars else fid.read()
         dialect = Detector().detect(data)
+
+    if dialect is None:
+        raise NoDetectionResult
+
     csv_dialect = dialect.to_csv_dialect()
 
     # This is used to catch pandas' warnings when a dialect is supplied.
@@ -346,7 +354,7 @@ def detect_dialect(
     verbose: bool = False,
     method: str = "auto",
     skip: bool = True,
-) -> SimpleDialect:
+) -> Optional[SimpleDialect]:
     """Detect the dialect of a CSV file
 
     This is a utility function that simply returns the detected dialect of a
@@ -379,7 +387,7 @@ def detect_dialect(
 
     Returns
     -------
-    dialect : SimpleDialect
+    dialect : Optional[SimpleDialect]
         The detected dialect as a :class:`SimpleDialect`, or None if detection
         failed.
 

@@ -84,57 +84,70 @@ bytearray(b'fake data'),10:35:30,2006-10-27T02:30:45
 "{""fake"": ""json"", ""fake2"":""json2""}",00:02:51,20:04:45-06:00
 """
 
-    def test_detect(self):
+    def test_detect(self) -> None:
         # Adapted from CPython
         detector = Detector()
         dialect = detector.detect(self.sample1)
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, ",")
         self.assertEqual(dialect.quotechar, "")
         self.assertEqual(dialect.escapechar, "")
 
         dialect = detector.detect(self.sample2)
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, ":")
         self.assertEqual(dialect.quotechar, "'")
         self.assertEqual(dialect.escapechar, "")
 
-    def test_delimiters(self):
+    def test_delimiters(self) -> None:
         # Adapted from CPython
         detector = Detector()
         dialect = detector.detect(self.sample3)
+        assert dialect is not None
         self.assertIn(dialect.delimiter, self.sample3)
         dialect = detector.detect(self.sample3, delimiters="?,")
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, "?")
         dialect = detector.detect(self.sample3, delimiters="/,")
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, "/")
         dialect = detector.detect(self.sample4)
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, ";")
         dialect = detector.detect(self.sample5)
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, "\t")
         dialect = detector.detect(self.sample6)
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, "|")
         dialect = detector.detect(self.sample7)
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, "|")
         self.assertEqual(dialect.quotechar, "'")
         dialect = detector.detect(self.sample8)
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, "+")
         dialect = detector.detect(self.sample9)
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, "+")
         self.assertEqual(dialect.quotechar, "'")
         dialect = detector.detect(self.sample10)
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, ",")
         self.assertEqual(dialect.quotechar, "")
         dialect = detector.detect(self.sample11)
+        assert dialect is not None
         self.assertEqual(dialect.delimiter, ",")
         self.assertEqual(dialect.quotechar, '"')
 
-    def test_has_header(self):
+    def test_has_header(self) -> None:
         detector = Detector()
         self.assertEqual(detector.has_header(self.sample1), False)
         self.assertEqual(
             detector.has_header(self.header1 + self.sample1), True
         )
 
-    def test_has_header_regex_special_delimiter(self):
+    def test_has_header_regex_special_delimiter(self) -> None:
         detector = Detector()
         self.assertEqual(detector.has_header(self.sample8), False)
         self.assertEqual(

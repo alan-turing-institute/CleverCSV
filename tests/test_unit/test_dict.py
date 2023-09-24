@@ -3,7 +3,7 @@
 """
 Unit tests for the DictReader and DictWriter classes
 
-Most of these are the same as in CPython, but we also test the cases where 
+Most of these are the same as in CPython, but we also test the cases where
 CleverCSV's behavior differs.
 
 """
@@ -24,13 +24,13 @@ class DictTestCase(unittest.TestCase):
     ############################
     # Start tests from CPython #
 
-    def test_writeheader_return_value(self):
+    def test_writeheader_return_value(self) -> None:
         with tempfile.TemporaryFile("w+", newline="") as fp:
             writer = clevercsv.DictWriter(fp, fieldnames=["f1", "f2", "f3"])
             writeheader_return_value = writer.writeheader()
             self.assertEqual(writeheader_return_value, 10)
 
-    def test_write_simple_dict(self):
+    def test_write_simple_dict(self) -> None:
         with tempfile.TemporaryFile("w+", newline="") as fp:
             writer = clevercsv.DictWriter(fp, fieldnames=["f1", "f2", "f3"])
             writer.writeheader()
@@ -41,7 +41,7 @@ class DictTestCase(unittest.TestCase):
             fp.readline()  # header
             self.assertEqual(fp.read(), "10,,abc\r\n")
 
-    def test_write_multiple_dict_rows(self):
+    def test_write_multiple_dict_rows(self) -> None:
         fp = io.StringIO()
         writer = clevercsv.DictWriter(fp, fieldnames=["f1", "f2", "f3"])
         writer.writeheader()
@@ -54,11 +54,11 @@ class DictTestCase(unittest.TestCase):
         )
         self.assertEqual(fp.getvalue(), "f1,f2,f3\r\n1,abc,f\r\n2,5,xyz\r\n")
 
-    def test_write_no_fields(self):
+    def test_write_no_fields(self) -> None:
         fp = io.StringIO()
         self.assertRaises(TypeError, clevercsv.DictWriter, fp)
 
-    def test_write_fields_not_in_fieldnames(self):
+    def test_write_fields_not_in_fieldnames(self) -> None:
         with tempfile.TemporaryFile("w+", newline="") as fp:
             writer = clevercsv.DictWriter(fp, fieldnames=["f1", "f2", "f3"])
             # Of special note is the non-string key (CPython issue 19449)
@@ -71,7 +71,7 @@ class DictTestCase(unittest.TestCase):
             self.assertNotIn("'f2'", exception)
             self.assertIn("1", exception)
 
-    def test_typo_in_extrasaction_raises_error(self):
+    def test_typo_in_extrasaction_raises_error(self) -> None:
         fp = io.StringIO()
         self.assertRaises(
             ValueError,
@@ -81,7 +81,7 @@ class DictTestCase(unittest.TestCase):
             extrasaction="raised",
         )
 
-    def test_write_field_not_in_field_names_raise(self):
+    def test_write_field_not_in_field_names_raise(self) -> None:
         fp = io.StringIO()
         writer = clevercsv.DictWriter(fp, ["f1", "f2"], extrasaction="raise")
         dictrow = {"f0": 0, "f1": 1, "f2": 2, "f3": 3}
@@ -89,53 +89,55 @@ class DictTestCase(unittest.TestCase):
             ValueError, clevercsv.DictWriter.writerow, writer, dictrow
         )
 
-    def test_write_field_not_in_field_names_ignore(self):
+    def test_write_field_not_in_field_names_ignore(self) -> None:
         fp = io.StringIO()
         writer = clevercsv.DictWriter(fp, ["f1", "f2"], extrasaction="ignore")
         dictrow = {"f0": 0, "f1": 1, "f2": 2, "f3": 3}
         clevercsv.DictWriter.writerow(writer, dictrow)
         self.assertEqual(fp.getvalue(), "1,2\r\n")
 
-    def test_read_dict_fields(self):
+    def test_read_dict_fields(self) -> None:
         with tempfile.TemporaryFile("w+") as fp:
             fp.write("1,2,abc\r\n")
             fp.seek(0)
-            reader = clevercsv.DictReader(fp, fieldnames=["f1", "f2", "f3"])
+            reader: DictReader[str] = clevercsv.DictReader(
+                fp, fieldnames=["f1", "f2", "f3"]
+            )
             self.assertEqual(next(reader), {"f1": "1", "f2": "2", "f3": "abc"})
 
-    def test_read_dict_no_fieldnames(self):
+    def test_read_dict_no_fieldnames(self) -> None:
         with tempfile.TemporaryFile("w+") as fp:
             fp.write("f1,f2,f3\r\n1,2,abc\r\n")
             fp.seek(0)
-            reader: DictReader = clevercsv.DictReader(fp)
+            reader: DictReader[str] = clevercsv.DictReader(fp)
             self.assertEqual(next(reader), {"f1": "1", "f2": "2", "f3": "abc"})
             self.assertEqual(reader.fieldnames, ["f1", "f2", "f3"])
 
     # Two test cases to make sure existing ways of implicitly setting
     # fieldnames continue to work.  Both arise from discussion in issue3436.
-    def test_read_dict_fieldnames_from_file(self):
+    def test_read_dict_fieldnames_from_file(self) -> None:
         with tempfile.TemporaryFile("w+") as fp:
             fp.write("f1,f2,f3\r\n1,2,abc\r\n")
             fp.seek(0)
-            reader = clevercsv.DictReader(
+            reader: DictReader[str] = clevercsv.DictReader(
                 fp, fieldnames=next(clevercsv.reader(fp))
             )
             self.assertEqual(reader.fieldnames, ["f1", "f2", "f3"])
             self.assertEqual(next(reader), {"f1": "1", "f2": "2", "f3": "abc"})
 
-    def test_read_dict_fieldnames_chain(self):
+    def test_read_dict_fieldnames_chain(self) -> None:
         import itertools
 
         with tempfile.TemporaryFile("w+") as fp:
             fp.write("f1,f2,f3\r\n1,2,abc\r\n")
             fp.seek(0)
-            reader: DictReader = clevercsv.DictReader(fp)
+            reader: DictReader[str] = clevercsv.DictReader(fp)
             first = next(reader)
             for row in itertools.chain([first], reader):
                 self.assertEqual(reader.fieldnames, ["f1", "f2", "f3"])
                 self.assertEqual(row, {"f1": "1", "f2": "2", "f3": "abc"})
 
-    def test_read_long(self):
+    def test_read_long(self) -> None:
         with tempfile.TemporaryFile("w+") as fp:
             fp.write("1,2,abc,4,5,6\r\n")
             fp.seek(0)
@@ -145,7 +147,7 @@ class DictTestCase(unittest.TestCase):
                 {"f1": "1", "f2": "2", None: ["abc", "4", "5", "6"]},
             )
 
-    def test_read_long_with_rest(self):
+    def test_read_long_with_rest(self) -> None:
         with tempfile.TemporaryFile("w+") as fp:
             fp.write("1,2,abc,4,5,6\r\n")
             fp.seek(0)
@@ -157,18 +159,18 @@ class DictTestCase(unittest.TestCase):
                 {"f1": "1", "f2": "2", "_rest": ["abc", "4", "5", "6"]},
             )
 
-    def test_read_long_with_rest_no_fieldnames(self):
+    def test_read_long_with_rest_no_fieldnames(self) -> None:
         with tempfile.TemporaryFile("w+") as fp:
             fp.write("f1,f2\r\n1,2,abc,4,5,6\r\n")
             fp.seek(0)
-            reader: DictReader = clevercsv.DictReader(fp, restkey="_rest")
+            reader: DictReader[str] = clevercsv.DictReader(fp, restkey="_rest")
             self.assertEqual(reader.fieldnames, ["f1", "f2"])
             self.assertEqual(
                 next(reader),
                 {"f1": "1", "f2": "2", "_rest": ["abc", "4", "5", "6"]},
             )
 
-    def test_read_short(self):
+    def test_read_short(self) -> None:
         with tempfile.TemporaryFile("w+") as fp:
             fp.write("1,2,abc,4,5,6\r\n1,2,abc\r\n")
             fp.seek(0)
@@ -191,7 +193,7 @@ class DictTestCase(unittest.TestCase):
                 },
             )
 
-    def test_read_multi(self):
+    def test_read_multi(self) -> None:
         sample = [
             "2147483648,43.0e12,17,abc,def\r\n",
             "147483648,43.0e2,17,abc,def\r\n",
@@ -212,7 +214,7 @@ class DictTestCase(unittest.TestCase):
             },
         )
 
-    def test_read_with_blanks(self):
+    def test_read_with_blanks(self) -> None:
         reader = clevercsv.DictReader(
             ["1,2,abc,4,5,6\r\n", "\r\n", "1,2,abc,4,5,6\r\n"],
             fieldnames="1 2 3 4 5 6".split(),
@@ -226,7 +228,7 @@ class DictTestCase(unittest.TestCase):
             {"1": "1", "2": "2", "3": "abc", "4": "4", "5": "5", "6": "6"},
         )
 
-    def test_read_semi_sep(self):
+    def test_read_semi_sep(self) -> None:
         reader = clevercsv.DictReader(
             ["1;2;abc;4;5;6\r\n"],
             fieldnames="1 2 3 4 5 6".split(),
@@ -243,8 +245,8 @@ class DictTestCase(unittest.TestCase):
     ###################################
     # Start tests added for CleverCSV #
 
-    def test_read_duplicate_fieldnames(self):
-        reader: DictReader = clevercsv.DictReader(
+    def test_read_duplicate_fieldnames(self) -> None:
+        reader: DictReader[str] = clevercsv.DictReader(
             ["f1,f2,f1\r\n", "a", "b", "c"]
         )
         with self.assertWarns(UserWarning):
