@@ -92,7 +92,7 @@ def worker(
             t = time.time()
             return_dict["dialect"] = det.detect(data, **kwargs)
             return_dict["runtime"] = time.time() - t
-            return_dict["method"] = det.method_
+            return_dict["method"] = det.method_.value
         except clevercsv.Error:
             return_dict["error"] = True
 

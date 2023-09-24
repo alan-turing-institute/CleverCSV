@@ -117,7 +117,7 @@ class Detector:
                 sample, delimiters=delimiters, verbose=verbose
             )
             if dialect is not None:
-                self.method_ = "normal"
+                self.method_ = DetectionMethod.NORMAL
                 return dialect
 
         self.method_ = DetectionMethod.CONSISTENCY
