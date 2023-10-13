@@ -70,8 +70,13 @@ class StandardizeCommand(Command):
             default=[],
         )
         self.add_argument(
-            "-c",
-            "--convert_encoding",
+            "-E",
+            "--target_encoding",
+            help="Set the encoding of the output file(s)",
+            description=(
+                "If ommited, the output file encoding while be the same "
+                "as that of the original file."            
+            ),
             type=str
         )
         self.add_argument(
@@ -120,7 +125,7 @@ class StandardizeCommand(Command):
         encodings = self.args.encoding
         num_chars = parse_int(self.args.num_chars, "num-chars")
         in_place = self.args.in_place
-        target_encoding = self.args.convert_encoding
+        target_encoding = self.args.target_encoding
 
         if in_place and outputs:
             print(
