@@ -183,6 +183,7 @@ class StandardizeCommand(Command):
         target_encoding: Optional[str] = None
     ) -> int:
         encoding = encoding or get_encoding(path)
+        target_encoding = target_encoding or encoding
         dialect = detect_dialect(
             path, num_chars=num_chars, encoding=encoding, verbose=verbose
         )
@@ -193,7 +194,7 @@ class StandardizeCommand(Command):
         if self.args.in_place:
             return self._in_place(path, dialect, encoding, target_encoding)
         elif output is None:
-            return self._to_stdout(path, dialect, encoding, target_encoding)
+            return self._to_stdout(path, dialect, encoding)
         return self._to_file(path, output, dialect, encoding, target_encoding)
 
     def _write_transposed(
@@ -201,14 +202,13 @@ class StandardizeCommand(Command):
         path: StrPath,
         stream: SupportsWrite[str],
         dialect: SimpleDialect,
-        encoding: Optional[str],
-        target_encoding: Optional[str]
+        encoding: Optional[str]
     ) -> None:
         with open(path, "r", newline="", encoding=encoding) as fp:
             read = reader(fp, dialect=dialect)
             rows = list(read)
         rows = list(map(list, zip(*rows)))
-        write = writer(stream, dialect="excel", encoding=target_encoding or encoding)
+        write = writer(stream, dialect="excel")
         for row in rows:
             write.writerow(row)
 
@@ -217,12 +217,11 @@ class StandardizeCommand(Command):
         path: StrPath,
         stream: SupportsWrite[str],
         dialect: SimpleDialect,
-        encoding: Optional[str],
-        target_encoding: Optional[str]
+        encoding: Optional[str]
     ) -> None:
         with open(path, "r", newline="", encoding=encoding) as fp:
             read = reader(fp, dialect=dialect)
-            write = writer(stream, dialect="excel", encoding=target_encoding or encoding)
+            write = writer(stream, dialect="excel")
             for row in read:
                 write.writerow(row)
 
@@ -231,13 +230,12 @@ class StandardizeCommand(Command):
         path: StrPath,
         stream: SupportsWrite[str],
         dialect: SimpleDialect,
-        encoding: Optional[str],
-        target_encoding: Optional[str]
+        encoding: Optional[str]
     ) -> None:
         if self.args.transpose:
-            self._write_transposed(path, stream, dialect, encoding, target_encoding)
+            self._write_transposed(path, stream, dialect, encoding)
         else:
-            self._write_direct(path, stream, dialect, encoding, target_encoding)
+            self._write_direct(path, stream, dialect, encoding)
 
     def _in_place(
         self, path: StrPath, dialect: SimpleDialect, encoding: Optional[str], target_encoding: Optional[str]
@@ -251,8 +249,8 @@ class StandardizeCommand(Command):
 
         """
         tmpfd, tmpfname = tempfile.mkstemp(prefix="clevercsv_", suffix=".csv")
-        tmpid = os.fdopen(tmpfd, "w", newline="", encoding=target_encoding or encoding)
-        self._write_to_stream(path, tmpid, dialect, encoding, target_encoding)
+        tmpid = os.fdopen(tmpfd, "w", newline="", encoding=target_encoding)
+        self._write_to_stream(path, tmpid, dialect, encoding)
         tmpid.close()
 
         previous_sha1 = sha1sum(path)
@@ -265,10 +263,10 @@ class StandardizeCommand(Command):
         return 2
 
     def _to_stdout(
-        self, path: StrPath, dialect: SimpleDialect, encoding: Optional[str], target_encoding: Optional[str]
+        self, path: StrPath, dialect: SimpleDialect, encoding: Optional[str]
     ) -> int:
         stream = io.StringIO(newline="")
-        self._write_to_stream(path, stream, dialect, encoding, target_encoding)
+        self._write_to_stream(path, stream, dialect, encoding)
         print(stream.getvalue(), end="")
         stream.close()
         return 0
@@ -281,6 +279,6 @@ class StandardizeCommand(Command):
         encoding: Optional[str],
         target_encoding: Optional[str]
     ) -> int:
-        with open(output, "w", newline="", encoding=target_encoding or encoding) as fp:
-            self._write_to_stream(path, fp, dialect, encoding, target_encoding)
+        with open(output, "w", newline="", encoding=target_encoding) as fp:
+            self._write_to_stream(path, fp, dialect, encoding)
         return 0
