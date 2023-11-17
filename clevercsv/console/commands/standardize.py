@@ -202,7 +202,7 @@ class StandardizeCommand(Command):
         path: StrPath,
         stream: SupportsWrite[str],
         dialect: SimpleDialect,
-        encoding: Optional[str]
+        encoding: Optional[str],
     ) -> None:
         with open(path, "r", newline="", encoding=encoding) as fp:
             read = reader(fp, dialect=dialect)
@@ -217,7 +217,7 @@ class StandardizeCommand(Command):
         path: StrPath,
         stream: SupportsWrite[str],
         dialect: SimpleDialect,
-        encoding: Optional[str]
+        encoding: Optional[str],
     ) -> None:
         with open(path, "r", newline="", encoding=encoding) as fp:
             read = reader(fp, dialect=dialect)
@@ -230,7 +230,7 @@ class StandardizeCommand(Command):
         path: StrPath,
         stream: SupportsWrite[str],
         dialect: SimpleDialect,
-        encoding: Optional[str]
+        encoding: Optional[str],
     ) -> None:
         if self.args.transpose:
             self._write_transposed(path, stream, dialect, encoding)
