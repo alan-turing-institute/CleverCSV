@@ -665,3 +665,21 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         finally:
             os.unlink(tmpfname)
             os.unlink(tmpoutname)
+
+    def test_standardize_target_encoding_raise_UnicodeEncodeError(self) -> None:
+        table: TableType = [["Å", "B", "C"], ['é', 'ü', '中'], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        encoding='utf-8'
+        tmpfname = self._build_file(table, dialect, encoding=encoding)
+
+        tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
+        os.close(tmpfd)
+
+        application = build_application()
+        tester = Tester(application)
+        try :
+            with self.assertRaises(UnicodeEncodeError):
+                tester.test_command("standardize", ["-o", tmpoutname, '-E', 'latin-1', tmpfname])
+        finally:
+            os.unlink(tmpfname)
+            os.unlink(tmpoutname)
