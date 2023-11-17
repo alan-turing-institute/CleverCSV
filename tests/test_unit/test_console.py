@@ -640,3 +640,28 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
                 self.assertEqual(contents, exp)
         finally:
             any(map(os.unlink, tmpfnames))
+
+    def test_standardize_target_encoding(self) -> None:
+        table: TableType = [["Å", "B", "C"], ['é', 'ü', '中'], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        encoding='utf-8'
+        tmpfname = self._build_file(table, dialect, encoding=encoding)
+
+        tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
+        os.close(tmpfd)
+
+        application = build_application()
+        tester = Tester(application)
+        tester.test_command("standardize", ["-o", tmpoutname, '-E', 'utf-8', tmpfname])
+
+        # Excel format (i.e. RFC4180) *requires* CRLF
+        crlf = "\r\n"
+        exp = crlf.join(["Å,B,C", "é,ü,中", "4,5,6", ""])
+        with open(tmpoutname, "r", newline="") as fp:
+            output = fp.read()
+
+        try:
+            self.assertEqual(exp, output)
+        finally:
+            os.unlink(tmpfname)
+            os.unlink(tmpoutname)
