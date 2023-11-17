@@ -71,7 +71,7 @@ class StandardizeCommand(Command):
         )
         self.add_argument(
             "-E",
-            "--target_encoding",
+            "--target-encoding",
             help="Set the encoding of the output file(s)",
             description=(
                 "If ommited, the output file encoding while be the same "
