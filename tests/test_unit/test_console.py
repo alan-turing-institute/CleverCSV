@@ -21,6 +21,7 @@ from clevercsv import __version__
 from clevercsv._types import _DialectLike
 from clevercsv.console import build_application
 from clevercsv.dialect import SimpleDialect
+from clevercsv.encoding import get_encoding
 from clevercsv.write import writer
 
 TableType = List[List[Any]]
@@ -671,7 +672,7 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         encoding='latin-1'
         tmpfname = self._build_file(table, dialect, encoding=encoding)
-
+        self.assertEqual("ISO-8859-1", get_encoding(tmpfname, try_cchardet=False))
         tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         os.close(tmpfd)
 
@@ -682,14 +683,19 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         # Excel format (i.e. RFC4180) *requires* CRLF
         crlf = "\r\n"
         exp = crlf.join(["A,B,C", "é,è,à", "4,5,6", ""])
+        
+        self.assertEqual("utf-8", get_encoding(tmpoutname, try_cchardet=False))
         with open(tmpoutname, "r", newline="") as fp:
             output = fp.read()
 
         try:
             self.assertEqual(exp, output)
+
         finally:
             os.unlink(tmpfname)
             os.unlink(tmpoutname)
+            
+
 
     def test_standardize_target_encoding_raise_UnicodeEncodeError(self) -> None:
         table: TableType = [["Å", "B", "C"], ['é', 'ü', '中'], [4, 5, 6]]
