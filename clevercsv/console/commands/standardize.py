@@ -75,9 +75,9 @@ class StandardizeCommand(Command):
             help="Set the encoding of the output file(s)",
             description=(
                 "If ommited, the output file encoding while be the same "
-                "as that of the original file."            
+                "as that of the original file."
             ),
-            type=str
+            type=str,
         )
         self.add_argument(
             "-i",
@@ -165,7 +165,7 @@ class StandardizeCommand(Command):
                 encoding=encoding,
                 verbose=verbose,
                 num_chars=num_chars,
-                target_encoding=target_encoding
+                target_encoding=target_encoding,
             )
             if retval > 0 and global_retval == 0:
                 global_retval = retval
@@ -180,7 +180,7 @@ class StandardizeCommand(Command):
         encoding: Optional[str] = None,
         num_chars: Optional[int] = None,
         verbose: bool = False,
-        target_encoding: Optional[str] = None
+        target_encoding: Optional[str] = None,
     ) -> int:
         encoding = encoding or get_encoding(path)
         target_encoding = target_encoding or encoding
@@ -238,7 +238,11 @@ class StandardizeCommand(Command):
             self._write_direct(path, stream, dialect, encoding)
 
     def _in_place(
-        self, path: StrPath, dialect: SimpleDialect, encoding: Optional[str], target_encoding: Optional[str]
+        self,
+        path: StrPath,
+        dialect: SimpleDialect,
+        encoding: Optional[str],
+        target_encoding: Optional[str],
     ) -> int:
         """In-place mode overwrites the input file, if necessary
 
@@ -277,7 +281,7 @@ class StandardizeCommand(Command):
         output: StrPath,
         dialect: SimpleDialect,
         encoding: Optional[str],
-        target_encoding: Optional[str]
+        target_encoding: Optional[str],
     ) -> int:
         with open(output, "w", newline="", encoding=target_encoding) as fp:
             self._write_to_stream(path, fp, dialect, encoding)
