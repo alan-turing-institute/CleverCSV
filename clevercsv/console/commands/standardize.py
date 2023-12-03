@@ -70,6 +70,16 @@ class StandardizeCommand(Command):
             default=[],
         )
         self.add_argument(
+            "-E",
+            "--target-encoding",
+            help="Set the encoding of the output file(s)",
+            description=(
+                "If ommited, the output file encoding while be the same "
+                "as that of the original file."
+            ),
+            type=str,
+        )
+        self.add_argument(
             "-i",
             "--in-place",
             help="Standardize and overwrite the input file(s)",
@@ -115,6 +125,7 @@ class StandardizeCommand(Command):
         encodings = self.args.encoding
         num_chars = parse_int(self.args.num_chars, "num-chars")
         in_place = self.args.in_place
+        target_encoding = self.args.target_encoding
 
         if in_place and outputs:
             print(
@@ -154,6 +165,7 @@ class StandardizeCommand(Command):
                 encoding=encoding,
                 verbose=verbose,
                 num_chars=num_chars,
+                target_encoding=target_encoding,
             )
             if retval > 0 and global_retval == 0:
                 global_retval = retval
@@ -168,8 +180,10 @@ class StandardizeCommand(Command):
         encoding: Optional[str] = None,
         num_chars: Optional[int] = None,
         verbose: bool = False,
+        target_encoding: Optional[str] = None,
     ) -> int:
         encoding = encoding or get_encoding(path)
+        target_encoding = target_encoding or encoding
         dialect = detect_dialect(
             path, num_chars=num_chars, encoding=encoding, verbose=verbose
         )
@@ -178,10 +192,10 @@ class StandardizeCommand(Command):
             return 1
 
         if self.args.in_place:
-            return self._in_place(path, dialect, encoding)
+            return self._in_place(path, dialect, encoding, target_encoding)
         elif output is None:
             return self._to_stdout(path, dialect, encoding)
-        return self._to_file(path, output, dialect, encoding)
+        return self._to_file(path, output, dialect, encoding, target_encoding)
 
     def _write_transposed(
         self,
@@ -224,7 +238,11 @@ class StandardizeCommand(Command):
             self._write_direct(path, stream, dialect, encoding)
 
     def _in_place(
-        self, path: StrPath, dialect: SimpleDialect, encoding: Optional[str]
+        self,
+        path: StrPath,
+        dialect: SimpleDialect,
+        encoding: Optional[str],
+        target_encoding: Optional[str],
     ) -> int:
         """In-place mode overwrites the input file, if necessary
 
@@ -235,7 +253,7 @@ class StandardizeCommand(Command):
 
         """
         tmpfd, tmpfname = tempfile.mkstemp(prefix="clevercsv_", suffix=".csv")
-        tmpid = os.fdopen(tmpfd, "w", newline="", encoding=encoding)
+        tmpid = os.fdopen(tmpfd, "w", newline="", encoding=target_encoding)
         self._write_to_stream(path, tmpid, dialect, encoding)
         tmpid.close()
 
@@ -263,7 +281,8 @@ class StandardizeCommand(Command):
         output: StrPath,
         dialect: SimpleDialect,
         encoding: Optional[str],
+        target_encoding: Optional[str],
     ) -> int:
-        with open(output, "w", newline="", encoding=encoding) as fp:
+        with open(output, "w", newline="", encoding=target_encoding) as fp:
             self._write_to_stream(path, fp, dialect, encoding)
         return 0

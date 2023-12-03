@@ -21,6 +21,7 @@ from clevercsv import __version__
 from clevercsv._types import _DialectLike
 from clevercsv.console import build_application
 from clevercsv.dialect import SimpleDialect
+from clevercsv.encoding import get_encoding
 from clevercsv.write import writer
 
 TableType = List[List[Any]]
@@ -640,3 +641,86 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
                 self.assertEqual(contents, exp)
         finally:
             any(map(os.unlink, tmpfnames))
+
+    def test_standardize_target_encoding(self) -> None:
+        table: TableType = [["Å", "B", "C"], ["é", "ü", "中"], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        encoding = "utf-8"
+        tmpfname = self._build_file(table, dialect, encoding=encoding)
+
+        tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
+        os.close(tmpfd)
+
+        application = build_application()
+        tester = Tester(application)
+        tester.test_command(
+            "standardize", ["-o", tmpoutname, "-E", "utf-8", tmpfname]
+        )
+
+        # Excel format (i.e. RFC4180) *requires* CRLF
+        crlf = "\r\n"
+        exp = crlf.join(["Å,B,C", "é,ü,中", "4,5,6", ""])
+        with open(tmpoutname, "r", newline="", encoding="utf-8") as fp:
+            output = fp.read()
+
+        try:
+            self.assertEqual(exp, output)
+        finally:
+            os.unlink(tmpfname)
+            os.unlink(tmpoutname)
+
+    def test_standardize_target_encoding2(self) -> None:
+        table: TableType = [["A", "B", "C"], ["é", "è", "à"], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        encoding = "latin-1"
+        tmpfname = self._build_file(table, dialect, encoding=encoding)
+        self.assertEqual(
+            "ISO-8859-1", get_encoding(tmpfname, try_cchardet=False)
+        )
+        tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
+        os.close(tmpfd)
+
+        application = build_application()
+        tester = Tester(application)
+        tester.test_command(
+            "standardize",
+            ["-o", tmpoutname, "-e", "latin-1", "-E", "utf-8", tmpfname],
+        )
+
+        # Excel format (i.e. RFC4180) *requires* CRLF
+        crlf = "\r\n"
+        exp = crlf.join(["A,B,C", "é,è,à", "4,5,6", ""])
+
+        self.assertEqual("utf-8", get_encoding(tmpoutname, try_cchardet=False))
+        with open(tmpoutname, "r", newline="", encoding="utf-8") as fp:
+            output = fp.read()
+
+        try:
+            self.assertEqual(exp, output)
+
+        finally:
+            os.unlink(tmpfname)
+            os.unlink(tmpoutname)
+
+    def test_standardize_target_encoding_raise_UnicodeEncodeError(
+        self,
+    ) -> None:
+        table: TableType = [["Å", "B", "C"], ["é", "ü", "中"], [4, 5, 6]]
+        dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
+        encoding = "utf-8"
+        tmpfname = self._build_file(table, dialect, encoding=encoding)
+
+        tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
+        os.close(tmpfd)
+
+        application = build_application()
+        tester = Tester(application)
+        try:
+            with self.assertRaises(UnicodeEncodeError):
+                tester.test_command(
+                    "standardize",
+                    ["-o", tmpoutname, "-E", "latin-1", tmpfname],
+                )
+        finally:
+            os.unlink(tmpfname)
+            os.unlink(tmpoutname)
