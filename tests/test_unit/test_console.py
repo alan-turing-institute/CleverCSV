@@ -660,7 +660,7 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         # Excel format (i.e. RFC4180) *requires* CRLF
         crlf = "\r\n"
         exp = crlf.join(["Å,B,C", "é,ü,中", "4,5,6", ""])
-        with open(tmpoutname, "r", newline="") as fp:
+        with open(tmpoutname, "r", newline="", encoding="utf-8") as fp:
             output = fp.read()
 
         try:
@@ -692,7 +692,7 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         exp = crlf.join(["A,B,C", "é,è,à", "4,5,6", ""])
 
         self.assertEqual("utf-8", get_encoding(tmpoutname, try_cchardet=False))
-        with open(tmpoutname, "r", newline="") as fp:
+        with open(tmpoutname, "r", newline="", encoding="utf-8") as fp:
             output = fp.read()
 
         try:
