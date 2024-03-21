@@ -4,8 +4,8 @@
 Detect the dialect with very strict functional tests.
 
 This module uses so-called "normal forms" to detect the dialect of CSV files.
-Normal forms are detected with strict functional tests. The normal forms are 
-used as a pre-test to check if files are simple enough that computing the data 
+Normal forms are detected with strict functional tests. The normal forms are
+used as a pre-test to check if files are simple enough that computing the data
 consistency measure is not necessary.
 
 Author: Gertjan van den Burg
@@ -62,7 +62,7 @@ def detect_dialect_normal(
             return None
 
     form_and_dialect: List[
-        Tuple[int, Callable[[str, SimpleDialect], bool], SimpleDialect]
+        Tuple[int, Callable[[List[str], SimpleDialect], bool], SimpleDialect]
     ] = []
 
     for delim in delimiters:
@@ -90,8 +90,10 @@ def detect_dialect_normal(
         )
     )
 
+    rows = split_file(data)
+
     for ID, form_func, dialect in form_and_dialect:
-        if form_func(data, dialect):
+        if form_func(rows, dialect):
             if verbose:
                 print("Matched normal form %i." % ID)
             return dialect
@@ -169,18 +171,27 @@ def every_row_has_delim(rows: List[str], dialect: SimpleDialect) -> bool:
     return True
 
 
+def every_row_has_delim_and_is_the_same_length(
+    rows: List[str], dialect: SimpleDialect
+) -> bool:
+    assert dialect.delimiter is not None
+    if len(rows) == 0:
+        return False
+
+    first_len = len(split_row(rows[0], dialect))
+    for row in rows:
+        if not has_delimiter(row, dialect.delimiter):
+            return False
+        if len(split_row(row, dialect)) != first_len:
+            return False
+    return True
+
+
 def is_elementary(cell: str) -> bool:
     return (
         regex.fullmatch(r"[a-zA-Z0-9\.\_\&\-\@\+\%\(\)\ \/]+", cell)
         is not None
     )
-
-
-def even_rows(rows: List[str], dialect: SimpleDialect) -> bool:
-    cells_per_row = set()
-    for row in rows:
-        cells_per_row.add(len(split_row(row, dialect)))
-    return len(cells_per_row) == 1
 
 
 def split_file(data: str) -> List[str]:
@@ -219,16 +230,12 @@ def split_row(row: str, dialect: SimpleDialect) -> List[str]:
     return cells
 
 
-def is_form_1(data: str, dialect: SimpleDialect) -> bool:
+def is_form_1(rows: List[str], dialect: SimpleDialect) -> bool:
     # All cells quoted, quoted empty allowed, no nested quotes, more than one
     # column
     assert dialect.quotechar is not None
 
-    rows = split_file(data)
-
-    if not every_row_has_delim(rows, dialect):
-        return False
-    if not even_rows(rows, dialect):
+    if not every_row_has_delim_and_is_the_same_length(rows, dialect):
         return False
 
     for row in rows:
@@ -251,14 +258,9 @@ def is_form_1(data: str, dialect: SimpleDialect) -> bool:
     return True
 
 
-def is_form_2(data: str, dialect: SimpleDialect) -> bool:
+def is_form_2(rows: List[str], dialect: SimpleDialect) -> bool:
     # All unquoted, empty allowed, all elementary
-
-    rows = split_file(data)
-
-    if not every_row_has_delim(rows, dialect):
-        return False
-    if not even_rows(rows, dialect):
+    if not every_row_has_delim_and_is_the_same_length(rows, dialect):
         return False
 
     for row in rows:
@@ -278,15 +280,11 @@ def is_form_2(data: str, dialect: SimpleDialect) -> bool:
     return True
 
 
-def is_form_3(data: str, dialect: SimpleDialect) -> bool:
+def is_form_3(rows: List[str], dialect: SimpleDialect) -> bool:
     # some quoted, some not quoted, no empty, no nested quotes
     assert dialect.quotechar is not None
 
-    rows = split_file(data)
-
-    if not every_row_has_delim(rows, dialect):
-        return False
-    if not even_rows(rows, dialect):
+    if not every_row_has_delim_and_is_the_same_length(rows, dialect):
         return False
     if len(rows) <= 1:
         return False
@@ -315,11 +313,9 @@ def is_form_3(data: str, dialect: SimpleDialect) -> bool:
     return True
 
 
-def is_form_4(data: str, dialect: SimpleDialect) -> bool:
+def is_form_4(rows: List[str], dialect: SimpleDialect) -> bool:
     # no delim, single column (either entirely quoted or entirely unquoted)
     assert dialect.quotechar is not None
-
-    rows = split_file(data)
 
     if len(rows) <= 1:
         return False
@@ -342,12 +338,9 @@ def is_form_4(data: str, dialect: SimpleDialect) -> bool:
     return True
 
 
-def is_form_5(data: str, dialect: SimpleDialect) -> bool:
+def is_form_5(rows: List[str], dialect: SimpleDialect) -> bool:
     # all rows quoted, no nested quotes
     # basically form 2 but with quotes around each row
-
-    rows = split_file(data)
-
     if not every_row_has_delim(rows, dialect):
         return False
     if len(rows) <= 1:
@@ -365,4 +358,4 @@ def is_form_5(data: str, dialect: SimpleDialect) -> bool:
     for row in rows:
         newrows.append(row[1:-1])
 
-    return is_form_2("\n".join(newrows), dialect)
+    return is_form_2(newrows, dialect)
