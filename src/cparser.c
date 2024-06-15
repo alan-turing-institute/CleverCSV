@@ -698,7 +698,7 @@ static struct PyMethodDef cparser_methods[] = {
 
 static struct PyModuleDef _cparsermodule = {
 	PyModuleDef_HEAD_INIT,
-	"ccsv.cparser",
+	"clevercsv.cparser",
 	cparser_module_doc,
 	sizeof(_cparserstate),
 	cparser_methods,
@@ -727,7 +727,7 @@ PyMODINIT_FUNC PyInit_cparser(void)
 
 
 	/* Add the CSV exception object to the module. */
-	_cparserstate(module)->error_obj = PyErr_NewException("cparser.Error", NULL, NULL);
+	_cparserstate(module)->error_obj = PyErr_NewException("clevercsv.cparser.Error", NULL, NULL);
 	if (_cparserstate(module)->error_obj == NULL)
 		return NULL;
 	Py_INCREF(_cparserstate(module)->error_obj);

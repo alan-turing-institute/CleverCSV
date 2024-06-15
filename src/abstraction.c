@@ -290,7 +290,7 @@ static struct PyMethodDef cabstraction_methods[] = {
 
 static struct PyModuleDef moduledef = {
 	PyModuleDef_HEAD_INIT,
-	"ccsv.cabstraction",
+	"clevercsv.cabstraction",
 	cabstraction_module_doc,
 	-1,
 	cabstraction_methods,
