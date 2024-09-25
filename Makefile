@@ -124,3 +124,10 @@ clean: clean_venv ## Clean build dist and egg directories left after install
 	rm -f ./man/*
 	find . -type f -iname '*.pyc' -delete
 	find . -type d -name '__pycache__' -empty -delete
+
+
+# Testing
+#
+gh130: venv
+	source $(VENV_DIR)/bin/activate && \
+		python -m unittest -k '*github_issue_130' tests/test_unit/test_reader.py

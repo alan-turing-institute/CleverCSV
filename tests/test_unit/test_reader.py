@@ -7,7 +7,11 @@ Author: Gertjan van den Burg
 
 """
 
+import csv
+import json
 import unittest
+
+from io import StringIO
 
 from typing import Any
 from typing import Iterable
@@ -170,6 +174,47 @@ class ReaderTestCase(unittest.TestCase):
             [['A"B\nB\rB"C'], ['D"E"F'], ["G"]],
             delimiter="",
             quotechar='"',
+        )
+
+    def test_github_issue_130(self) -> None:
+        # fmt: off
+        data = """sku,features,attributes
+22221,"[{""key"":""heel_height"",""value"":""Ulttra High (4\\""+)""}]","11,room"
+"""
+        # fmt: on
+
+        # NOTE we set the escapechar to None to correctly carry over the `\`
+        # escape character
+        rows_csv = list(
+            csv.reader(
+                StringIO(data), delimiter=",", quotechar='"', escapechar=None
+            )
+        )
+        expected = [
+            [
+                "sku",
+                "features",
+                "attributes",
+            ],
+            [
+                "22221",
+                '[{"key":"heel_height","value":"Ulttra High (4\\"+)"}]',
+                "11,room",
+            ],
+        ]
+        self.assertSequenceEqual(expected, rows_csv)
+
+        rows_clevercsv = list(
+            clevercsv.reader(
+                StringIO(data), delimiter=",", quotechar='"', escapechar=""
+            )
+        )
+        self.assertSequenceEqual(expected, rows_clevercsv)
+
+        # Ensure we can parse the JSON as intended.
+        cell = json.loads(expected[1][1])
+        self.assertEqual(
+            cell, [{"key": "heel_height", "value": 'Ulttra High (4"+)'}]
         )
 
 

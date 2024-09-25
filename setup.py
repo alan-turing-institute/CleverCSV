@@ -48,6 +48,7 @@ dev_require = [
     # "pythonfuzz",
     "pytest>=2.6",
     "termcolor",
+    "mypy",
 ]
 
 # What packages are optional?
