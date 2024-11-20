@@ -31,6 +31,8 @@ from .read import reader
 from .write import writer
 
 if TYPE_CHECKING:
+    import logging
+
     import pandas as pd
 
     from ._types import FileDescriptorOrPath
@@ -46,6 +48,7 @@ def stream_dicts(
     encoding: Optional[str] = None,
     num_chars: Optional[int] = None,
     verbose: bool = False,
+    logger: Optional[logging.Logger] = None,
 ) -> Iterator["_DictReadMapping"]:
     """Read a CSV file as a generator over dictionaries
 
@@ -77,6 +80,10 @@ def stream_dicts(
     verbose: bool
         Whether or not to show detection progress.
 
+    logger : Optional[logging.Logger]
+        A logger object to log messages. Active only when verbose is True. If
+        None, messages are printed to stdout.
+
     Returns
     -------
     rows: generator
@@ -93,7 +100,7 @@ def stream_dicts(
     with open(filename, "r", newline="", encoding=encoding) as fid:
         if dialect is None:
             data = fid.read(num_chars) if num_chars else fid.read()
-            dialect = Detector().detect(data, verbose=verbose)
+            dialect = Detector().detect(data, verbose=verbose, logger=logger)
             fid.seek(0)
 
         if dialect is None:
@@ -110,6 +117,7 @@ def read_dicts(
     encoding: Optional[str] = None,
     num_chars: Optional[int] = None,
     verbose: bool = False,
+    logger: Optional[logging.Logger] = None,
 ) -> List["_DictReadMapping"]:
     """Read a CSV file as a list of dictionaries
 
@@ -141,6 +149,10 @@ def read_dicts(
     verbose: bool
         Whether or not to show detection progress.
 
+    logger : Optional[logging.Logger]
+        A logger object to log messages. Active only when verbose is True. If
+        None, messages are printed to stdout.
+
     Returns
     -------
     rows: list
@@ -159,6 +171,7 @@ def read_dicts(
             encoding=encoding,
             num_chars=num_chars,
             verbose=verbose,
+            logger=logger,
         )
     )
 
@@ -169,6 +182,7 @@ def read_table(
     encoding: Optional[str] = None,
     num_chars: Optional[int] = None,
     verbose: bool = False,
+    logger: Optional[logging.Logger] = None,
 ) -> List[List[str]]:
     """Read a CSV file as a table (a list of lists)
 
@@ -200,6 +214,10 @@ def read_table(
     verbose: bool
         Whether or not to show detection progress.
 
+    logger : Optional[logging.Logger]
+        A logger object to log messages. Active only when verbose is True. If
+        None, messages are printed to stdout.
+
     Returns
     -------
     rows: list
@@ -218,6 +236,7 @@ def read_table(
             encoding=encoding,
             num_chars=num_chars,
             verbose=verbose,
+            logger=logger,
         )
     )
 
@@ -228,6 +247,7 @@ def stream_table(
     encoding: Optional[str] = None,
     num_chars: Optional[int] = None,
     verbose: bool = False,
+    logger: Optional[logging.Logger] = None,
 ) -> Iterator[List[str]]:
     """Read a CSV file as a generator over rows of a table
 
@@ -259,6 +279,10 @@ def stream_table(
     verbose: bool
         Whether or not to show detection progress.
 
+    logger : Optional[logging.Logger]
+        A logger object to log messages. Active only when verbose is True. If
+        None, messages are printed to stdout.
+
     Returns
     -------
     rows: generator
@@ -275,7 +299,7 @@ def stream_table(
     with open(filename, "r", newline="", encoding=encoding) as fid:
         if dialect is None:
             data = fid.read(num_chars) if num_chars else fid.read()
-            dialect = Detector().detect(data, verbose=verbose)
+            dialect = Detector().detect(data, verbose=verbose, logger=logger)
             if dialect is None:
                 raise NoDetectionResult()
             fid.seek(0)
@@ -354,6 +378,7 @@ def detect_dialect(
     verbose: bool = False,
     method: str = "auto",
     skip: bool = True,
+    logger: Optional[logging.Logger] = None,
 ) -> Optional[SimpleDialect]:
     """Detect the dialect of a CSV file
 
@@ -385,6 +410,10 @@ def detect_dialect(
         Skip computation of the type score for dialects with a low pattern
         score.
 
+    logger : Optional[logging.Logger]
+        A logger object to log messages. Active only when verbose is True. If
+        None, messages are printed to stdout.
+
     Returns
     -------
     dialect : Optional[SimpleDialect]
@@ -396,7 +425,7 @@ def detect_dialect(
     with open(filename, "r", newline="", encoding=enc) as fp:
         data = fp.read(num_chars) if num_chars else fp.read()
         dialect = Detector().detect(
-            data, verbose=verbose, method=method, skip=skip
+            data, verbose=verbose, method=method, skip=skip, logger=logger
         )
     return dialect
 

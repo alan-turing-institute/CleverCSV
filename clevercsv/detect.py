@@ -7,9 +7,12 @@ Author: Gertjan van den Burg
 
 """
 
+from __future__ import annotations
+
 from enum import Enum
 from io import StringIO
 
+from typing import TYPE_CHECKING
 from typing import Dict
 from typing import Iterable
 from typing import Optional
@@ -20,6 +23,11 @@ from .dialect import SimpleDialect
 from .exceptions import NoDetectionResult
 from .normal_form import detect_dialect_normal
 from .read import reader
+from .utils import maybe_log_or_print
+
+
+if TYPE_CHECKING:
+    import logging
 
 
 class DetectionMethod(str, Enum):
@@ -57,9 +65,12 @@ class Detector:
         sample: str,
         delimiters: Optional[Iterable[str]] = None,
         verbose: bool = False,
+        logger: Optional[logging.Logger] = None,
     ) -> Optional[SimpleDialect]:
         # Compatibility method for Python
-        return self.detect(sample, delimiters=delimiters, verbose=verbose)
+        return self.detect(
+            sample, delimiters=delimiters, verbose=verbose, logger=logger
+        )
 
     def detect(
         self,
@@ -68,6 +79,7 @@ class Detector:
         verbose: bool = False,
         method: Union[DetectionMethod, str] = DetectionMethod.AUTO,
         skip: bool = True,
+        logger: Optional[logging.Logger] = None,
     ) -> Optional[SimpleDialect]:
         """Detect the dialect of a CSV file
 
@@ -100,6 +112,10 @@ class Detector:
             :func:`ConsistencyDetector.compute_consistency_scores` for more
             details.
 
+        logger : Optional[logging.Logger]
+            A logger object to log messages. Active only when verbose is True.
+            If None, messages are printed to stdout.
+
         Returns
         -------
         dialect : Optional[SimpleDialect]
@@ -111,8 +127,9 @@ class Detector:
         if delimiters is not None:
             delimiters = list(delimiters)
         if method == DetectionMethod.NORMAL or method == DetectionMethod.AUTO:
-            if verbose:
-                print("Running normal form detection ...", flush=True)
+            maybe_log_or_print(
+                "Running normal form detection ...", verbose, logger
+            )
             dialect = detect_dialect_normal(
                 sample, delimiters=delimiters, verbose=verbose
             )
@@ -121,9 +138,12 @@ class Detector:
                 return dialect
 
         self.method_ = DetectionMethod.CONSISTENCY
-        consistency_detector = ConsistencyDetector(skip=skip, verbose=verbose)
-        if verbose:
-            print("Running data consistency measure ...", flush=True)
+        consistency_detector = ConsistencyDetector(
+            skip=skip, verbose=verbose, logger=logger
+        )
+        maybe_log_or_print(
+            "Running data consistency measure ...", verbose, logger
+        )
         return consistency_detector.detect(sample, delimiters=delimiters)
 
     def has_header(self, sample: str, max_rows_to_check: int = 20) -> bool:

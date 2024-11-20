@@ -7,9 +7,12 @@ Author: Gertjan van den Burg
 
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from functools import lru_cache
 
+from typing import TYPE_CHECKING
 from typing import Dict
 from typing import Iterable
 from typing import List
@@ -23,6 +26,11 @@ from .detect_type import DEFAULT_EPS_TYPE
 from .detect_type import TypeDetector
 from .dialect import SimpleDialect
 from .potential_dialects import get_dialects
+from .utils import maybe_log_or_print
+
+
+if TYPE_CHECKING:
+    import logging
 
 
 @dataclass
@@ -67,6 +75,9 @@ class ConsistencyDetector:
         result greatly speeds up the computation of the consistency measure.
         The size of the cache can be changed to trade off memory use and speed.
 
+    logger : logging.Logger
+        A logger object to log messages. Active only when verbose is True.
+        If None, messages are printed to stdout.
     """
 
     def __init__(
@@ -74,11 +85,13 @@ class ConsistencyDetector:
         skip: bool = True,
         verbose: bool = False,
         cache_capacity: int = 100_000,
+        logger: Optional[logging.Logger] = None,
     ) -> None:
         self._skip = skip
         self._verbose = verbose
         self._type_detector = TypeDetector()
         self._cache_capacity = cache_capacity
+        self._logger = logger
 
         # NOTE: A bit ugly but allows setting the cache size dynamically
         @lru_cache(cache_capacity)
@@ -163,19 +176,23 @@ class ConsistencyDetector:
             P = pattern_score(data, dialect)
             if P < incumbent_score and self._skip:
                 scores[dialect] = ConsistencyScore(P, None, None)
-                if self._verbose:
-                    print("%15r:\tP = %15.6f\tskip." % (dialect, P))
+                maybe_log_or_print(
+                    "%15r:\tP = %15.6f\tskip." % (dialect, P),
+                    self._verbose,
+                    self._logger,
+                )
                 continue
 
             T = self.compute_type_score(data, dialect)
             Q = P * T
             incumbent_score = max(incumbent_score, Q)
             scores[dialect] = ConsistencyScore(P, T, Q)
-            if self._verbose:
-                print(
-                    "%15r:\tP = %15.6f\tT = %15.6f\tQ = %15.6f"
-                    % (dialect, P, T, Q)
-                )
+            maybe_log_or_print(
+                "%15r:\tP = %15.6f\tT = %15.6f\tQ = %15.6f"
+                % (dialect, P, T, Q),
+                self._verbose,
+                self._logger,
+            )
         return scores
 
     @staticmethod
