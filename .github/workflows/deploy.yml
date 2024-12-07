@@ -14,109 +14,107 @@ jobs:
         os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
 
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - uses: actions/setup-python@v2
-        name: Install Python
-        with:
-          python-version: '3.8'
+    - uses: actions/setup-python@v2
+      name: Install Python
+      with:
+        python-version: '3.8'
 
-      - name: Set up QEMU
-        if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: all
+    - name: Set up QEMU
+      if: runner.os == 'Linux'
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: all
 
-      - uses: pypa/cibuildwheel@v2.21.3
-        env:
-          CIBW_TEST_COMMAND: "python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
-          CIBW_TEST_EXTRAS: "full"
-          CIBW_SKIP: "pp* cp27-* cp33-* cp34-* cp35-* cp36-* cp37-* *-win32 *-musllinux_* *-manylinux_i686"
-          CIBW_ARCHS_MACOS: x86_64 arm64 universal2
-          CIBW_ARCHS_LINUX: auto aarch64
+    - uses: pypa/cibuildwheel@v2.21.3
+      env:
+        CIBW_TEST_COMMAND: "python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
+        CIBW_TEST_EXTRAS: "full"
+        CIBW_SKIP: "pp* cp27-* cp33-* cp34-* cp35-* cp36-* cp37-* *-win32 *-musllinux_* *-manylinux_i686"
+        CIBW_ARCHS_MACOS: x86_64 arm64 universal2
+        CIBW_ARCHS_LINUX: auto aarch64
 
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ./wheelhouse/*.whl
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./wheelhouse/*.whl
 
   build_sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - uses: actions/setup-python@v2
-        name: Install Python
-        with:
-          python-version: '3.10'
+    - uses: actions/setup-python@v2
+      name: Install Python
+      with:
+        python-version: '3.10'
 
-      - name: Update setuptools
-        run: pip install -U setuptools
+    - name: Update setuptools
+      run: pip install -U setuptools
 
-      - name: Build sdist
-        run: python setup.py sdist
+    - name: Build sdist
+      run: python setup.py sdist
 
-      - uses: actions/upload-artifact@v2
-        with:
-          path: dist/*.tar.gz
+    - uses: actions/upload-artifact@v2
+      with:
+        path: dist/*.tar.gz
 
   upload_testpypi:
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
     # upload to PyPI on every tag starting with 'v'
-  if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') && contains(github.event.ref, '-rc.')
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') && contains(github.event.ref, '-rc.')
 
-  environment:
-    name: testpypi
-    url: https://tesxt.pypi.org/p/clevercsv
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/clevercsv
 
     permissions:
-      id-token: write
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     steps:
-      - name: Download all the dists
-        uses: actions/download-artifact@v3
-        with:
-          name: python-package-distributions
-          path: dist/
+    - name: Download all the dists
+      uses: actions/download-artifact@v3
+      with:
+        name: python-package-distributions
+        path: dist/
 
-      - name: Publish distributions to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository_url: https://test.pypi.org/legacy/
-          verbose: true
+    - name: Publish distribution to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+        verbose: true
 
   upload_pypi:
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
     # upload to PyPI on tags starting with 'v' that don't contain '-rc.'
-  if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') && !contains(github.event.ref, '-rc.')
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') && !contains(github.event.ref, '-rc.')
 
-  environment:
-    name: pypi
-    url: https://pypi.org/p/clevercsv
+    environment:
+      name: pypi
+      url: https://pypi.org/p/clevercsv
 
     permissions:
-      id-token: write
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     steps:
-      - name: Download all the dists
-        uses: actions/download-artifact@v3
-        with:
-          name: python-package-distributions
-          path: dist/
+    - name: Download all the dists
+      uses: actions/download-artifact@v3
+      with:
+        name: python-package-distributions
+        path: dist/
 
-      - name: Publish distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          verbose: true
+    - name: Publish distribution to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
 
   github-release:
     name: >-
       Sign the Python 🐍 distribution 📦 with Sigstore
       and upload the files to GitHub Release
     needs:
-      - upload_pypi
+    - upload_pypi
     runs-on: ubuntu-latest
 
     permissions:
@@ -124,10 +122,10 @@ jobs:
       id-token: write  # IMPORTANT: mandatory for sigstore
 
     steps:
-      - name: Download all the dists
-        uses: actions/download-artifact@v3
-        with:
-          name: python-package-distributions
+    - name: Download all the dists
+      uses: actions/download-artifact@v3
+      with:
+        name: python-package-distributions
         path: dist/
 
     - name: Sign the dists with Sigstore
@@ -148,9 +146,9 @@ jobs:
     - name: Upload artifact signatures to GitHub Release
       env:
         GITHUB_TOKEN: ${{ github.token }}
-        # Upload to GitHub Release using the `gh` CLI.
-        # `dist/` contains the built packages, and the
-        # sigstore-produced signatures and certificates.
+      # Upload to GitHub Release using the `gh` CLI.
+      # `dist/` contains the built packages, and the
+      # sigstore-produced signatures and certificates.
       run: >-
         gh release upload
         '${{ github.ref_name }}' dist/**
