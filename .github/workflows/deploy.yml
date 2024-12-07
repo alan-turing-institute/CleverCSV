@@ -125,7 +125,7 @@ jobs:
     - name: Download all the dists
       uses: actions/download-artifact@v3
       with:
-        name: python-package-distributions
+        name: artifact
         path: dist/
 
     - name: Sign the dists with Sigstore

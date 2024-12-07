@@ -22,6 +22,7 @@ import webbrowser
 
 from pathlib import Path
 
+from typing import Dict
 from typing import Optional
 
 import colorama
@@ -121,15 +122,31 @@ def get_last_release_candidate_tag(version: str):
     return versions[-1]
 
 
+def read_changelog_section(context: Dict[str, str]) -> str:
+    next_version = context["next_version"]
+    section_lines = []
+    record = False
+    with open(CHANGELOG_FILENAME, "r") as fileobj:
+        for line in fileobj:
+            if line.startswith(f"## Version {next_version}"):
+                section_lines.append(line)
+                record = True
+                continue
+            if record and line.startswith("## Version"):
+                record = False
+                break
+            elif record:
+                section_lines.append(line)
+    return "".join(section_lines)
+
+
 def build_release_message(context, commit: bool = False) -> str:
-    prefix = "bump: " if commit else ""
-    message = (
-        f"{prefix}{context['pkgname'].capitalize()} Release "
-        f"{context['next_version']}"
-    )
+    # prefix = "bump: " if commit else ""
+    prefix = ""
+    message = f"{prefix}{PACKAGE_NICE_NAME} Release {context['next_version']}"
     message += "\n"
     message += "\n"
-    message += context["changelog_update"]
+    message += read_changelog_section(context)
     return message
 
 
@@ -210,8 +227,10 @@ class GitToMaster(Step):
 
 class UpdateChangelog(Step):
     def action(self, context):
-        self.instruct(f"Update change log for version {context['version']}")
-        self.print_run("vi CHANGELOG.md")
+        self.instruct(
+            f"Update change log for version {context['next_version']}"
+        )
+        self.print_command("vi CHANGELOG.md")
 
 
 class UpdateReadme(Step):
@@ -259,7 +278,7 @@ class InstallFromTestPyPI(Step):
             f"cd {parent} && python -m venv {tmpvenv} && source {tmpvenv}"
             "/bin/activate && pip install --no-cache-dir --index-url "
             "https://test.pypi.org/simple/ --extra-index-url "
-            f"https://pypi.org/simple {context['pkgname']}=="
+            f"https://pypi.org/simple {context['pkgname']}[full]=="
             f"{context['next_version']}"
         )
         context["tmpvenv"] = tmpvenv
@@ -271,7 +290,7 @@ class TestPackage(Step):
             f"Ensuring that the package has version {context['next_version']}"
         )
         version = self.execute(
-            f"source {context['tmpvenv']}/bin/activate && veld -V",
+            f"source {context['tmpvenv']}/bin/activate && clevercsv -V",
             silent=True,
             confirm=False,
         )
@@ -347,6 +366,8 @@ class GitAddRelease(Step):
         self.instruct("Add Changelog & Readme to git")
         self.execute("git add CHANGELOG.md", confirm=False)
         self.execute("git add README.md", confirm=False)
+        self.execute("git add docs/CHANGELOG.rst", confirm=False)
+        self.execute("git add man/", confirm=False)
         self.instruct("Going to commit with the following message:")
 
         commit_message = build_release_message(context, commit=True)
@@ -397,8 +418,8 @@ def main(target=None):
     procedure = [
         ("gittomaster", GitToMaster()),
         ("clean1", MakeClean()),
-        ("docs1", MakeDocs()),
-        ("man1", MakeMan()),
+        # ("docs1", MakeDocs()),
+        # ("man1", MakeMan()),
         ("runtests", RunTests()),
         # trigger CI to run tests on all platforms
         ("push1", PushToGitHub()),
