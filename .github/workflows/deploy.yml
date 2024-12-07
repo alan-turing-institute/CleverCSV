@@ -77,7 +77,7 @@ jobs:
     - name: Download all the dists
       uses: actions/download-artifact@v3
       with:
-        name: python-package-distributions
+        name: artifact
         path: dist/
 
     - name: Publish distribution to TestPyPI
@@ -103,7 +103,7 @@ jobs:
     - name: Download all the dists
       uses: actions/download-artifact@v3
       with:
-        name: python-package-distributions
+        name: artifact
         path: dist/
 
     - name: Publish distribution to PyPI
