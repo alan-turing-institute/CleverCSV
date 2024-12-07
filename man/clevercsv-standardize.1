@@ -2,12 +2,12 @@
 .\"     Title: clevercsv-standardize
 .\"    Author: G.J.J. van den Burg
 .\" Generator: Wilderness <https://pypi.org/project/wilderness>
-.\"      Date: 2023-09-24
+.\"      Date: 2024-12-07
 .\"    Manual: clevercsv Manual
-.\"    Source: clevercsv 0.8.2
+.\"    Source: clevercsv 0.8.3
 .\"  Language: English
 .\"
-.TH "CLEVERCSV-STANDARDIZE" "1" "2023\-09\-24" "Clevercsv 0\&.8\&.2" "Clevercsv Manual"
+.TH "CLEVERCSV-STANDARDIZE" "1" "2024\-12\-07" "Clevercsv 0\&.8\&.3" "Clevercsv Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -32,8 +32,9 @@ clevercsv-standardize \- Convert a CSV file to one that conforms to RFC-4180
 .SH "SYNOPSIS"
 .sp
 .nf
-\fIclevercsv standardize [\-e ENCODING | \-\-encoding=ENCODING] [\-i | \-\-in\-place]
-                      [\-n NUM_CHARS | \-\-num\-chars=NUM_CHARS]
+\fIclevercsv standardize [\-e ENCODING | \-\-encoding=ENCODING]
+                      [\-E TARGET_ENCODING | \-\-target\-encoding=TARGET_ENCODING]
+                      [\-i | \-\-in\-place] [\-n NUM_CHARS | \-\-num\-chars=NUM_CHARS]
                       [\-o OUTPUT | \-\-output=OUTPUT] [\-t | \-\-transpose]
                       <path [path \&...]>
 .fi
@@ -55,6 +56,11 @@ show this help message and exit
 \-e, \-\-encoding
 .RS 4
 The file encoding of the given CSV file is automatically detected using chardet. While chardet is incredibly accurate, it is not perfect. In the rare cases that it makes a mistake in detecting the file encoding, you can override the encoding by providing it through this flag. For this command, the provided encoding will also be used for the output file(s). When only one encoding is given, it will be used for all files given on the command line. When multiple encodings are given, the number must correspond to the number of files provided as input.
+.RE
+.PP
+\-E, \-\-target\-encoding
+.RS 4
+If ommited, the output file encoding while be the same as that of the original file.
 .RE
 .PP
 \-i, \-\-in\-place

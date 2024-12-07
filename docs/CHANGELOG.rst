@@ -2,6 +2,15 @@
 Changelog
 =========
 
+Version 0.8.3
+-------------
+
+
+* Allow users to specify output encoding for some CLI commands (thanks to 
+  @jbdesbas)
+* Optimize the normal-form detection (thanks to @no23reason)
+* Internal: fix names of C modules
+
 Version 0.8.2
 -------------
 
