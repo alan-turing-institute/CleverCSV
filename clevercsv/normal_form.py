@@ -12,8 +12,11 @@ Author: Gertjan van den Burg
 
 """
 
+from __future__ import annotations
+
 import itertools
 
+from typing import TYPE_CHECKING
 from typing import Callable
 from typing import Iterable
 from typing import List
@@ -24,7 +27,13 @@ import regex
 
 from .dialect import SimpleDialect
 from .escape import is_potential_escapechar
+from .utils import maybe_log_or_print
 from .utils import pairwise
+
+
+if TYPE_CHECKING:
+    import logging
+
 
 DELIMS: List[str] = [",", ";", "|", "\t"]
 QUOTECHARS: List[str] = ["'", '"']
@@ -35,6 +44,7 @@ def detect_dialect_normal(
     encoding: str = "UTF-8",
     delimiters: Optional[Iterable[str]] = None,
     verbose: bool = False,
+    logger: Optional[logging.Logger] = None,
 ) -> Optional[SimpleDialect]:
     """Detect the normal form of a file from a given sample
 
@@ -57,8 +67,9 @@ def detect_dialect_normal(
     delimiters = list(delimiters)
     for delim, quotechar in itertools.product(delimiters, QUOTECHARS):
         if maybe_has_escapechar(data, encoding, delim, quotechar):
-            if verbose:
-                print("Not normal, has potential escapechar.")
+            maybe_log_or_print(
+                "Not normal, has potential escapechar.", verbose, logger
+            )
             return None
 
     form_and_dialect: List[
@@ -94,11 +105,11 @@ def detect_dialect_normal(
 
     for ID, form_func, dialect in form_and_dialect:
         if form_func(rows, dialect):
-            if verbose:
-                print("Matched normal form %i." % ID)
+            maybe_log_or_print(
+                "Matched normal form %i." % ID, verbose, logger
+            )
             return dialect
-    if verbose:
-        print("Didn't match any normal forms.")
+    maybe_log_or_print("Didn't match any normal forms.", verbose, logger)
     return None
 
 
