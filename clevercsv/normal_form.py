@@ -105,9 +105,7 @@ def detect_dialect_normal(
 
     for ID, form_func, dialect in form_and_dialect:
         if form_func(rows, dialect):
-            maybe_log_or_print(
-                "Matched normal form %i." % ID, verbose, logger
-            )
+            maybe_log_or_print("Matched normal form %i." % ID, verbose, logger)
             return dialect
     maybe_log_or_print("Didn't match any normal forms.", verbose, logger)
     return None
