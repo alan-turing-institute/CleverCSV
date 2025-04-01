@@ -324,7 +324,7 @@ class GitTagVersion(Step):
         print(tag_message)
         print("--- END TAG MESSAGE ---")
         self.execute(
-            f"git tag -F ./tag_message.tmp v{context['next_version']}"
+            f"git tag -s -F ./tag_message.tmp v{context['next_version']}"
         )
         os.unlink("./tag_message.tmp")
 
@@ -338,7 +338,7 @@ class GitTagPreRelease(Step):
         context["rc_count"] = rc_count
         self.instruct("Tagging version as a pre-release")
         self.execute(
-            f'git tag -m "{PACKAGE_NICE_NAME} Release v'
+            f'git tag -s -m "{PACKAGE_NICE_NAME} Release v'
             f"{context['next_version']} (release candidate {rc_count})\" v"
             f"{context['next_version']}-rc.{rc_count}"
         )
