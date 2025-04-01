@@ -14,51 +14,56 @@ jobs:
         os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
 
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - uses: actions/setup-python@v2
-      name: Install Python
-      with:
-        python-version: '3.8'
+      - uses: actions/setup-python@v5
+        name: Install Python
+        with:
+          python-version: '3.10'
 
-    - name: Set up QEMU
-      if: runner.os == 'Linux'
-      uses: docker/setup-qemu-action@v3
-      with:
-        platforms: all
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
 
-    - uses: pypa/cibuildwheel@v2.22.0
-      env:
-        CIBW_TEST_COMMAND: "python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
-        CIBW_TEST_EXTRAS: "full"
-        CIBW_SKIP: "pp* cp27-* cp33-* cp34-* cp35-* cp36-* cp37-* *-win32 *-musllinux_* *-manylinux_i686"
-        CIBW_ARCHS_MACOS: x86_64 arm64 universal2
-        CIBW_ARCHS_LINUX: auto aarch64
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.22.0
+        env:
+          CIBW_TEST_COMMAND: "python -VV && python -m unittest discover -f -s {project}/tests/test_unit/"
+          CIBW_TEST_EXTRAS: "full"
+          CIBW_SKIP: "pp* cp27-* cp33-* cp34-* cp35-* cp36-* cp37-* *-win32 *-musllinux_* *-manylinux_i686"
+          CIBW_ARCHS_MACOS: x86_64 arm64 universal2
+          CIBW_ARCHS_LINUX: auto aarch64
 
-    - uses: actions/upload-artifact@v3
-      with:
-        path: ./wheelhouse/*.whl
+      - uses: actions/upload-artifact@v4
+        with:
+          path: ./wheelhouse/*.whl
+          name: dist-${{ matrix.os }}-${{ matrix.python-version }}
 
   build_sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        name: Checkout repo
 
-    - uses: actions/setup-python@v2
-      name: Install Python
-      with:
-        python-version: '3.10'
+      - uses: actions/setup-python@v5
+        name: Install Python
+        with:
+          python-version: '3.10'
 
-    - name: Update setuptools
-      run: pip install -U setuptools
+      - name: Update setuptools
+        run: pip install -U setuptools
 
-    - name: Build sdist
-      run: python setup.py sdist
+      - name: Build sdist
+        run: python setup.py sdist
 
-    - uses: actions/upload-artifact@v3
-      with:
-        path: dist/*.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          path: dist/*.tar.gz
+          name: dist-source
 
   upload_testpypi:
     needs: [build_wheels, build_sdist]
@@ -74,17 +79,18 @@ jobs:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v3
-      with:
-        name: artifact
-        path: dist/
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          merge-multiple: true
+          path: dist/
 
-    - name: Publish distribution to TestPyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/
-        verbose: true
+      - name: Publish distribution to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          verbose: true
 
   upload_pypi:
     needs: [build_wheels, build_sdist]
@@ -100,14 +106,17 @@ jobs:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v3
-      with:
-        name: artifact
-        path: dist/
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          merge-multiple: true
+          path: dist/
 
-    - name: Publish distribution to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          verbose: true
 
   github-release:
     name: >-
@@ -122,10 +131,14 @@ jobs:
       id-token: write  # IMPORTANT: mandatory for sigstore
 
     steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
     - name: Download all the dists
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
-        name: artifact
+        pattern: dist-*
+        merge-multiple: true
         path: dist/
 
     - name: Sign the dists with Sigstore
