@@ -183,10 +183,10 @@ def break_ties_two(
         # should have caught it, but if by a freakish occurance it hasn't then
         # we can't break this tie (for now)
         if len(X) != len(Y):
-            return None
+            return Descape
         for row_X, row_Y in zip(X, Y):
             if len(row_X) != len(row_Y):
-                return None
+                return Descape
 
         cells_escaped = []
         cells_unescaped = []
@@ -218,40 +218,61 @@ def break_ties_two(
     elif A.delimiter == B.delimiter:
         Aq, Ae = A.quotechar, A.escapechar
         Bq, Be = B.quotechar, B.escapechar
-        if (Aq, Ae) == ("", "") or (Bq, Be) == ("", ""):
-            # This case is activated if the escapechar+quotechar combination
-            # occurs in the cells (i.e. "Jill\'s data") but no actual quoting
-            # is done with the quote character.
             d_no = A if (Aq, Ae) == ("", "") else B
             d_yes = B if d_no == A else A
 
-            X = list(parse_string(data, dialect=d_no))
-            Y = list(parse_string(data, dialect=d_yes))
+        d_no = A if (Aq, Ae) == ("", "") else B
+        d_yes = B if d_no == A else A
 
-            if len(X) != len(Y):
                 return None
             for row_X, row_Y in zip(X, Y):
-                if len(row_X) != len(row_Y):
-                    return None
+        X = list(parse_string(data, dialect=d_no))
+        Y = list(parse_string(data, dialect=d_yes))
 
-            # if we're here, then there is no effect on structure.
-            # we test if the only cells that differ are those that have an
-            # escapechar+quotechar combination.
-            assert isinstance(d_yes.escapechar, str)
-            assert isinstance(d_yes.quotechar, str)
-            eq = d_yes.escapechar + d_yes.quotechar
-            for row_X, row_Y in zip(X, Y):
-                for x, y in zip(row_X, row_Y):
-                    if x != y:
-                        if eq not in x:
-                            return None
-
-            # Now we know that the only cells that have the
-            # escapechar+quotechar combination are the cause of the difference.
-            # The right thing to do is to return the dialect that uses them.
+        if len(X) != len(Y):
+            # Different number of rows; can't decide based on structure.
+            # best to return the quotes here
             return d_yes
+        for row_X, row_Y in zip(X, Y):
+            if len(row_X) != len(row_Y):
+                # Different number of fields in rows; can't decide based on structure.
+                # best to return the quotes here
+                return d_yes
 
-    return None
+        differences_found = False
+        for row_X, row_Y in zip(X, Y):
+            for x, y in zip(row_X, row_Y):
+                if x != y:
+                    differences_found = True
+                    if d_yes.escapechar not in x and d_yes.quotechar not in x:
+                        # No escape/quote effects observed directly in the difference.
+                        return d_no
+
+        if not differences_found:
+            # No differences found in parsed content; may need to choose a default.
+            # Choose the simpler dialect as a default if no differences are found
+            return d_no if d_no.quotechar == "" and d_no.escapechar == "" else d_yes
+    else:
+        return heuristic_fallback(data, [A, B])
+
+    # instead of returning None, just return the dialect with the empty quotechar
+    return A if A.quotechar == "" else B
+
+
+def heuristic_fallback(data, dialects):
+    """
+    Fallback mechanism to choose the best dialect based on parsing anomalies.
+    """
+    parsing_results = [(dialect, list(parse_string(data, dialect))) for dialect in dialects]
+    best_result = min(parsing_results, key=lambda x: evaluate_parsing(x[1]))
+
+
+def evaluate_parsing(parsing):
+    """
+    Evaluate parsing based on the consistency of row lengths (fewer anomalies is better).
+    """
+    field_counts = [len(row) for row in parsing]
+    mode_count = max(set(field_counts), key=field_counts.count)
 
 
 def break_ties_three(
