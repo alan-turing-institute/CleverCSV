@@ -2,6 +2,13 @@
 Changelog
 =========
 
+Version 0.8.4
+-------------
+
+
+* Bump minimal Python version to 3.9
+* Minor typing fixes
+
 Version 0.8.3
 -------------
 
