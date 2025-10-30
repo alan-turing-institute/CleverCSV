@@ -235,7 +235,7 @@ file, for example:
 dialect = clevercsv.Sniffer().sniff(fp.read(10000))
 ```
 You can also speed up encoding detection by installing 
-[cCharDet](https://github.com/PyYoshi/cChardet), it will automatically be used 
+[cCharDet](https://github.com/faust-streaming/cChardet/), it will automatically be used 
 when it is available on the system.
 
 That's the basics! If you want more details, you can look at the code of the 
