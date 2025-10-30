@@ -16,8 +16,9 @@ from typing import Any
 from typing import Dict
 from typing import Optional
 from typing import Tuple
-from typing import Type
 from typing import Union
+
+import _csv
 
 excel = csv.excel
 excel_tab = csv.excel_tab
@@ -84,7 +85,7 @@ class SimpleDialect:
 
     @classmethod
     def from_dict(
-        cls: Type["SimpleDialect"], d: Dict[str, Any]
+        cls: type["SimpleDialect"], d: Dict[str, Any]
     ) -> "SimpleDialect":
         dialect = cls(
             d["delimiter"], d["quotechar"], d["escapechar"], strict=d["strict"]
@@ -93,7 +94,7 @@ class SimpleDialect:
 
     @classmethod
     def from_csv_dialect(
-        cls: Type["SimpleDialect"], d: csv.Dialect
+        cls: type["SimpleDialect"], d: _csv.Dialect | csv.Dialect
     ) -> "SimpleDialect":
         delimiter = "" if d.delimiter is None else d.delimiter
         quotechar = "" if d.quoting == csv.QUOTE_NONE else d.quotechar
@@ -132,7 +133,7 @@ class SimpleDialect:
         return json.dumps(self.to_dict())
 
     @classmethod
-    def deserialize(cls: Type["SimpleDialect"], obj: str) -> "SimpleDialect":
+    def deserialize(cls: type["SimpleDialect"], obj: str) -> "SimpleDialect":
         """Deserialize dialect from a JSON object"""
         return cls.from_dict(json.loads(obj))
 

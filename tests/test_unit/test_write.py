@@ -14,7 +14,6 @@ import unittest
 
 from typing import Any
 from typing import Iterable
-from typing import Type
 
 import clevercsv
 
@@ -32,7 +31,7 @@ class WriterTestCase(unittest.TestCase):
             self.assertEqual(fp.read(), expect + writer.dialect.lineterminator)
 
     def _write_error_test(
-        self, exc: Type[Exception], fields: Any, **kwargs: Any
+        self, exc: type[Exception], fields: Any, **kwargs: Any
     ) -> None:
         with tempfile.TemporaryFile("w+", newline="", prefix="ccsv_") as fp:
             writer = clevercsv.writer(fp, **kwargs)

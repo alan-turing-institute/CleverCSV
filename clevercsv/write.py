@@ -15,7 +15,8 @@ import csv
 from typing import TYPE_CHECKING
 from typing import Any
 from typing import Iterable
-from typing import Type
+
+import _csv
 
 if TYPE_CHECKING:
     from clevercsv._types import SupportsWrite
@@ -45,18 +46,18 @@ class writer:
         **fmtparams: Any,
     ) -> None:
         self.original_dialect = dialect
-        self.dialect: Type[csv.Dialect] = self._make_python_dialect(
+        self.dialect: type[_csv.Dialect] = self._make_python_dialect(
             dialect, **fmtparams
         )
-        self._writer = csv.writer(csvfile, dialect=self.dialect)
+        self._writer = _csv.writer(csvfile, dialect=self.dialect)
 
     def _make_python_dialect(
         self, dialect: _DialectLike, **fmtparams: Any
-    ) -> Type[csv.Dialect]:
+    ) -> type[_csv.Dialect]:
         d: _DialectLike = ""
         if isinstance(dialect, str):
-            d = csv.get_dialect(dialect)
-        elif isinstance(dialect, csv.Dialect):
+            d = _csv.get_dialect(dialect)
+        elif isinstance(dialect, _csv.Dialect):
             d = dialect
         elif isinstance(dialect, SimpleDialect):
             d = dialect.to_csv_dialect()
