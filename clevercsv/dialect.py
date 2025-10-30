@@ -94,7 +94,8 @@ class SimpleDialect:
 
     @classmethod
     def from_csv_dialect(
-        cls: type["SimpleDialect"], d: _csv.Dialect | csv.Dialect
+        cls: type["SimpleDialect"],
+        d: Union[_csv.Dialect, csv.Dialect],
     ) -> "SimpleDialect":
         delimiter = "" if d.delimiter is None else d.delimiter
         quotechar = "" if d.quoting == csv.QUOTE_NONE else d.quotechar
