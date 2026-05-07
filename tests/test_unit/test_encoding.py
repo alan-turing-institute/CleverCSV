@@ -2,6 +2,9 @@
 
 """Unit tests for encoding detection
 
+Note that we're not necessarily testing how accurate the chardet/cchardet
+libraries are. We're testing that our encoding detection function works.
+
 Author: G.J.J. van den Burg
 License: See the LICENSE file.
 
@@ -25,27 +28,38 @@ from clevercsv.write import writer
 
 
 class EncodingTestCase(unittest.TestCase):
-    @dataclass
+    @dataclass(frozen=True)
     class Instance:
+        # Data to write to a file
         table: List[List[Any]]
-        encoding: str
-        cchardet_encoding: str
+
+        # Source encoding to use when writing
+        source_encoding: str
+
+        # Acceptable expected encodings from chardet
+        chardet_encodings: set[str]
+
+        # Acceptable expected encodings from cchardet
+        cchardet_encodings: set[str]
 
     cases: List[Instance] = [
         Instance(
             table=[["Å", "B", "C"], [1, 2, 3], [4, 5, 6]],
-            encoding="ISO-8859-1",
-            cchardet_encoding="WINDOWS-1252",
+            source_encoding="ISO-8859-1",
+            chardet_encodings={"ISO-8859-1", "KOI8-R"},
+            cchardet_encodings={"WINDOWS-1252"},
         ),
         Instance(
             table=[["A", "B", "C"], [1, 2, 3], [4, 5, 6]],
-            encoding="ascii",
-            cchardet_encoding="ASCII",
+            source_encoding="ascii",
+            chardet_encodings={"ascii"},
+            cchardet_encodings={"ASCII"},
         ),
         Instance(
             table=[["亜唖", "娃阿", "哀愛"], [1, 2, 3], ["挨", "姶", "葵"]],
-            encoding="ISO-2022-JP",
-            cchardet_encoding="ISO-2022-JP",
+            source_encoding="ISO-2022-JP",
+            chardet_encodings={"ISO-2022-JP"},
+            cchardet_encodings={"ISO-2022-JP"},
         ),
     ]
 
@@ -70,12 +84,10 @@ class EncodingTestCase(unittest.TestCase):
 
     def test_encoding_chardet(self) -> None:
         for case in self.cases:
-            table = case.table
-            encoding = case.encoding
-            with self.subTest(encoding=encoding):
-                tmpfname = self._build_file(table, encoding)
+            with self.subTest(encoding=case.source_encoding):
+                tmpfname = self._build_file(case.table, case.source_encoding)
                 detected = get_encoding(tmpfname, try_cchardet=False)
-                self.assertEqual(encoding, detected)
+                self.assertIn(detected, case.chardet_encodings)
 
     def test_encoding_cchardet(self) -> None:
         try:
@@ -84,13 +96,13 @@ class EncodingTestCase(unittest.TestCase):
             self.skipTest("Failed to import cchardet, skipping this test")
 
         for case in self.cases:
-            table = case.table
-            encoding = case.encoding
-            with self.subTest(encoding=encoding):
-                out_encoding = case.cchardet_encoding
-                tmpfname = self._build_file(table, encoding)
+            with self.subTest(encoding=case.source_encoding):
+                tmpfname = self._build_file(case.table, case.source_encoding)
                 detected = get_encoding(tmpfname, try_cchardet=True)
-                self.assertEqual(out_encoding, detected)
+                self.assertIn(
+                    detected,
+                    case.cchardet_encodings,
+                )
 
 
 if __name__ == "__main__":

@@ -674,8 +674,9 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
         encoding = "latin-1"
         tmpfname = self._build_file(table, dialect, encoding=encoding)
-        self.assertEqual(
-            "ISO-8859-1", get_encoding(tmpfname, try_cchardet=False)
+        self.assertIn(
+            get_encoding(tmpfname, try_cchardet=False),
+            {"Windows-1255", "ISO-8859-1"},
         )
         tmpfd, tmpoutname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
         os.close(tmpfd)
