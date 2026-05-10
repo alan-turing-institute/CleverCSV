@@ -53,6 +53,7 @@ PyObject *base_abstraction(PyObject *self,  PyObject *args)
 	char *stack = NULL;
 	size_t i, len = 0;
 	size_t stack_size_new, stack_size = 4096;
+	PyObject *stack_obj = NULL;
 
 	PyObject *S = NULL,
 		 *delimiter_obj = NULL,
@@ -61,7 +62,6 @@ PyObject *base_abstraction(PyObject *self,  PyObject *args)
 
 	if (!PyArg_ParseTuple(args, "OOOO", &S, &delimiter_obj, &quotechar_obj,
 				&escapechar_obj)) {
-		printf("Error parsing arguments.\n");
 		return NULL;
 	}
 
@@ -73,22 +73,23 @@ PyObject *base_abstraction(PyObject *self,  PyObject *args)
 		return NULL;
 
 	if (PyUnicode_READY(S) == -1) {
-		printf("Unicode object not ready.\n");
 		return NULL;
 	}
 	kind = PyUnicode_KIND(S);
 	data = PyUnicode_DATA(S);
 
 	stack = malloc(sizeof(char) * stack_size);
-	if (stack == NULL)
+	if (stack == NULL) {
+		PyErr_NoMemory();
 		return NULL;
+	}
 	for (i=0; i<stack_size; i++) stack[i] = '\0';
 
 	int escape_next = 0;
 	for (i=0; i<(size_t)PyUnicode_GET_LENGTH(S); i++) {
 		s = PyUnicode_READ(kind, data, i);
 		if (s == '\r' || s == '\n') {
-			if (stack[len-1] != 'R')
+			if (len == 0 || stack[len-1] != 'R')
 				stack[len++] = 'R';
 		} else if (s == delimiter) {
 			if (escape_next) {
@@ -104,7 +105,9 @@ PyObject *base_abstraction(PyObject *self,  PyObject *args)
 				stack[len++] = 'Q';
 		} else if (s == escapechar) {
 			if (escape_next) {
-				if (stack[len-1] != 'C')
+				if (len > 0 && stack[len-1] != 'C')
+					stack[len++] = 'C';
+				else if (len == 0)
 					stack[len++] = 'C';
 				escape_next = 0;
 			} else
@@ -117,23 +120,18 @@ PyObject *base_abstraction(PyObject *self,  PyObject *args)
 		}
 		if (len == stack_size) {
 			stack_size_new = 2 * stack_size;
-			char *stack_new = stack;
-			stack_new = realloc(stack_new, sizeof(char)*stack_size_new);
+			char *stack_new = realloc(stack, sizeof(char)*stack_size_new);
 			if (stack_new == NULL) {
+				free(stack);
 				PyErr_NoMemory();
-				return 0;
+				return NULL;
 			}
 			stack = stack_new;
 			stack_size = stack_size_new;
 		}
 	}
 
-	PyObject *stack_obj = PyUnicode_FromStringAndSize(stack, (Py_ssize_t)len);
-	if (stack_obj == NULL)
-		goto err;
-	Py_INCREF(stack_obj);
-
-err:
+	stack_obj = PyUnicode_FromStringAndSize(stack, (Py_ssize_t)len);
 	free(stack);
 	return stack_obj;
 }
@@ -146,10 +144,9 @@ PyObject *c_merge_with_quotechar(PyObject *self, PyObject *args)
 	bool in_quotes = false;
 	size_t *quote_idx_l = NULL;
 	size_t *quote_idx_r = NULL;
-	size_t *quote_idx_l_new = NULL;
-	size_t *quote_idx_r_new = NULL;
 	size_t i, j, len, quote_idx, quote_idx_size = 4;
 	char *new_S = NULL;
+	PyObject *new_S_obj = NULL;
 
 	// single characters
 	Py_UCS4 s, t;
@@ -157,13 +154,11 @@ PyObject *c_merge_with_quotechar(PyObject *self, PyObject *args)
 	// retrieve the string from the function arguments
 	PyObject *S = NULL;
 	if (!PyArg_ParseTuple(args, "O", &S)) {
-		printf("Error parsing arguments.\n");
 		return NULL;
 	}
 
 	// check that the string is ready
 	if (PyUnicode_READY(S) == -1) {
-		printf("Unicode object not ready.\n");
 		return NULL;
 	}
 
@@ -173,8 +168,10 @@ PyObject *c_merge_with_quotechar(PyObject *self, PyObject *args)
 	len = PyUnicode_GET_LENGTH(S);
 
 	// empty string means return
-	if (len == 0)
+	if (len == 0) {
+		Py_INCREF(S);
 		return S;
+	}
 
 	// initialize the arrays that'll hold the start and end indices of the
 	// quoted parts of the string.
@@ -185,6 +182,7 @@ PyObject *c_merge_with_quotechar(PyObject *self, PyObject *args)
 	}
 	quote_idx_r = malloc(sizeof(size_t) * quote_idx_size);
 	if (quote_idx_r == NULL) {
+		free(quote_idx_l);
 		PyErr_NoMemory();
 		return NULL;
 	}
@@ -192,6 +190,8 @@ PyObject *c_merge_with_quotechar(PyObject *self, PyObject *args)
 	// allocate and populate the output array
 	new_S = malloc(sizeof(char) * len);
 	if (new_S == NULL) {
+		free(quote_idx_l);
+		free(quote_idx_r);
 		PyErr_NoMemory();
 		return NULL;
 	}
@@ -203,7 +203,7 @@ PyObject *c_merge_with_quotechar(PyObject *self, PyObject *args)
 	quote_idx = 0;
 	while (i < len) {
 		s = PyUnicode_READ(kind, data, i);
-		new_S[i] = s;
+		new_S[i] = (char)s;
 
 		if (s != 'Q') {
 			i++;
@@ -219,6 +219,7 @@ PyObject *c_merge_with_quotechar(PyObject *self, PyObject *args)
 		}
 
 		// read the next character if we can
+		t = '\0';
 		if (i + 1 < len) {
 			t = PyUnicode_READ(kind, data, i + 1);
 		}
@@ -231,21 +232,20 @@ PyObject *c_merge_with_quotechar(PyObject *self, PyObject *args)
 
 			// reallocate if we need to
 			if (quote_idx == quote_idx_size) {
-				quote_idx_size *= 2;
-				quote_idx_l_new = quote_idx_l;
-				quote_idx_l_new = realloc(quote_idx_l_new, sizeof(size_t)*quote_idx_size);
+				size_t quote_idx_size_new = quote_idx_size * 2;
+				size_t *quote_idx_l_new = realloc(quote_idx_l, sizeof(size_t)*quote_idx_size_new);
 				if (quote_idx_l_new == NULL) {
 					PyErr_NoMemory();
-					return NULL;
-				}
-				quote_idx_r_new = quote_idx_r;
-				quote_idx_r_new = realloc(quote_idx_r_new, sizeof(size_t)*quote_idx_size);
-				if (quote_idx_r_new == NULL) {
-					PyErr_NoMemory();
-					return NULL;
+					goto merge_err;
 				}
 				quote_idx_l = quote_idx_l_new;
+				size_t *quote_idx_r_new = realloc(quote_idx_r, sizeof(size_t)*quote_idx_size_new);
+				if (quote_idx_r_new == NULL) {
+					PyErr_NoMemory();
+					goto merge_err;
+				}
 				quote_idx_r = quote_idx_r_new;
+				quote_idx_size = quote_idx_size_new;
 			}
 		}
 		i++;
@@ -259,10 +259,7 @@ PyObject *c_merge_with_quotechar(PyObject *self, PyObject *args)
 	}
 
 	// convert to Python object
-	PyObject *new_S_obj = PyUnicode_FromStringAndSize(new_S, (Py_ssize_t)len);
-	if (new_S_obj == NULL)
-		goto merge_err;
-	Py_INCREF(new_S_obj);
+	new_S_obj = PyUnicode_FromStringAndSize(new_S, (Py_ssize_t)len);
 
 merge_err:
 	free(new_S);

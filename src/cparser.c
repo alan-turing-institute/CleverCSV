@@ -200,18 +200,28 @@ static int parse_save_field(ParserObj *self, int trailing)
 	// strip quotes if quoted string
 	if (_quotecond(field, self->field_len, self->quotechar)) {
 		field = _strstrip(field, 1, 1);
+		if (field == NULL) {
+			return -1;
+		}
 		is_quoted = 1;
 	}
 
 	// strip partial quotes if trailing at end of file
 	if (trailing && _strstartswith(field, self->quotechar)) {
 		field = _strstrip(field, 1, 0);
+		if (field == NULL) {
+			return -1;
+		}
 		is_quoted = 1;
 	}
 
 	self->field_len = 0;
 	if (self->return_quoted > 0) {
 		PyObject *tuple = PyTuple_New(2);
+		if (tuple == NULL) {
+			Py_DECREF(field);
+			return -1;
+		}
 		if (PyTuple_SetItem(tuple, 0, field) < 0) {
 			Py_DECREF(tuple);
 			return -1;
@@ -443,6 +453,11 @@ static PyObject *Parser_iternext(ParserObj *self)
 	void *data;
 	PyObject *lineobj;
 
+	if (self->input_iter == NULL) {
+		PyErr_SetString(PyExc_RuntimeError, "parser input_iter has been cleared");
+		return NULL;
+	}
+
 	if (parse_reset(self) < 0)
 		return NULL;
 	do {
@@ -454,8 +469,11 @@ static PyObject *Parser_iternext(ParserObj *self)
 				if (self->strict) {
 					PyErr_SetString(_cparserstate_global->error_obj,
 							"unexpected end of data");
+					goto err;
 				} else if (parse_save_field(self, 1) >= 0) {
 					break;
+				} else {
+					goto err;
 				}
 			}
 			return NULL;
@@ -468,11 +486,11 @@ static PyObject *Parser_iternext(ParserObj *self)
 					lineobj->ob_type->tp_name
 				    );
 			Py_DECREF(lineobj);
-			return NULL;
+			goto err;
 		}
 		if (PyUnicode_READY(lineobj) == -1) {
 			Py_DECREF(lineobj);
-			return NULL;
+			goto err;
 		}
 		kind = PyUnicode_KIND(lineobj);
 		data = PyUnicode_DATA(lineobj);
@@ -508,9 +526,11 @@ static PyObject *Parser_iternext(ParserObj *self)
 
 	fields = self->fields;
 	self->fields = NULL;
-err:
 	return fields;
 
+err:
+	Py_CLEAR(self->fields);
+	return NULL;
 }
 
 static void Parser_dealloc(ParserObj *self)
