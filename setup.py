@@ -44,7 +44,6 @@ full_require = [
 docs_require = ["sphinx", "m2r2", "furo"]
 test_require = full_require
 dev_require = [
-    "green",
     # "pythonfuzz",
     "pytest>=2.6",
     "termcolor",

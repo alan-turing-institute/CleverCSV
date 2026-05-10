@@ -51,10 +51,11 @@ dist: man ## Make Python source distribution
 
 .PHONY: test integration integration_partial
 
-test: mypy green pytest
+test: mypy unit pytest
 
-green: venv ## Run unit tests
-	source $(VENV_DIR)/bin/activate && green -a -vv ./tests/test_unit
+unit: venv ## Run unit tests
+	source $(VENV_DIR)/bin/activate && \
+		python -m unittest discover -vv ./tests/test_unit
 
 pytest: venv ## Run unit tests with PyTest
 	source $(VENV_DIR)/bin/activate && pytest -ra -m 'not network'
