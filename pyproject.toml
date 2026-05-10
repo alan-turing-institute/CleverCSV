@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 [project]
 name = "clevercsv"
 authors = [
@@ -6,13 +5,18 @@ authors = [
 ]
 description = "A Python package for handling messy CSV files"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.9.0"
 keywords = ["csv"]
 license = {text = "MIT"}
 classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
     "License :: OSI Approved :: MIT License",
@@ -34,18 +38,25 @@ full = [
 docs = [
     "sphinx",
     "m2r2",
+    "furo",
 ]
 test = [
     "clevercsv[full]",
-    "green",
-    "pytest>=2.6",
 ]
 dev = [
     "clevercsv[docs]",
     "clevercsv[test]",
+    "pytest>=2.6",
     "termcolor",
-    "sphinx_rtd_theme",
+    "mypy",
+    "setuptools",
 ]
+precommit = [
+    "wilderness>=0.1.5",
+]
+
+[project.scripts]
+clevercsv = "clevercsv.__main__:main"
 
 [project.urls]
 homepage = "https://github.com/alan-turing-institute/CleverCSV/"
@@ -89,5 +100,17 @@ disallow_untyped_defs = false
 packages = ["stubs", "clevercsv"]
 disallow_incomplete_defs = true
 
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["tests*", "*.tests*"]
+
+[tool.setuptools.package-data]
+clevercsv = ["py.typed"]
+
+[tool.setuptools.data-files]
+"man/man1" = ["man/*.1"]
+
 [tool.setuptools.dynamic]
-version = {attr = "clevercsv.__version__"}
+version = {attr = "clevercsv.__version__.__version__"}
