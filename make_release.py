@@ -72,11 +72,11 @@ def wait_for_enter():
 
 
 def get_package_name():
-    with open("./setup.py", "r") as fp:
-        nameline = next(
-            (line.strip() for line in fp if line.startswith("NAME = ")), None
-        )
-        return nameline.split("=")[-1].strip().strip('"')
+    with open("./pyproject.toml", "r") as fp:
+        for line in fp:
+            if line.strip().startswith("name = "):
+                return line.split("=")[-1].strip().strip('"').strip("'")
+    return None
 
 
 def get_package_version(pkgname):
