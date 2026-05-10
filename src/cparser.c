@@ -214,14 +214,12 @@ static int parse_save_field(ParserObj *self, int trailing)
 		PyObject *tuple = PyTuple_New(2);
 		if (PyTuple_SetItem(tuple, 0, field) < 0) {
 			Py_DECREF(tuple);
-			Py_DECREF(field);
 			return -1;
 		}
 		PyObject *tf = is_quoted ? Py_True : Py_False;
 		Py_INCREF(tf);
 		if (PyTuple_SetItem(tuple, 1, tf) < 0) {
 			Py_DECREF(tuple);
-			Py_DECREF(tf);
 			return -1;
 		}
 		if (PyList_Append(self->fields, tuple) < 0) {
