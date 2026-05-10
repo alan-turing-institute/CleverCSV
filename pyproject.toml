@@ -50,6 +50,7 @@ dev = [
     "termcolor",
     "mypy",
     "setuptools",
+    "build",
 ]
 precommit = [
     "wilderness>=0.1.5",
@@ -64,7 +65,7 @@ documentation = "https://clevercsv.readthedocs.io/en/latest/"
 changelog = "https://github.com/alan-turing-institute/CleverCSV/blob/master/CHANGELOG.md"
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=74.1.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
@@ -111,6 +112,14 @@ clevercsv = ["py.typed"]
 
 [tool.setuptools.data-files]
 "man/man1" = ["man/*.1"]
+
+[[tool.setuptools.ext-modules]]
+name = "clevercsv.cparser"
+sources = ["src/cparser.c"]
+
+[[tool.setuptools.ext-modules]]
+name = "clevercsv.cabstraction"
+sources = ["src/abstraction.c"]
 
 [tool.setuptools.dynamic]
 version = {attr = "clevercsv.__version__.__version__"}
