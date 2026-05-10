@@ -419,14 +419,14 @@ def main(target=None):
         ("gittomaster", GitToMaster()),
         ("clean1", MakeClean()),
         # ("docs1", MakeDocs()),
-        # ("man1", MakeMan()),
         ("runtests", RunTests()),
         # trigger CI to run tests on all platforms
         ("push1", PushToGitHub()),
         ("ci1", WaitForCI()),
         ("waitrtd", WaitForRTD()),
         ("bumpversion", BumpVersionPackage()),
-        ("gitadd2", GitAdd()),
+        ("man1", MakeMan()),
+        ("gitadd2", GitAddVersionAndMan()),
         ("gittagpre", GitTagPreRelease()),
         # trigger CI to run tests using cibuildwheel
         ("push2", PushToGitHub()),
