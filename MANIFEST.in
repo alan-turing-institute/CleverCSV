@@ -1,9 +1,7 @@
-include setup.py
 include README.md
 include CHANGELOG.md
 include LICENSE
-include requirements.txt
-recursive-include clevercsv *.py
+recursive-include clevercsv *.py *.pyi
 recursive-include src *.c
 recursive-include bin *
 recursive-include tests/test_unit *.py

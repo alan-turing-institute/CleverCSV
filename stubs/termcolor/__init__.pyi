@@ -18,5 +18,5 @@ def cprint(
     color: Any | None = ...,
     on_color: Any | None = ...,
     attrs: Any | None = ...,
-    **kwargs
+    **kwargs,
 ) -> None: ...

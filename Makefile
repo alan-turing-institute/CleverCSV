@@ -28,7 +28,7 @@ help:
 .PHONY: inplace install
 
 inplace:
-	$(PYTHON) setup.py build_ext -i
+	$(PYTHON) -m pip install -e .
 
 install: dist ## Install for the current user using the default python command
 	$(PYTHON) -m pip install --user ./dist/$(PACKAGE)-*.tar.gz
@@ -42,8 +42,8 @@ install: dist ## Install for the current user using the default python command
 release: ## Make a release
 	$(PYTHON) make_release.py
 
-dist: man ## Make Python source distribution
-	$(PYTHON) setup.py sdist
+dist: man venv ## Make Python source distribution
+	source $(VENV_DIR)/bin/activate && python -m build
 
 ###########
 # Testing #
@@ -51,10 +51,11 @@ dist: man ## Make Python source distribution
 
 .PHONY: test integration integration_partial
 
-test: mypy green pytest
+test: mypy unit pytest
 
-green: venv ## Run unit tests
-	source $(VENV_DIR)/bin/activate && green -a -vv ./tests/test_unit
+unit: venv ## Run unit tests
+	source $(VENV_DIR)/bin/activate && \
+		python -m unittest discover -vv ./tests/test_unit
 
 pytest: venv ## Run unit tests with PyTest
 	source $(VENV_DIR)/bin/activate && pytest -ra -m 'not network'
@@ -89,7 +90,7 @@ doc: venv ## Build documentation with Sphinx
 
 man: venv ## Build man pages using Wilderness
 	source $(VENV_DIR)/bin/activate && \
-		python setup.py build_manpages
+		python build_manpages.py
 
 #######################
 # Virtual environment #

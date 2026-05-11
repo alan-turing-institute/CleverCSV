@@ -12,7 +12,7 @@ def match(
     concurrent: Any | None = ...,
     timeout: Any | None = ...,
     ignore_unused: bool = ...,
-    **kwargs
+    **kwargs,
 ): ...
 def fullmatch(
     pattern,
@@ -24,7 +24,7 @@ def fullmatch(
     concurrent: Any | None = ...,
     timeout: Any | None = ...,
     ignore_unused: bool = ...,
-    **kwargs
+    **kwargs,
 ): ...
 def search(
     pattern,
@@ -36,7 +36,7 @@ def search(
     concurrent: Any | None = ...,
     timeout: Any | None = ...,
     ignore_unused: bool = ...,
-    **kwargs
+    **kwargs,
 ): ...
 def sub(
     pattern,
@@ -49,7 +49,7 @@ def sub(
     concurrent: Any | None = ...,
     timeout: Any | None = ...,
     ignore_unused: bool = ...,
-    **kwargs
+    **kwargs,
 ): ...
 def subf(
     pattern,
@@ -62,7 +62,7 @@ def subf(
     concurrent: Any | None = ...,
     timeout: Any | None = ...,
     ignore_unused: bool = ...,
-    **kwargs
+    **kwargs,
 ): ...
 def subn(
     pattern,
@@ -75,7 +75,7 @@ def subn(
     concurrent: Any | None = ...,
     timeout: Any | None = ...,
     ignore_unused: bool = ...,
-    **kwargs
+    **kwargs,
 ): ...
 def subfn(
     pattern,
@@ -88,7 +88,7 @@ def subfn(
     concurrent: Any | None = ...,
     timeout: Any | None = ...,
     ignore_unused: bool = ...,
-    **kwargs
+    **kwargs,
 ): ...
 def split(
     pattern,
@@ -98,7 +98,7 @@ def split(
     concurrent: Any | None = ...,
     timeout: Any | None = ...,
     ignore_unused: bool = ...,
-    **kwargs
+    **kwargs,
 ): ...
 def splititer(
     pattern,
@@ -108,7 +108,7 @@ def splititer(
     concurrent: Any | None = ...,
     timeout: Any | None = ...,
     ignore_unused: bool = ...,
-    **kwargs
+    **kwargs,
 ): ...
 def findall(
     pattern,
@@ -120,7 +120,7 @@ def findall(
     concurrent: Any | None = ...,
     timeout: Any | None = ...,
     ignore_unused: bool = ...,
-    **kwargs
+    **kwargs,
 ): ...
 def finditer(
     pattern,
@@ -133,7 +133,7 @@ def finditer(
     concurrent: Any | None = ...,
     timeout: Any | None = ...,
     ignore_unused: bool = ...,
-    **kwargs
+    **kwargs,
 ): ...
 def compile(
     pattern, flags: int = ..., ignore_unused: bool = ..., **kwargs

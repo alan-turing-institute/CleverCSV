@@ -29,7 +29,7 @@ class OptionalDependency(NamedTuple):
     min_version: str
 
 
-# update this when changing setup.py
+# update this when changing pyproject.toml
 OPTIONAL_DEPENDENCIES: List[OptionalDependency] = [
     OptionalDependency("tabview", "tabview", "1.4"),
     OptionalDependency("pandas", "pandas", "0.24.1"),

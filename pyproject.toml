@@ -1,3 +1,74 @@
+[project]
+name = "clevercsv"
+authors = [
+    {name = "Gertjan van den Burg", email = "gertjanvandenburg@gmail.com"},
+]
+description = "A Python package for handling messy CSV files"
+readme = "README.md"
+requires-python = ">=3.9.0"
+keywords = ["csv"]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "chardet>=3.0",
+    "regex>=2018.11",
+    "packaging>=23.0",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+full = [
+    "faust-cchardet>=2.1.18",
+    "pandas>=1.0.0",
+    "tabview>=1.4",
+    "wilderness>=0.1.5",
+]
+docs = [
+    "sphinx",
+    "m2r2",
+    "furo",
+]
+test = [
+    "clevercsv[full]",
+    "pytest>=2.6",
+]
+dev = [
+    "clevercsv[docs]",
+    "clevercsv[test]",
+    "pytest>=2.6",
+    "termcolor",
+    "mypy",
+    "setuptools",
+    "build",
+]
+precommit = [
+    "wilderness>=0.1.5",
+]
+
+[project.scripts]
+clevercsv = "clevercsv.__main__:main"
+
+[project.urls]
+homepage = "https://github.com/alan-turing-institute/CleverCSV/"
+documentation = "https://clevercsv.readthedocs.io/en/latest/"
+changelog = "https://github.com/alan-turing-institute/CleverCSV/blob/master/CHANGELOG.md"
+
+[build-system]
+requires = ["setuptools>=74.1.0"]
+build-backend = "setuptools.build_meta"
+
 [tool.black]
 line-length=79
 
@@ -30,3 +101,26 @@ disallow_untyped_defs = false
 [[tool.mypy.overrides]]
 packages = ["stubs", "clevercsv"]
 disallow_incomplete_defs = true
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["tests*", "*.tests*"]
+
+[tool.setuptools.package-data]
+clevercsv = ["py.typed"]
+
+[tool.setuptools.data-files]
+"man/man1" = ["man/*.1"]
+
+[[tool.setuptools.ext-modules]]
+name = "clevercsv.cparser"
+sources = ["src/cparser.c"]
+
+[[tool.setuptools.ext-modules]]
+name = "clevercsv.cabstraction"
+sources = ["src/abstraction.c"]
+
+[tool.setuptools.dynamic]
+version = {attr = "clevercsv.__version__.__version__"}
