@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.8.5
+
+* Fix reference counting bug in C extension 
+  [#162](https://github.com/alan-turing-institute/CleverCSV/issues/162), 
+  thanks to @wr-web
+* Fix additional issues in C extensions
+* Migrate away from setup.py to pyproject.toml
+
 ## Version 0.8.4
 
 * Bump minimal Python version to 3.9
