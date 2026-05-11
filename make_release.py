@@ -27,6 +27,14 @@ from typing import Optional
 
 import colorama
 
+try:
+    import tomllib
+except ImportError:
+    try:
+        import tomli as tomllib
+    except ImportError:
+        tomllib = None
+
 URLS = {
     "RTD": "https://readthedocs.org/projects/clevercsv/builds/",
     "CI": "https://github.com/alan-turing-institute/CleverCSV/actions",
@@ -72,11 +80,16 @@ def wait_for_enter():
 
 
 def get_package_name():
-    with open("./pyproject.toml", "r") as fp:
-        for line in fp:
-            if line.strip().startswith("name = "):
-                return line.split("=")[-1].strip().strip('"').strip("'")
-    return None
+    if tomllib is None:
+        with open("./pyproject.toml", "r") as fp:
+            for line in fp:
+                if line.strip().startswith("name = "):
+                    return line.split("=")[-1].strip().strip('"').strip("'")
+        return None
+
+    with open("./pyproject.toml", "rb") as fp:
+        data = tomllib.load(fp)
+    return data.get("project", {}).get("name")
 
 
 def get_package_version(pkgname):
