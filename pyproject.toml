@@ -42,6 +42,7 @@ docs = [
 ]
 test = [
     "clevercsv[full]",
+    "pytest>=2.6",
 ]
 dev = [
     "clevercsv[docs]",
