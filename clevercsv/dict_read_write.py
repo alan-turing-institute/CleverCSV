@@ -65,7 +65,7 @@ class DictReader(
         return self
 
     @property
-    def fieldnames(self) -> Sequence[_T]:
+    def fieldnames(self) -> Optional[Sequence[_T]]:
         if self._fieldnames is None:
             try:
                 fieldnames = next(self.reader)
@@ -73,7 +73,8 @@ class DictReader(
             except StopIteration:
                 pass
 
-        assert self._fieldnames is not None
+        if self._fieldnames is None:
+            return None
 
         # Note: this was added because I don't think it's expected that Python
         # simply drops information if there are duplicate headers. There is

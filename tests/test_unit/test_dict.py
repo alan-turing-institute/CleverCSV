@@ -252,6 +252,19 @@ class DictTestCase(unittest.TestCase):
         with self.assertWarns(UserWarning):
             reader.fieldnames
 
+    def test_read_empty_file_fieldnames_returns_none(self) -> None:
+        # Accessing .fieldnames on an empty file should return None (matching
+        # stdlib csv.DictReader behaviour), not raise AssertionError.
+        reader: DictReader[str] = clevercsv.DictReader(io.StringIO(""))
+        self.assertIsNone(reader.fieldnames)
+
+    def test_read_empty_file_iteration_raises_stopiteration(self) -> None:
+        # Iterating over an empty file should raise StopIteration, not
+        # AssertionError.
+        reader: DictReader[str] = clevercsv.DictReader(io.StringIO(""))
+        with self.assertRaises(StopIteration):
+            next(reader)
+
     # End tests added for CleverCSV #
     #################################
 
