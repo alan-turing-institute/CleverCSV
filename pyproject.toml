@@ -103,10 +103,8 @@ packages = ["stubs", "clevercsv"]
 disallow_incomplete_defs = true
 
 [tool.setuptools]
+packages = ["clevercsv"]
 include-package-data = true
-
-[tool.setuptools.packages.find]
-exclude = ["tests*", "*.tests*"]
 
 [tool.setuptools.package-data]
 clevercsv = ["py.typed"]
