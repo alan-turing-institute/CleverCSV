@@ -181,6 +181,11 @@ class Detector:
                 if thisType != columnTypes[col]:
                     if columnTypes[col] is None:  # add new column type
                         columnTypes[col] = thisType
+                    elif (thisType == float and columnTypes[col] == int) or (
+                        thisType == int and columnTypes[col] == float
+                    ):
+                        # mismatch between float and int, assume float
+                        columnTypes[col] = float
                     else:
                         # type is inconsistent, remove column from
                         # consideration
