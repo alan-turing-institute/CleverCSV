@@ -181,6 +181,13 @@ or you can install a lighter, core version of CleverCSV with
 
    $ pip install clevercsv
 
+CleverCSV is also available from `conda-forge on Anaconda.org <https://anaconda.org/conda-forge/clevercsv>`_.
+You can install it with conda using
+
+.. code-block:: bash
+
+   $ conda install -c conda-forge clevercsv
+
 Usage
 -----
 
