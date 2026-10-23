@@ -131,7 +131,7 @@ class DictWriter(Generic[_T]):
             raise ValueError(
                 "extrasaction (%s) must be 'raise' or 'ignore'" % extrasaction
             )
-        self.extrasaction = extrasaction
+        self.extrasaction = extrasaction.lower()
         self.writer = writer(f, dialect, *args, **kwds)
 
     def writeheader(self) -> Any:
