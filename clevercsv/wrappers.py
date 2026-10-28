@@ -11,6 +11,8 @@ from __future__ import annotations
 import os
 import warnings
 
+from itertools import chain
+
 from typing import TYPE_CHECKING
 from typing import Any
 from typing import Iterable
@@ -444,6 +446,13 @@ def write_table(
     """
     if not table:
         return
+
+    iterator = iter(table)
+    try:
+        first = next(iterator)
+    except StopIteration:
+        return
+    table = chain((first,), iterator)
 
     if transpose:
         list_table = list(map(list, zip(*table)))

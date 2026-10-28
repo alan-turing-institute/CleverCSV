@@ -12,15 +12,19 @@ import tempfile
 import types
 import unittest
 
+from pathlib import Path
+
 from typing import Any
 from typing import Dict
 from typing import Iterable
+from typing import Iterator
 from typing import List
 from typing import Union
 
 import pandas as pd
 
 from clevercsv import wrappers
+from clevercsv import write_table
 from clevercsv import writer
 from clevercsv.dialect import SimpleDialect
 from clevercsv.exceptions import NoDetectionResult
@@ -218,7 +222,7 @@ class WrappersTestCase(unittest.TestCase):
         self, table: Iterable[Iterable[Any]], expected: str, **kwargs: Any
     ) -> None:
         tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
-        wrappers.write_table(table, tmpfname, **kwargs)
+        write_table(table, tmpfname, **kwargs)
         read_encoding = kwargs.get("encoding", None)
         with open(tmpfname, "r", newline="", encoding=read_encoding) as fp:
             data = fp.read()
@@ -262,6 +266,105 @@ class WrappersTestCase(unittest.TestCase):
 
         with self.subTest(name="encoding_2"):
             self._write_test_table(table, exp, encoding="cp1252")
+
+    def test_write_table_empty_generator(self) -> None:
+        table: List[List[str]] = []
+        for transpose in (False, True):
+            for existing in (False, True):
+                with self.subTest(transpose=transpose, existing=existing):
+                    with tempfile.TemporaryDirectory() as tmpdir:
+                        filename = Path(tmpdir) / "table.csv"
+                        original = b"keep,existing\r\nsynthetic,content\r\n"
+                        if existing:
+                            filename.write_bytes(original)
+
+                        write_table(
+                            (row for row in table),
+                            filename,
+                            transpose=transpose,
+                        )
+
+                        if existing:
+                            self.assertEqual(filename.read_bytes(), original)
+                        else:
+                            self.assertFalse(filename.exists())
+
+    def test_write_table_empty_row(self) -> None:
+        table: List[List[str]] = [[]]
+        for transpose in (False, True):
+            expected = "" if transpose else "\r\n"
+            for rows in (table, (row for row in table)):
+                with self.subTest(transpose=transpose, kind=type(rows)):
+                    self._write_test_table(rows, expected, transpose=transpose)
+
+    def test_write_table_generator(self) -> None:
+        table = [["café", "a;b", "雪"], ["second", '"quoted"', "end"]]
+        expected = 'café,a;b,雪\r\nsecond,"""quoted""",end\r\n'
+        self._write_test_table(
+            (row for row in table), expected, encoding="utf-8"
+        )
+
+        dialect = SimpleDialect(delimiter=";", quotechar='"', escapechar="")
+        for transpose, expected in (
+            (False, 'café;"a;b";雪\nsecond;"""quoted""";end\n'),
+            (True, 'café;second\n"a;b";"""quoted"""\n雪;end\n'),
+        ):
+            with self.subTest(transpose=transpose):
+                self._write_test_table(
+                    (row for row in table),
+                    expected,
+                    dialect=dialect,
+                    transpose=transpose,
+                    encoding="utf-8",
+                )
+
+    def test_write_table_generator_error(self) -> None:
+        for transpose in (False, True):
+            for yield_first in (False, True):
+                with self.subTest(
+                    transpose=transpose, yield_first=yield_first
+                ):
+                    with tempfile.TemporaryDirectory() as tmpdir:
+                        filename = Path(tmpdir) / "table.csv"
+                        original = b"keep,existing\r\nsynthetic,content\r\n"
+                        filename.write_bytes(original)
+
+                        def rows() -> Iterator[List[str]]:
+                            if yield_first:
+                                yield ["synthetic"]
+                            raise RuntimeError("generator failed")
+
+                        with self.assertRaisesRegex(
+                            RuntimeError, "generator failed"
+                        ):
+                            write_table(rows(), filename, transpose=transpose)
+                        self.assertEqual(filename.read_bytes(), original)
+
+    def test_write_table_generator_reuses_row(self) -> None:
+        def rows() -> Iterator[List[str]]:
+            row = [""]
+            for value in ("first", "second"):
+                row[0] = value
+                yield row
+
+        for transpose, expected in (
+            (False, "first\r\nsecond\r\n"),
+            (True, "second,second\r\n"),
+        ):
+            with self.subTest(transpose=transpose):
+                self._write_test_table(rows(), expected, transpose=transpose)
+
+    def test_write_table_generator_lazy_rows(self) -> None:
+        def rows() -> Iterator[Iterator[str]]:
+            for value in ("first", "second"):
+                yield (value for _ in range(1))
+
+        for transpose, expected in (
+            (False, "first\r\nsecond\r\n"),
+            (True, "second,second\r\n"),
+        ):
+            with self.subTest(transpose=transpose):
+                self._write_test_table(rows(), expected, transpose=transpose)
 
     def _write_test_dicts(
         self, items: Iterable[Dict[str, Any]], expected: str, **kwargs: Any
