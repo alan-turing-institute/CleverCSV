@@ -127,7 +127,8 @@ class DictWriter(Generic[_T]):
     ):
         self.fieldnames = fieldnames
         self.restval = restval
-        if extrasaction.lower() not in ("raise", "ignore"):
+        extrasaction = extrasaction.lower()  # type: ignore[assignment]
+        if extrasaction not in ("raise", "ignore"):
             raise ValueError(
                 "extrasaction (%s) must be 'raise' or 'ignore'" % extrasaction
             )

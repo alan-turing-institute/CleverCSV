@@ -96,6 +96,23 @@ class DictTestCase(unittest.TestCase):
         clevercsv.DictWriter.writerow(writer, dictrow)
         self.assertEqual(fp.getvalue(), "1,2\r\n")
 
+    def test_extrasaction_case_insensitive(self) -> None:
+        for action in (
+            "raise",
+            "RAISE",
+            "Raise",
+            "ignore",
+            "IGNORE",
+            "Ignore",
+        ):
+            with self.subTest(action=action):
+                writer = clevercsv.DictWriter(
+                    io.StringIO(),
+                    ["f1", "f2"],
+                    extrasaction=action,  # type: ignore[arg-type]
+                )
+                self.assertEqual(writer.extrasaction, action.lower())
+
     def test_read_dict_fields(self) -> None:
         with tempfile.TemporaryFile("w+") as fp:
             fp.write("1,2,abc\r\n")
