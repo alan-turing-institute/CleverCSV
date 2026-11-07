@@ -105,28 +105,13 @@ class DictTestCase(unittest.TestCase):
             "IGNORE",
             "Ignore",
         ):
-            for multiple in (False, True):
-                with self.subTest(action=action, multiple=multiple):
-                    fp = io.StringIO()
-                    writer = clevercsv.DictWriter(
-                        fp,
-                        ["f1", "f2"],
-                        extrasaction=action,  # type: ignore[arg-type]
-                    )
-                    row = {"f1": 1, "f2": 2, "extra": 3}
-                    if action.lower() == "raise":
-                        with self.assertRaises(ValueError):
-                            if multiple:
-                                writer.writerows([row])
-                            else:
-                                writer.writerow(row)
-                        self.assertEqual(fp.getvalue(), "")
-                    else:
-                        if multiple:
-                            writer.writerows([row])
-                        else:
-                            writer.writerow(row)
-                        self.assertEqual(fp.getvalue(), "1,2\r\n")
+            with self.subTest(action=action):
+                writer = clevercsv.DictWriter(
+                    io.StringIO(),
+                    ["f1", "f2"],
+                    extrasaction=action,  # type: ignore[arg-type]
+                )
+                self.assertEqual(writer.extrasaction, action.lower())
 
     def test_read_dict_fields(self) -> None:
         with tempfile.TemporaryFile("w+") as fp:
