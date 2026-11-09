@@ -106,21 +106,21 @@ class ParserTestCase(unittest.TestCase):
     def test_parse_no_delim_4(self) -> None:
         self._parse_test(
             'A"B\r\nB"C\r\nD"E"F\r\nG',
-            [['A"B\r\nB"C'], ['D"E"F'], ["G"]],
+            [['A"B'], ['B"C'], ['D"E"F'], ["G"]],
             quotechar='"',
         )
 
     def test_parse_no_delim_5(self) -> None:
         self._parse_test(
             'A"B\nB"C\nD"E"F\nG',
-            [['A"B\nB"C'], ['D"E"F'], ["G"]],
+            [['A"B'], ['B"C'], ['D"E"F'], ["G"]],
             quotechar='"',
         )
 
     def test_parse_no_delim_6(self) -> None:
         self._parse_test(
             'A"B\nB\rB"C\nD"E"F\nG',
-            [['A"B\nB\rB"C'], ['D"E"F'], ["G"]],
+            [['A"B'], ["B"], ['B"C'], ['D"E"F'], ["G"]],
             quotechar='"',
         )
 
@@ -314,9 +314,11 @@ class ParserTestCase(unittest.TestCase):
     """
 
     def test_parse_quote_mismatch_1(self) -> None:
+        # a quote inside an unquoted field is data (like Python's csv),
+        # see issue #180; the rest of the row/rows is no longer swallowed
         self._parse_test(
             'a,b,c"d,e\n',
-            [["a", "b", 'c"d,e\n']],
+            [["a", "b", 'c"d', "e"]],
             delimiter=",",
             quotechar='"',
         )

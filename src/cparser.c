@@ -343,9 +343,13 @@ static int parse_process_char(ParserObj *self, Py_UCS4 u, Py_UCS4 v)
 			} else if (u == self->escapechar) {
 				self->state = ESCAPED_CHAR;
 			} else if (u == self->quotechar) {
+				// A quote character inside an unquoted field is
+				// data (like CPython's _csv.c). Switching to
+				// IN_QUOTED_FIELD here makes the parser swallow
+				// all remaining rows until the next quote or EOF
+				// (issue #180), so we stay in IN_FIELD.
 				if (parse_add_char(self, u) < 0)
 					return -1;
-				self->state = IN_QUOTED_FIELD;
 			} else if (u == self->delimiter) {
 				if (parse_save_field(self, 0) < 0)
 					return -1;

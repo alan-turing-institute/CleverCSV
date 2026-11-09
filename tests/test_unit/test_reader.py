@@ -157,23 +157,40 @@ class ReaderTestCase(unittest.TestCase):
             delimiter="",
             quotechar="",
         )
+        # Note: with a quote in an unquoted field no longer starting a
+        # quoted field (issue #180), embedded newlines can't be smuggled
+        # through a list of lines anymore (Python's csv raises the same
+        # error); read from a file-like object with newlines intact.
         self._read_test(
-            ['A"B\r\nB"C', 'D"E"F', "G"],
-            [['A"B\r\nB"C'], ['D"E"F'], ["G"]],
+            StringIO('A"B\r\nB"C\r\nD"E"F\r\nG', newline=""),
+            [['A"B'], ['B"C'], ['D"E"F'], ["G"]],
             delimiter="",
             quotechar='"',
         )
         self._read_test(
-            ['A"B\nB"C', 'D"E"F', "G"],
-            [['A"B\nB"C'], ['D"E"F'], ["G"]],
+            StringIO('A"B\nB"C\nD"E"F\nG', newline=""),
+            [['A"B'], ['B"C'], ['D"E"F'], ["G"]],
             delimiter="",
             quotechar='"',
         )
         self._read_test(
-            ['A"B\nB\rB"C', 'D"E"F', "G"],
-            [['A"B\nB\rB"C'], ['D"E"F'], ["G"]],
+            StringIO('A"B\nB\rB"C\nD"E"F\nG', newline=""),
+            [['A"B'], ["B"], ['B"C'], ['D"E"F'], ["G"]],
             delimiter="",
             quotechar='"',
+        )
+
+    def test_github_issue_180(self) -> None:
+        # A quote character inside an unquoted field is literal data (like
+        # Python's csv module): it should not start a quoted field and
+        # swallow all remaining rows of the file.
+        self._read_test(
+            StringIO("a,b,c\n1\"2,3\n4,5,6\n7,8,9\n"),
+            [["a", "b", "c"], ["1\"2", "3"], ["4", "5", "6"], ["7", "8", "9"]],
+        )
+        self._read_test(
+            StringIO("a,b\n1,2\n5\"6\n"),
+            [["a", "b"], ["1", "2"], ["5\"6"]],
         )
 
     def test_github_issue_130(self) -> None:
