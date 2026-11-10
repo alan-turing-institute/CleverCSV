@@ -107,14 +107,18 @@ class DetectCommand(Command):
         skip = not self.args.no_skip
 
         t_start = time.time()
-        dialect = detect_dialect(
-            self.args.path,
-            num_chars=num_chars,
-            encoding=self.args.encoding,
-            verbose=verbose,
-            method=method,
-            skip=skip,
-        )
+        try:
+            dialect = detect_dialect(
+                self.args.path,
+                num_chars=num_chars,
+                encoding=self.args.encoding,
+                verbose=verbose,
+                method=method,
+                skip=skip,
+            )
+        except OSError as e:
+            print(f"Error: {self.args.path}: {e.strerror or e}", file=sys.stderr)
+            return 1
         runtime = time.time() - t_start
 
         if dialect is None:

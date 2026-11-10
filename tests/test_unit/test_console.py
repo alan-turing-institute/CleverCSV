@@ -170,6 +170,18 @@ escapechar ="""
         finally:
             os.unlink(tmpfname)
 
+    def test_detect_missing_file(self) -> None:
+        application = build_application()
+        tester = Tester(application)
+        tester.test_command("detect", ["does-not-exist-ccsv.csv"])
+
+        self.assertEqual(tester.get_return_code(), 1)
+        stderr = tester.get_stderr()
+        self.assertIsNotNone(stderr)
+        assert stderr is not None
+        self.assertIn("does-not-exist-ccsv.csv", stderr)
+        self.assertNotIn("Traceback", stderr)
+
     def test_code_1(self) -> None:
         table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")
