@@ -424,6 +424,27 @@ with open("{tmpfname}", "r", newline="", encoding="ASCII") as fp:
         finally:
             os.unlink(tmpfname)
 
+    def test_standardize_transpose_ragged(self) -> None:
+        # Ragged rows must not lose cells when transposing; short rows
+        # are padded with empty fields instead of truncating long ones.
+        tmpfd, tmpfname = tempfile.mkstemp(prefix="ccsv_", suffix=".csv")
+        os.write(tmpfd, b"A;B;C\n1;2\n")
+        os.close(tmpfd)
+
+        application = build_application()
+        tester = Tester(application)
+        tester.test_command("standardize", ["-t", tmpfname])
+
+        crlf = "\r\n"
+        exp = crlf.join(["A,1", "B,2", "C,"])
+        exp += crlf
+
+        try:
+            output = tester.get_stdout()
+            self.assertEqual(exp, output)
+        finally:
+            os.unlink(tmpfname)
+
     def test_standardize_in_place(self) -> None:
         table: TableType = [["A", "B", "C"], [1, 2, 3], [4, 5, 6]]
         dialect = SimpleDialect(delimiter=";", quotechar="", escapechar="")

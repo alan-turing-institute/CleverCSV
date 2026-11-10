@@ -7,6 +7,7 @@ import os
 import shutil
 import sys
 import tempfile
+from itertools import zip_longest
 
 from typing import TYPE_CHECKING
 from typing import Optional
@@ -207,7 +208,7 @@ class StandardizeCommand(Command):
         with open(path, "r", newline="", encoding=encoding) as fp:
             read = reader(fp, dialect=dialect)
             rows = list(read)
-        rows = list(map(list, zip(*rows)))
+        rows = list(map(list, zip_longest(*rows, fillvalue="")))
         write = writer(stream, dialect="excel")
         for row in rows:
             write.writerow(row)
